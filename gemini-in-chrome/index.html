@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在 Chrome 上启用 Gemini - 一键配置工具</title>
+    <meta name="description" content="为非美区用户提供一键启用 Chrome Gemini 功能的工具">
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="material-icons">extension</span>
+                </div>
+                <div class="header-text">
+                    <h1>Gemini in Chrome</h1>
+                    <p>一键启用工具</p>
+                </div>
+            </div>
+            <p class="header-subtitle">为非美区用户提供简单快捷的 Gemini 启用方案</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+
+            <!-- 免责声明 -->
+            <section class="section disclaimer-section" id="disclaimer">
+                <div class="section-header collapsible" data-target="disclaimer-content">
+                    <span class="material-icons">warning</span>
+                    <h2>免责声明</h2>
+                    <span class="material-icons expand-icon">expand_less</span>
+                </div>
+                <div class="section-content" id="disclaimer-content">
+                    <div class="warning-box">
+                        <p><strong>使用本工具前，请仔细阅读以下内容：</strong></p>
+                        <ul>
+                            <li>本工具会修改 Chrome 的配置文件（Local State）</li>
+                            <li>虽然会自动备份原文件，但修改系统配置存在一定风险</li>
+                            <li>本工具仅供学习研究使用，请遵守 Google 的服务条款</li>
+                            <li>Chrome 更新后可能需要重新运行此脚本</li>
+                            <li>使用本工具产生的任何后果由用户自行承担</li>
+                        </ul>
+                        <p>继续使用即表示您已了解并接受上述风险。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 准备工作 -->
+            <section class="section checklist-section" id="checklist">
+                <div class="section-header collapsible" data-target="checklist-content">
+                    <span class="material-icons">checklist</span>
+                    <h2>准备工作检查清单</h2>
+                    <span class="material-icons expand-icon">expand_less</span>
+                </div>
+                <div class="section-content" id="checklist-content">
+                    <div class="checklist">
+                        <label class="checklist-item">
+                            <input type="checkbox" id="check-chrome">
+                            <span class="checkmark"></span>
+                            <span>Google Chrome 已安装</span>
+                            <a href="https://www.google.com/chrome/" target="_blank" class="link-button">
+                                <span class="material-icons">download</span>
+                                下载
+                            </a>
+                        </label>
+
+                        <label class="checklist-item important" id="check-language-item">
+                            <input type="checkbox" id="check-language">
+                            <span class="checkmark"></span>
+                            <span class="important-text">Chrome 语言设置为英语（macOS 必需）</span>
+                            <span class="badge important">重要</span>
+                        </label>
+
+                        <label class="checklist-item important">
+                            <input type="checkbox" id="check-login">
+                            <span class="checkmark"></span>
+                            <span class="important-text">在 Chrome 中登录美区 Gmail 账号</span>
+                            <span class="badge important">重要</span>
+                        </label>
+
+                        <label class="checklist-item">
+                            <input type="checkbox" id="check-risk">
+                            <span class="checkmark"></span>
+                            <span>我已了解操作风险并接受免责声明</span>
+                        </label>
+                    </div>
+
+                    <div class="tip-box">
+                        <span class="material-icons">lightbulb</span>
+                        <p><strong>提示：</strong>Gemini 的地区检测依赖账号区域设置，配置修改只是必要条件，登录美区账号是关键步骤！</p>
+                    </div>
+
+                    <div class="tip-box language-tip" id="macos-language-tip" style="display: none;">
+                        <span class="material-icons">info</span>
+                        <p><strong>macOS 用户：</strong>请将 Chrome 应用语言设置为英语：系统设置 → 通用 → 语言与地区 → 应用程序语言 → Google Chrome → 设置为"英语"</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 一键安装 -->
+            <section class="section install-section" id="install">
+                <div class="section-header">
+                    <span class="material-icons">rocket_launch</span>
+                    <h2>一键安装</h2>
+                </div>
+                <div class="section-content">
+                    <div class="tip-box" style="margin-bottom: 16px;">
+                        <span class="material-icons">warning</span>
+                        <p><strong>执行前确认：</strong>已完成上方准备工作清单（安装 Chrome、设置语言、登录美区账号）</p>
+                    </div>
+
+                    <p class="install-description">复制下方命令，粘贴到终端中执行即可：</p>
+
+                    <div class="command-box">
+                        <div class="command-header">
+                            <span class="command-label">安装命令</span>
+                            <button class="icon-button" id="copy-btn" title="复制命令">
+                                <span class="material-icons">content_copy</span>
+                            </button>
+                        </div>
+                        <code class="command-text" id="install-command">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/yourusername/gemini-in-chrome/main/install.sh)"</code>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="button primary" id="copy-command-btn">
+                            <span class="material-icons">content_copy</span>
+                            复制命令
+                        </button>
+                        <button class="button secondary" id="open-terminal-btn">
+                            <span class="material-icons">terminal</span>
+                            如何打开终端
+                        </button>
+                    </div>
+
+                    <!-- 复制成功提示 -->
+                    <div class="toast" id="copy-toast">
+                        <span class="material-icons">check_circle</span>
+                        命令已复制到剪贴板！
+                    </div>
+                </div>
+            </section>
+
+            <!-- 详细步骤 -->
+            <section class="section steps-section" id="steps">
+                <div class="section-header collapsible" data-target="steps-content">
+                    <span class="material-icons">list_alt</span>
+                    <h2>详细步骤说明</h2>
+                    <span class="material-icons expand-icon">expand_less</span>
+                </div>
+                <div class="section-content" id="steps-content">
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>检查 Chrome 安装</h3>
+                                <p>确保 Google Chrome 已安装在您的电脑上。如果没有安装，请访问 <a href="https://www.google.com/chrome/" target="_blank">chrome.google.com</a> 下载并安装。</p>
+                            </div>
+                        </div>
+
+                        <div class="step" id="language-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>设置 Chrome 语言为英语（macOS 必需）</h3>
+                                <p><strong>macOS 用户必须先设置语言</strong>，否则 Gemini 无法启用。</p>
+                                <p class="step-detail">
+                                    <strong>macOS:</strong> 系统设置 → 通用 → 语言与地区 → Chrome 应用语言设为"英语" → 重启 Chrome
+                                </p>
+                                <p class="step-detail">
+                                    <strong>Linux/Windows:</strong> Chrome 地址栏输入 <code>chrome://settings/languages</code> → 英语设为首选
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>登录美区 Gmail 账号</h3>
+                                <p>在 Chrome 中登录您的美区 Gmail 账号，这是启用 Gemini 的关键。</p>
+                                <p class="step-detail">Chrome 点击头像 → 添加账号 → 选择美区账号</p>
+                                <p style="margin-top: 12px;">
+                                    <span class="material-icons" style="font-size: 16px; vertical-align: middle; color: var(--md-primary);">info</span>
+                                    没有美区账号？<a href="https://accounts.google.com/signup" target="_blank" style="color: var(--md-primary); font-weight: 500; text-decoration: underline;">前往注册 Gmail →</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>复制并执行安装命令</h3>
+                                <p>复制上方命令，打开终端粘贴执行。脚本会自动完成配置修改。</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3>重启 Chrome</h3>
+                                <p>完全关闭 Chrome 后重新打开，访问 <a href="https://gemini.google.com/" target="_blank">gemini.google.com</a> 即可使用！</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section class="section faq-section" id="faq">
+                <div class="section-header collapsible" data-target="faq-content">
+                    <span class="material-icons">help</span>
+                    <h2>常见问题 FAQ</h2>
+                    <span class="material-icons expand-icon">expand_less</span>
+                </div>
+                <div class="section-content" id="faq-content">
+                    <div class="faq">
+                        <div class="faq-item">
+                            <h3 class="faq-question">为什么要设置语言和登录美区账号？</h3>
+                            <p>Gemini 的地区检测依赖两个条件：</p>
+                            <ul>
+                                <li><strong>macOS 必须将 Chrome 语言设为英语</strong> - 应用语言影响地区判断</li>
+                                <li><strong>登录美区 Gmail 账号</strong> - 账号区域是主要判断依据</li>
+                            </ul>
+                            <p>两者缺一不可，仅修改配置文件无法启用。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3 class="faq-question">如何设置 Chrome 语言和切换账号？</h3>
+                            <p><strong>设置语言：</strong></p>
+                            <ul>
+                                <li>macOS: 系统设置 → 通用 → 语言与地区 → Chrome 应用语言设为英语</li>
+                                <li>Linux/Windows: Chrome 访问 <code>chrome://settings/languages</code></li>
+                            </ul>
+                            <p><strong>切换账号：</strong>Chrome 点击头像 → 添加账号 → 选择美区账号</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3 class="faq-question">支持哪些操作系统？</h3>
+                            <p>本工具支持 macOS、Linux、Windows (Git Bash/WSL)。脚本会自动检测系统并应用对应配置。</p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3 class="faq-question">遇到问题如何还原？</h3>
+                            <p>脚本会自动备份原配置文件。如果遇到问题，运行以下命令还原：</p>
+                            <code class="inline-code">bash install.sh --rollback</code>
+                            <p>或使用调试模式查看详细日志：<code class="inline-code">bash install.sh --debug</code></p>
+                        </div>
+
+                        <div class="faq-item">
+                            <h3 class="faq-question">这安全吗？</h3>
+                            <p>脚本是开源的，您可以<a href="https://github.com/yourusername/gemini-in-chrome/blob/main/install.sh" target="_blank">查看完整源代码</a>。脚本会自动备份原配置文件，并且可以一键还原。但请注意，修改系统配置始终存在一定风险。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://github.com/yourusername/gemini-in-chrome" target="_blank">
+                        <span class="material-icons">code</span>
+                        GitHub
+                    </a>
+                    <a href="#" id="report-issue">
+                        <span class="material-icons">bug_report</span>
+                        反馈问题
+                    </a>
+                </div>
+                <p class="footer-note">
+                    本项目仅供学习研究使用，请遵守 Google 的服务条款。<br>
+                    与 Google Inc. 无任何关联。
+                </p>
+                <p class="footer-copy">&copy; 2025 Gemini in Chrome Tool</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 终端打开教程模态框 -->
+    <div class="modal" id="terminal-modal">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>如何打开终端</h2>
+                <button class="icon-button" id="close-modal">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="terminal-guide">
+                    <div class="terminal-os">
+                        <h3><span class="material-icons">laptop_mac</span> macOS</h3>
+                        <p>打开"启动台" → "终端" 或按 <code>Command + 空格</code> 搜索"Terminal"</p>
+                    </div>
+                    <div class="terminal-os">
+                        <h3><span class="material-icons">computer</span> Linux</h3>
+                        <p>按 <code>Ctrl + Alt + T</code> 或在应用菜单中搜索"Terminal"</p>
+                    </div>
+                    <div class="terminal-os">
+                        <h3><span class="material-icons">desktop_windows</span> Windows</h3>
+                        <p>推荐使用 <strong>Git Bash</strong>（随 Git 安装）或 <strong>WSL</strong></p>
+                        <ul>
+                            <li>Git Bash: <a href="https://git-scm.com/download/win" target="_blank">git-scm.com</a></li>
+                            <li>WSL: 在 PowerShell 中运行 <code>wsl</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+</body>
+</html>
