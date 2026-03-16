@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小恐龙数学冒险 🦕</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:  #4caf50;
+      --yellow: #ffd600;
+      --orange: #ff9800;
+      --red:    #f44336;
+      --blue:   #2196f3;
+      --purple: #9c27b0;
+      --bg:     #e8f5e9;
+      --card:   #ffffff;
+      --text:   #1b5e20;
+      --shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    body {
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 背景草地 */
+    body::before {
+      content: '';
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to top, #a5d6a7, transparent);
+      z-index: 0;
+    }
+
+    /* 云朵 */
+    .cloud {
+      position: fixed;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.8;
+      z-index: 0;
+      animation: floatCloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud-1 { width:100px; height:40px; top:8%;  animation-duration:25s; animation-delay:-5s; }
+    .cloud-1::before { width:50px; height:50px; top:-25px; left:15px; }
+    .cloud-1::after  { width:35px; height:35px; top:-18px; left:45px; }
+    .cloud-2 { width:140px; height:50px; top:18%; animation-duration:35s; animation-delay:-15s; }
+    .cloud-2::before { width:65px; height:65px; top:-35px; left:20px; }
+    .cloud-2::after  { width:50px; height:50px; top:-28px; left:65px; }
+    .cloud-3 { width:80px;  height:32px; top:5%;  animation-duration:20s; animation-delay:-10s; }
+    .cloud-3::before { width:40px; height:40px; top:-20px; left:12px; }
+    .cloud-3::after  { width:28px; height:28px; top:-14px; left:38px; }
+    @keyframes floatCloud {
+      from { transform: translateX(-200px); }
+      to   { transform: translateX(calc(100vw + 200px)); }
+    }
+
+    /* 主容器 */
+    #app {
+      position: relative;
+      z-index: 1;
+      width: min(520px, 95vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 页面切换 */
+    .page { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .page.active { display: flex; }
+
+    /* ===== 开始页 ===== */
+    #start-page { gap: 24px; text-align: center; }
+
+    .dino-hero {
+      font-size: 100px;
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+      animation: dinoFloat 2s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+    }
+    .dino-hero::after {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,214,0,0.45) 0%, transparent 70%);
+      animation: glowPulse 1.5s ease-in-out infinite;
+      z-index: -1;
+    }
+    @keyframes dinoFloat {
+      0%,100% { transform: translateY(0)    rotate(-3deg) scale(1);    }
+      50%      { transform: translateY(-20px) rotate(5deg)  scale(1.08); }
+    }
+    @keyframes glowPulse {
+      0%,100% { transform: scale(0.8); opacity: 0.5; }
+      50%      { transform: scale(1.4); opacity: 1;   }
+    }
+
+    .title-main {
+      font-size: 2.4rem; font-weight: 900; color: var(--text);
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.1); letter-spacing: 2px;
+    }
+    .title-sub { font-size: 1.1rem; color: #558b2f; font-weight: 600; }
+    .stars-row { display: flex; gap: 8px; justify-content: center; font-size: 2rem; }
+
+    .btn-start {
+      background: linear-gradient(135deg, #66bb6a, #43a047);
+      color: white; border: none; border-radius: 50px;
+      padding: 18px 56px; font-size: 1.6rem; font-weight: 900;
+      cursor: pointer; letter-spacing: 2px;
+      box-shadow: 0 6px 0 #2e7d32, var(--shadow);
+      animation: btnBounce 1.2s ease-in-out infinite;
+    }
+    @keyframes btnBounce {
+      0%,100% { transform: translateY(0)   scale(1);    box-shadow: 0 6px 0 #2e7d32, var(--shadow); }
+      50%      { transform: translateY(-7px) scale(1.05); box-shadow: 0 10px 0 #2e7d32, var(--shadow); }
+    }
+    .btn-start:hover  { animation-play-state: paused; transform: scale(1.08); }
+    .btn-start:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #2e7d32; }
+
+    /* ===== 题目页 ===== */
+    #quiz-page { gap: 20px; }
+
+    .progress-bar-wrap {
+      width: 100%;
+      background: #c8e6c9;
+      border-radius: 20px;
+      height: 22px;
+      /* 不用 overflow:hidden，让 bump 动画可见 */
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #66bb6a, #ffd600);
+      border-radius: 20px;
+      transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
+      transform-origin: left center;
+    }
+    /* bump 动画用 JS 的 animate() API 触发，不用 class */
+
+    .progress-label {
+      font-size: 1rem; color: #558b2f; font-weight: 700; align-self: flex-end;
+    }
+
+    .score-badge {
+      position: absolute; top: -10px; right: 0;
+      background: var(--yellow); color: #5d4037;
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 1rem; font-weight: 900;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    /* 分数跳动 */
+    .score-badge.score-pop {
+      animation: scorePop 0.35s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes scorePop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.5) rotate(-5deg); }
+      100% { transform: scale(1); }
+    }
+
+    .question-card {
+      position: relative; width: 100%;
+      background: var(--card); border-radius: 28px;
+      padding: 36px 28px 28px;
+      box-shadow: var(--shadow); text-align: center;
+      /* 卡片动画用 JS animate() */
+    }
+
+    .dino-small {
+      font-size: 52px;
+      display: block; margin-bottom: 8px;
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .question-story {
+      font-size: 1rem; color: #795548; font-weight: 600;
+      margin-bottom: 16px; min-height: 28px;
+    }
+    .question-text {
+      font-size: 3.2rem; font-weight: 900;
+      color: var(--text); letter-spacing: 4px; margin-bottom: 8px;
+    }
+    .question-text .op { color: var(--orange); }
+    .question-text .eq { color: var(--purple); }
+
+    .answer-input-display {
+      font-size: 3rem; font-weight: 900; color: var(--blue);
+      min-height: 60px;
+      border-bottom: 4px dashed #90caf9;
+      width: 130px; margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+    }
+
+    .feedback-msg {
+      font-size: 1.1rem; font-weight: 700;
+      min-height: 28px; color: var(--red);
+    }
+    .feedback-msg.hidden { visibility: hidden; }
+
+    /* ===== 数字键盘 ===== */
+    .numpad {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .numpad-btn {
+      background: linear-gradient(135deg, #fff9c4, #fff176);
+      border: 3px solid #f9a825; border-radius: 16px;
+      font-size: 1.8rem; font-weight: 900; color: #e65100;
+      padding: 14px 0; cursor: pointer;
+      box-shadow: 0 5px 0 #f57f17;
+      transition: background 0.1s;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .numpad-btn:hover {
+      background: linear-gradient(135deg, #ffee58, #fdd835);
+    }
+    .numpad-btn.del-btn {
+      background: linear-gradient(135deg, #ffccbc, #ffab91);
+      border-color: #e64a19; color: #bf360c;
+      box-shadow: 0 5px 0 #bf360c; font-size: 1.4rem;
+    }
+    .numpad-btn.ok-btn {
+      background: linear-gradient(135deg, #a5d6a7, #66bb6a);
+      border-color: #2e7d32; color: white;
+      box-shadow: 0 5px 0 #1b5e20; font-size: 1.4rem;
+      grid-column: span 2;
+    }
+
+    /* ===== 庆祝覆盖层 ===== */
+    #celebrate-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      display: none;  /* JS 控制显示/隐藏 */
+      flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.5);
+    }
+    #celebrate-overlay.show { display: flex; }
+
+    .celebrate-dino {
+      font-size: 140px;
+      filter: drop-shadow(0 16px 32px rgba(0,0,0,0.4));
+      /* 动画完全由 JS animate() 控制 */
+    }
+    .celebrate-text {
+      font-size: 3.2rem; font-weight: 900; color: #fff;
+      text-shadow: 4px 4px 0 rgba(0,0,0,0.35), 0 0 30px rgba(255,214,0,0.9);
+      margin-top: 16px;
+    }
+    .celebrate-stars {
+      font-size: 2.8rem; margin-top: 8px;
+    }
+
+    /* ===== Canvas 烟花 ===== */
+    #fireworks-canvas {
+      position: fixed; inset: 0; z-index: 99; pointer-events: none;
+    }
+
+    /* 答错红闪层 */
+    #red-flash {
+      position: fixed; inset: 0; z-index: 98;
+      pointer-events: none; background: transparent;
+    }
+
+    /* ===== 总结页 ===== */
+    #result-page { gap: 20px; text-align: center; }
+    .result-card {
+      width: 100%; background: var(--card);
+      border-radius: 28px; padding: 36px 28px;
+      box-shadow: var(--shadow);
+    }
+    .result-dino {
+      font-size: 90px; display: block;
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .result-title { font-size: 2rem; font-weight: 900; color: var(--text); margin: 12px 0 8px; }
+    .result-score { font-size: 4rem; font-weight: 900; color: var(--orange); }
+    .result-stars {
+      font-size: 2.4rem; margin: 8px 0;
+      display: flex; gap: 4px; justify-content: center;
+    }
+    .result-stars .star-item {
+      display: inline-block;
+      opacity: 0; /* 初始隐藏，JS 触发动画 */
+    }
+    .result-msg { font-size: 1.2rem; color: #558b2f; font-weight: 700; margin-top: 8px; }
+
+    .btn-restart {
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white; border: none; border-radius: 50px;
+      padding: 18px 48px; font-size: 1.5rem; font-weight: 900;
+      cursor: pointer; letter-spacing: 2px;
+      box-shadow: 0 6px 0 #e65100, var(--shadow);
+      animation: btnBounce2 1.2s ease-in-out infinite;
+    }
+    @keyframes btnBounce2 {
+      0%,100% { transform: translateY(0)   scale(1);    box-shadow: 0 6px 0 #e65100, var(--shadow); }
+      50%      { transform: translateY(-7px) scale(1.05); box-shadow: 0 10px 0 #e65100, var(--shadow); }
+    }
+    .btn-restart:hover  { animation-play-state: paused; transform: scale(1.08); }
+    .btn-restart:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #e65100; }
+
+    /* ===== 静音按钮 ===== */
+    #mute-btn {
+      position: fixed;
+      top: 16px; right: 16px;
+      z-index: 200;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 3px solid #a5d6a7;
+      background: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s, background 0.15s;
+      user-select: none;
+    }
+    #mute-btn:hover  { transform: scale(1.15); background: #f1f8e9; }
+    #mute-btn:active { transform: scale(0.9); }
+    #mute-btn.muted  { background: #ffebee; border-color: #ef9a9a; }
+
+    /* 朗读时题目数字高亮脉冲 */
+    .speaking .question-text {
+      animation: speakPulse 0.8s ease-in-out infinite;
+    }
+    @keyframes speakPulse {
+      0%,100% { text-shadow: none; }
+      50%      { text-shadow: 0 0 16px rgba(255,152,0,0.7); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cloud cloud-1"></div>
+<div class="cloud cloud-2"></div>
+<div class="cloud cloud-3"></div>
+
+<canvas id="fireworks-canvas"></canvas>
+<div id="red-flash"></div>
+
+<!-- 静音按钮 -->
+<button id="mute-btn" title="开关语音">🔊</button>
+
+<div id="celebrate-overlay">
+  <div class="celebrate-dino" id="celebrate-dino">🦕</div>
+  <div class="celebrate-text" id="celebrate-text">太棒了！</div>
+  <div class="celebrate-stars" id="celebrate-stars">⭐⭐⭐</div>
+</div>
+
+<div id="app">
+
+  <div class="page active" id="start-page">
+    <div class="dino-hero">🦕</div>
+    <div class="title-main">小恐龙数学冒险</div>
+    <div class="title-sub">帮小恐龙收集星星吧！</div>
+    <div class="stars-row">⭐🌟✨🌟⭐</div>
+    <button class="btn-start" id="btn-start">开始冒险！</button>
+  </div>
+
+  <div class="page" id="quiz-page">
+    <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <span class="progress-label" id="progress-label">第 1 题 / 共 10 题</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <div class="score-badge" id="score-badge">⭐ <span id="score-display">0</span></div>
+      <span class="dino-small" id="quiz-dino">🦕</span>
+      <div class="question-story" id="question-story"></div>
+      <div class="question-text" id="question-text"></div>
+      <div class="answer-input-display" id="answer-display">?</div>
+      <div class="feedback-msg hidden" id="feedback-msg"></div>
+    </div>
+
+    <div class="numpad" id="numpad"></div>
+  </div>
+
+  <div class="page" id="result-page">
+    <div class="result-card">
+      <span class="result-dino">🦕</span>
+      <div class="result-title">冒险完成！</div>
+      <div class="result-score"><span id="final-score">0</span> / 5</div>
+      <div class="result-stars" id="result-stars"></div>
+      <div class="result-msg" id="result-msg"></div>
+    </div>
+    <button class="btn-restart" id="btn-restart">再来一次！🦕</button>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+// ── 语音朗读 (Web Speech API) ──
+let voiceMuted = false;
+let speakTimer = null;
+
+// 最简实现：cancel 后等 80ms 再 speak，彻底避免 Chrome 状态卡死
+function speak(text, rate = 0.82) {
+  if (voiceMuted || !window.speechSynthesis) return;
+  clearTimeout(speakTimer);
+  window.speechSynthesis.cancel();
+  speakTimer = setTimeout(() => {
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang  = 'zh-CN';
+    utt.rate  = rate;
+    utt.pitch = 1.1;
+    window.speechSynthesis.speak(utt);
+  }, 80);
+}
+
+function stopSpeech() {
+  clearTimeout(speakTimer);
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+// 静音按钮
+$('mute-btn').addEventListener('click', () => {
+  voiceMuted = !voiceMuted;
+  $('mute-btn').textContent = voiceMuted ? '🔇' : '🔊';
+  $('mute-btn').classList.toggle('muted', voiceMuted);
+  if (voiceMuted) stopSpeech();
+});
+
+// ── 工具：用 Web Animations API 触发动画（每次都能重新播放）──
+function runAnim(el, keyframes, options) {
+  const anim = el.animate(keyframes, { fill: 'forwards', ...options });
+  return anim.finished;
+}
+
+// ── 音效 ──
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, type, duration, gain, delay = 0) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.connect(g); g.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    g.gain.setValueAtTime(gain, ctx.currentTime + delay);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + duration);
+  } catch(e) {}
+}
+function playCorrect() {
+  [523,659,784,1047].forEach((f,i) => playTone(f,'sine',0.25,0.4,i*0.1));
+}
+function playWrong() {
+  playTone(220,'sawtooth',0.3,0.35);
+  playTone(165,'sawtooth',0.3,0.25,0.18);
+}
+function playClick() { playTone(880,'sine',0.07,0.18); }
+function playStart() {
+  [392,523,659,784].forEach((f,i) => playTone(f,'sine',0.2,0.35,i*0.08));
+}
+
+// ── 题目生成 ──
+const STORIES_ADD = [
+  (a,b) => `小恐龙找到了 ${a} 颗星星，又找到 ${b} 颗，`,
+  (a,b) => `恐龙妈妈有 ${a} 个蛋，又生了 ${b} 个，`,
+  (a,b) => `小恐龙吃了 ${a} 个苹果，又吃了 ${b} 个，`,
+  (a,b) => `森林里有 ${a} 只小鸟，飞来了 ${b} 只，`,
+  (a,b) => `小恐龙有 ${a} 块饼干，朋友给了 ${b} 块，`,
+];
+const STORIES_SUB = [
+  (a,b) => `小恐龙有 ${a} 颗星星，送给朋友 ${b} 颗，`,
+  (a,b) => `树上有 ${a} 个果子，掉了 ${b} 个，`,
+  (a,b) => `小恐龙有 ${a} 块糖，吃掉了 ${b} 块，`,
+  (a,b) => `池塘里有 ${a} 只青蛙，跳走了 ${b} 只，`,
+  (a,b) => `小恐龙有 ${a} 根骨头，埋掉了 ${b} 根，`,
+];
+function generateQuestion() {
+  const isAdd = Math.random() < 0.55;
+  if (isAdd) {
+    const a = randInt(0,19), b = randInt(0,20-a);
+    return { a, b, op:'+', answer:a+b, story: STORIES_ADD[randInt(0,4)](a,b) };
+  } else {
+    const a = randInt(1,20), b = randInt(0,a);
+    return { a, b, op:'-', answer:a-b, story: STORIES_SUB[randInt(0,4)](a,b) };
+  }
+}
+function generateQuestions(n=10) {
+  return Array.from({length:n}, generateQuestion);
+}
+
+// ── 烟花 ──
+const fwCanvas = $('fireworks-canvas');
+const fwCtx    = fwCanvas.getContext('2d');
+let particles  = [];
+let fwAnimId   = null;
+let fwRunning  = false;
+
+function resizeCanvas() {
+  fwCanvas.width  = window.innerWidth;
+  fwCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor(x, y, color, type='circle') {
+    this.x = x; this.y = y; this.color = color; this.type = type;
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = type === 'trail' ? randInt(1,4) : randInt(5,15);
+    this.vx     = Math.cos(angle) * spd;
+    this.vy     = Math.sin(angle) * spd - (type==='trail' ? 0 : 3);
+    this.alpha  = 1;
+    this.r      = type === 'trail' ? randInt(2,4) : randInt(4,10);
+    this.gravity= type === 'trail' ? 0.06 : 0.32;
+    this.decay  = type === 'trail' ? 0.03+Math.random()*0.02 : 0.011+Math.random()*0.007;
+    this.rot    = Math.random() * Math.PI * 2;
+    this.rotSpd = (Math.random()-0.5) * 0.35;
+    this.history= [];
+  }
+  update() {
+    if (this.type !== 'trail') {
+      this.history.push({x:this.x, y:this.y, a:this.alpha});
+      if (this.history.length > 6) this.history.shift();
+    }
+    this.x  += this.vx;
+    this.y  += this.vy;
+    this.vy += this.gravity;
+    this.vx *= 0.97;
+    this.alpha -= this.decay;
+    this.rot   += this.rotSpd;
+  }
+  drawStar(cx, cy, r) {
+    fwCtx.beginPath();
+    for (let i=0; i<10; i++) {
+      const a = (i*Math.PI)/5 - Math.PI/2 + this.rot;
+      const d = i%2===0 ? r : r*0.4;
+      i===0 ? fwCtx.moveTo(cx+Math.cos(a)*d, cy+Math.sin(a)*d)
+            : fwCtx.lineTo(cx+Math.cos(a)*d, cy+Math.sin(a)*d);
+    }
+    fwCtx.closePath();
+    fwCtx.fill();
+  }
+  draw() {
+    this.history.forEach((h,i) => {
+      fwCtx.save();
+      fwCtx.globalAlpha = h.a * (i/this.history.length) * 0.35;
+      fwCtx.fillStyle   = this.color;
+      fwCtx.beginPath();
+      fwCtx.arc(h.x, h.y, this.r*(i/this.history.length)*0.5, 0, Math.PI*2);
+      fwCtx.fill();
+      fwCtx.restore();
+    });
+    fwCtx.save();
+    fwCtx.globalAlpha = Math.max(0, this.alpha);
+    fwCtx.fillStyle   = this.color;
+    if (this.type === 'star') this.drawStar(this.x, this.y, this.r);
+    else { fwCtx.beginPath(); fwCtx.arc(this.x,this.y,this.r,0,Math.PI*2); fwCtx.fill(); }
+    fwCtx.restore();
+  }
+}
+
+const FW_COLORS = ['#ff5252','#ff9800','#ffd600','#69f0ae','#40c4ff','#e040fb','#ff4081','#fff','#b2ff59','#ffab40'];
+
+function launchBurst(x, y) {
+  const c1 = FW_COLORS[randInt(0,FW_COLORS.length-1)];
+  const c2 = FW_COLORS[randInt(0,FW_COLORS.length-1)];
+  for (let j=0; j<90; j++) particles.push(new Particle(x,y, j%3===0?c2:c1, 'circle'));
+  for (let j=0; j<25; j++) particles.push(new Particle(x,y, '#ffd600', 'star'));
+  for (let j=0; j<35; j++) particles.push(new Particle(x,y, c1, 'trail'));
+}
+
+function fwLoop() {
+  fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+  particles = particles.filter(p => p.alpha > 0);
+  particles.forEach(p => { p.update(); p.draw(); });
+  if (fwRunning || particles.length > 0) {
+    fwAnimId = requestAnimationFrame(fwLoop);
+  } else {
+    fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+    fwAnimId = null;
+  }
+}
+
+function startFireworks(duration = 2200) {
+  fwRunning = true;
+  if (!fwAnimId) fwLoop();
+
+  const bursts = 12;
+  for (let i=0; i<bursts; i++) {
+    setTimeout(() => {
+      const x = randInt(fwCanvas.width*0.1, fwCanvas.width*0.9);
+      const y = randInt(fwCanvas.height*0.05, fwCanvas.height*0.55);
+      launchBurst(x, y);
+    }, i * 160);
+  }
+
+  setTimeout(() => { fwRunning = false; }, duration);
+}
+
+// ── 庆祝动画（全部用 Web Animations API）──
+const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🦕'];
+
+function showCelebrate(cb) {
+  const overlay  = $('celebrate-overlay');
+  const dinoEl   = $('celebrate-dino');
+  const textEl   = $('celebrate-text');
+  const starsEl  = $('celebrate-stars');
+
+  textEl.textContent  = CELEBRATE_TEXTS[randInt(0, CELEBRATE_TEXTS.length-1)];
+  starsEl.textContent = '⭐⭐⭐';
+
+  // 先重置所有子元素样式，再显示 overlay
+  dinoEl.style.transform  = '';
+  dinoEl.style.opacity    = '';
+  textEl.style.transform  = '';
+  textEl.style.opacity    = '';
+  starsEl.style.transform = '';
+  starsEl.style.opacity   = '';
+
+  overlay.classList.add('show');
+  startFireworks(2000);
+  playCorrect();
+
+  // 朗读庆祝语
+  const spokenText = textEl.textContent.replace(/[^\u4e00-\u9fa5！？。，、]/g, '').trim();
+  setTimeout(() => speak(spokenText, 1.0), 400);
+
+  // 恐龙从底部飞入
+  dinoEl.animate([
+    { transform: 'translateY(300px) scale(0.2) rotate(25deg)', opacity: 0 },
+    { transform: 'translateY(-20px) scale(1.15) rotate(-5deg)', opacity: 1, offset: 0.7 },
+    { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 }
+  ], { duration: 600, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+
+  // 恐龙飞入后持续跳动
+  setTimeout(() => {
+    dinoEl.animate([
+      { transform: 'translateY(0) scale(1) rotate(-6deg)' },
+      { transform: 'translateY(-45px) scale(1.2) rotate(6deg)' }
+    ], { duration: 450, easing: 'ease-in-out', iterations: Infinity, direction: 'alternate' });
+  }, 620);
+
+  // 文字弹出
+  textEl.animate([
+    { transform: 'scale(0.05) rotate(-15deg)', opacity: 0 },
+    { transform: 'scale(1.15) rotate(3deg)',   opacity: 1, offset: 0.75 },
+    { transform: 'scale(1) rotate(0deg)',       opacity: 1 }
+  ], { duration: 500, delay: 280, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+
+  // 星星弹出 + 旋转
+  starsEl.animate([
+    { transform: 'scale(0) rotate(-30deg)', opacity: 0 },
+    { transform: 'scale(1.2) rotate(10deg)', opacity: 1, offset: 0.7 },
+    { transform: 'scale(1) rotate(0deg)',    opacity: 1 }
+  ], { duration: 500, delay: 500, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+
+  setTimeout(() => {
+    starsEl.animate([
+      { transform: 'scale(1) rotate(0deg)' },
+      { transform: 'scale(1.25) rotate(360deg)' }
+    ], { duration: 900, iterations: Infinity, easing: 'linear' });
+  }, 1050);
+
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    if (cb) cb();
+  }, 1900);
+}
+
+// ── 游戏状态 ──
+let questions     = [];
+let currentIdx    = 0;
+let score         = 0;
+let currentAnswer = '';
+let wrongCount    = 0;
+
+// ── 数字键盘 ──
+function buildNumpad() {
+  const numpad = $('numpad');
+  numpad.innerHTML = '';
+
+  function tapAnim(btn) {
+    btn.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(0.78)' },
+      { transform: 'scale(1.1)' },
+      { transform: 'scale(1)' }
+    ], { duration: 220, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+  }
+
+  for (let i=1; i<=9; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'numpad-btn';
+    btn.textContent = i;
+    btn.addEventListener('click', () => { playClick(); tapAnim(btn); inputDigit(String(i)); });
+    numpad.appendChild(btn);
+  }
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'numpad-btn del-btn';
+  delBtn.textContent = '⌫ 删';
+  delBtn.addEventListener('click', () => { playClick(); tapAnim(delBtn); deleteDigit(); });
+  numpad.appendChild(delBtn);
+
+  const zeroBtn = document.createElement('button');
+  zeroBtn.className = 'numpad-btn';
+  zeroBtn.textContent = '0';
+  zeroBtn.addEventListener('click', () => { playClick(); tapAnim(zeroBtn); inputDigit('0'); });
+  numpad.appendChild(zeroBtn);
+
+  const okBtn = document.createElement('button');
+  okBtn.className = 'numpad-btn ok-btn';
+  okBtn.textContent = '✔ 确认';
+  okBtn.addEventListener('click', () => { tapAnim(okBtn); submitAnswer(); });
+  numpad.appendChild(okBtn);
+}
+
+function inputDigit(d) {
+  if (currentAnswer.length >= 2) return;
+  currentAnswer = currentAnswer === '0' ? d : currentAnswer + d;
+  updateAnswerDisplay();
+}
+function deleteDigit() {
+  currentAnswer = currentAnswer.slice(0,-1);
+  updateAnswerDisplay();
+}
+function updateAnswerDisplay() {
+  const el = $('answer-display');
+  el.textContent = currentAnswer === '' ? '?' : currentAnswer;
+  if (currentAnswer !== '') {
+    el.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.35)' },
+      { transform: 'scale(1)' }
+    ], { duration: 180, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+  }
+}
+
+// ── 题目渲染 ──
+const DINO_EMOJIS = ['🦕','🦖','🦕','🦖','🦕'];
+
+function renderQuestion(slideIn = true) {
+  const q = questions[currentIdx];
+  currentAnswer = '';
+  wrongCount    = 0;
+
+  const total = questions.length;
+  $('progress-label').textContent = `第 ${currentIdx+1} 题 / 共 ${total} 题`;
+  $('score-display').textContent  = score;
+  $('quiz-dino').textContent      = DINO_EMOJIS[randInt(0,4)];
+  $('question-story').textContent = q.story + '一共有多少？';
+  $('question-text').innerHTML    = `${q.a} <span class="op">${q.op}</span> ${q.b} <span class="eq">=</span>`;
+
+  const ansEl = $('answer-display');
+  ansEl.textContent = '?';
+  ansEl.style.color      = 'var(--blue)';
+  ansEl.style.background = 'transparent';
+  ansEl.style.borderColor= '#90caf9';
+
+  const fb = $('feedback-msg');
+  fb.textContent = '';
+  fb.classList.add('hidden');
+
+  if (slideIn) {
+    const card = $('question-card');
+    card.animate([
+      { transform: 'translateX(110px) scale(0.9)', opacity: 0 },
+      { transform: 'translateX(-8px)  scale(1.02)', opacity: 1, offset: 0.75 },
+      { transform: 'translateX(0)     scale(1)',    opacity: 1 }
+    ], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+  }
+
+  // 朗读题目
+  const opWord   = q.op === '+' ? '加' : '减';
+  const readText = `${q.story}一共有多少？${q.a} ${opWord} ${q.b} 等于多少？`;
+  setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+}
+
+// ── 提交答案 ──
+function submitAnswer() {
+  if (currentAnswer === '') return;
+
+  const q       = questions[currentIdx];
+  const userAns = parseInt(currentAnswer, 10);
+  const card    = $('question-card');
+  const ansEl   = $('answer-display');
+  const bar     = $('progress-bar');
+
+  if (userAns === q.answer) {
+    score++;
+    const total = questions.length;
+
+    // 答案变绿爆炸
+    ansEl.animate([
+      { transform: 'scale(1)',    color: 'var(--blue)',  background: 'transparent' },
+      { transform: 'scale(1.7)', color: '#2e7d32', background: '#c8e6c9', offset: 0.4 },
+      { transform: 'scale(1.3)', color: '#1b5e20', background: '#e8f5e9', offset: 0.7 },
+      { transform: 'scale(1)',    color: 'var(--blue)',  background: 'transparent' }
+    ], { duration: 500, fill: 'forwards' });
+
+    // 卡片弹跳
+    card.animate([
+      { transform: 'scale(1) rotate(0deg)' },
+      { transform: 'scale(1.07) rotate(1.5deg)',  offset: 0.35 },
+      { transform: 'scale(0.96) rotate(-0.8deg)', offset: 0.65 },
+      { transform: 'scale(1) rotate(0deg)' }
+    ], { duration: 500, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
+    // 分数徽章弹跳
+    $('score-display').textContent = score;
+    const badge = $('score-badge');
+    badge.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.6) rotate(-8deg)' },
+      { transform: 'scale(1)' }
+    ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
+    // 进度条弹跳
+    bar.style.width = `${((currentIdx+1)/total)*100}%`;
+    bar.animate([
+      { transform: 'scaleY(1)' },
+      { transform: 'scaleY(2)' },
+      { transform: 'scaleY(1)' }
+    ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
+    setTimeout(() => {
+      showCelebrate(() => {
+        currentIdx++;
+        if (currentIdx >= questions.length) showResult();
+        else renderQuestion();
+      });
+    }, 220);
+
+  } else {
+    wrongCount++;
+    playWrong();
+
+    // 全屏红闪
+    $('red-flash').animate([
+      { background: 'rgba(244,67,54,0)' },
+      { background: 'rgba(244,67,54,0.42)' },
+      { background: 'rgba(244,67,54,0)' }
+    ], { duration: 500 });
+
+    // 卡片剧烈抖动
+    card.animate([
+      { transform: 'translateX(0) rotate(0)' },
+      { transform: 'translateX(-22px) rotate(-2.5deg)' },
+      { transform: 'translateX(22px)  rotate(2.5deg)' },
+      { transform: 'translateX(-16px) rotate(-1.8deg)' },
+      { transform: 'translateX(16px)  rotate(1.8deg)' },
+      { transform: 'translateX(-8px)  rotate(-0.8deg)' },
+      { transform: 'translateX(8px)   rotate(0.8deg)' },
+      { transform: 'translateX(0) rotate(0)' }
+    ], { duration: 520, easing: 'ease-in-out' });
+
+    // 答案框抖动变红
+    ansEl.animate([
+      { transform: 'translateX(0)',    color: 'var(--blue)',  background: 'transparent', borderColor: '#90caf9' },
+      { transform: 'translateX(-12px)', color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.2 },
+      { transform: 'translateX(12px)',  color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.4 },
+      { transform: 'translateX(-8px)',  color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.6 },
+      { transform: 'translateX(8px)',   color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.8 },
+      { transform: 'translateX(0)',    color: '#f44336', background: '#ffebee',     borderColor: '#f44336' }
+    ], { duration: 500, fill: 'forwards' });
+
+    currentAnswer = '';
+
+    const fb = $('feedback-msg');
+    fb.classList.remove('hidden');
+    if (wrongCount === 1) {
+      fb.textContent = '🦕 哎呀，再想想！加油！';
+      speak('哎呀，再想想，加油！');
+    } else if (wrongCount === 2) {
+      fb.textContent = `🦕 提示：答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`;
+      speak(`提示一下，答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`);
+    } else {
+      fb.textContent = `🦕 正确答案是 ${q.answer}，下次一定行！`;
+      speak(`正确答案是 ${q.answer}，没关系，下次一定行！`);
+      setTimeout(() => {
+        currentIdx++;
+        if (currentIdx >= questions.length) showResult();
+        else renderQuestion();
+      }, 1500);
+    }
+  }
+}
+
+// ── 结果页 ──
+function showResult() {
+  showPage('result-page');
+  $('final-score').textContent = score;
+
+  let stars, msg;
+  if      (score===5)  { stars='⭐⭐⭐⭐⭐'; msg='满分！你是数学小天才！🏆'; }
+  else if (score>=4)   { stars='⭐⭐⭐⭐';   msg='太厉害了！再练练就满分啦！🌟'; }
+  else if (score>=3)   { stars='⭐⭐⭐';     msg='做得不错！继续加油！💪'; }
+  else if (score>=2)   { stars='⭐⭐';       msg='小恐龙为你鼓掌！再来一次吧！👏'; }
+  else                 { stars='⭐';         msg='没关系，多练习就会变厉害！🦕'; }
+
+  // 星星逐个弹出
+  const starsEl = $('result-stars');
+  starsEl.innerHTML = '';
+  [...stars].forEach((s, i) => {
+    const span = document.createElement('span');
+    span.className   = 'star-item';
+    span.textContent = s;
+    starsEl.appendChild(span);
+    setTimeout(() => {
+      span.animate([
+        { transform: 'scale(0) rotate(-40deg)', opacity: 0 },
+        { transform: 'scale(1.4) rotate(10deg)', opacity: 1, offset: 0.65 },
+        { transform: 'scale(1) rotate(0deg)',    opacity: 1 }
+      ], { duration: 500, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+    }, i * 160);
+  });
+
+  $('result-msg').textContent = msg;
+  if (score >= 4) setTimeout(startFireworks, 400);
+
+  // 朗读结果
+  const resultRead = score === 5
+    ? '哇！满分！你答对了全部五道题！你真是数学小天才！'
+    : `冒险完成！你答对了 ${score} 道题！`;
+  setTimeout(() => speak(resultRead), 600);
+}
+
+// ── 页面切换 ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+// ── 游戏启动 ──
+function startGame() {
+  questions     = generateQuestions(5);
+  currentIdx    = 0;
+  score         = 0;
+  buildNumpad();
+  showPage('quiz-page');
+  $('progress-bar').style.width = '0%';
+  renderQuestion(false);
+}
+
+$('btn-start').addEventListener('click', () => {
+  playStart();
+  startGame();
+  // 开始语不播了，直接让读题开口，避免两条语音竞争
+});
+$('btn-restart').addEventListener('click', () => {
+  playStart();
+  startGame();
+});
+
+document.addEventListener('keydown', e => {
+  if ($('quiz-page').classList.contains('active')) {
+    if (e.key>='0' && e.key<='9') inputDigit(e.key);
+    else if (e.key==='Backspace')  deleteDigit();
+    else if (e.key==='Enter')      submitAnswer();
+  }
+});
+</script>
+</body>
+</html>

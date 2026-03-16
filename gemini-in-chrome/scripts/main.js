@@ -268,7 +268,7 @@
 
         if (protocol === 'file:') {
             // 本地文件打开，使用默认 GitHub 地址
-            scriptUrl = 'https://raw.githubusercontent.com/yourusername/gemini-in-chrome/main/install.sh';
+            scriptUrl = 'https://raw.githubusercontent.com/lehao/gemini-in-chrome/main/install.sh';
         } else if (hostname.includes('github.io')) {
             // GitHub Pages 部署
             const parts = window.location.pathname.split('/').filter(Boolean);
