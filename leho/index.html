@@ -29,7 +29,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       position: relative;
     }
 
@@ -85,15 +86,28 @@
     /* ===== 开始页 ===== */
     #start-page { gap: 24px; text-align: center; }
 
+    .dino-hero-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; position: relative;
+    }
     .dino-hero {
-      font-size: 100px;
+      font-size: 90px;
       line-height: 1;
       position: relative;
       display: inline-block;
       animation: dinoFloat 2s ease-in-out infinite;
       filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
     }
-    .dino-hero::after {
+    .dino-hero-2 {
+      font-size: 90px;
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+      animation: dinoFloat 2s ease-in-out infinite;
+      animation-delay: -1s;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+    }
+    .dino-hero::after, .dino-hero-2::after {
       content: '';
       position: absolute;
       inset: -20px;
@@ -101,6 +115,13 @@
       background: radial-gradient(circle, rgba(255,214,0,0.45) 0%, transparent 70%);
       animation: glowPulse 1.5s ease-in-out infinite;
       z-index: -1;
+    }
+    .dino-hero-vs {
+      font-size: 1.6rem; font-weight: 900; color: #ff5722;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin: 0 -8px; z-index: 2;
+      animation: vsPulse 1.5s ease-in-out infinite;
     }
     @keyframes dinoFloat {
       0%,100% { transform: translateY(0)    rotate(-3deg) scale(1);    }
@@ -393,6 +414,35 @@
     }
     .result-msg { font-size: 1.2rem; color: #558b2f; font-weight: 700; margin-top: 8px; }
 
+    .new-medal-box {
+      margin-top: 16px; padding: 14px;
+      background: linear-gradient(135deg, #ede7f6, #e8eaf6);
+      border-radius: 18px; border: 3px solid #b39ddb;
+      animation: newMedalGlow 1.5s ease-in-out infinite;
+    }
+    @keyframes newMedalGlow {
+      0%,100% { box-shadow: 0 0 8px rgba(179,157,219,0.3); }
+      50%     { box-shadow: 0 0 24px rgba(179,157,219,0.7); }
+    }
+    .new-medal-title {
+      font-size: 1.1rem; font-weight: 900; color: #7b1fa2; margin-bottom: 10px;
+    }
+    .new-medal-list {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+    .new-medal-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      animation: newMedalPop 0.6s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .new-medal-item .nmi-icon { font-size: 2.4rem; }
+    .new-medal-item .nmi-label {
+      font-size: 0.85rem; font-weight: 800; color: #5d4037;
+    }
+    @keyframes newMedalPop {
+      from { transform: scale(0) rotate(-20deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
     .result-pk-box {
       margin-top: 16px; padding: 16px;
       background: linear-gradient(135deg, #fff8e1, #fff3e0);
@@ -457,6 +507,198 @@
     }
     .lb-title-icon { font-size: 2.2rem; vertical-align: middle; }
 
+    /* ── 星星塔 PK ── */
+    .star-tower-section {
+      margin-bottom: 24px;
+      padding: 24px 12px 0;
+      background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 70%, #a5d6a7 100%);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .star-tower-ground {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 36px;
+      background: repeating-linear-gradient(90deg, #81c784 0px, #66bb6a 8px, #81c784 16px);
+      border-radius: 0 0 24px 24px;
+    }
+    .star-tower-ground::before {
+      content: '🌿🌱🌿🌱🌿🌱🌿🌱🌿';
+      position: absolute; top: -10px; left: 0; right: 0;
+      font-size: 0.9rem; letter-spacing: 4px;
+      text-align: center; overflow: hidden;
+    }
+    .star-tower-title {
+      font-size: 1.2rem; font-weight: 900; color: #e65100;
+      margin-bottom: 12px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .star-tower-arena {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 16px; min-height: 260px; position: relative;
+      padding-bottom: 36px;
+    }
+    .star-tower-player {
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; width: 120px;
+    }
+    .tower-dino {
+      font-size: 3rem; position: relative; z-index: 2;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .tower-dino.has-flame::after {
+      content: '🔥'; position: absolute; top: -12px; right: -8px;
+      font-size: 1.4rem;
+      animation: flameFlicker 0.35s ease-in-out infinite alternate;
+    }
+    @keyframes flameFlicker {
+      from { transform: scale(1) rotate(-8deg); opacity: 0.8; }
+      to   { transform: scale(1.3) rotate(8deg); opacity: 1; }
+    }
+    .tower-bar-wrap {
+      width: 100px; position: relative; z-index: 1;
+    }
+    .tower-bar {
+      width: 100%;
+      border-radius: 16px 16px 6px 6px;
+      min-height: 10px;
+      transition: height 1.4s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      display: flex; flex-wrap: wrap; align-content: flex-end;
+      align-items: center; justify-content: center;
+      padding: 6px 4px;
+      overflow: hidden;
+    }
+    .tower-bar.lele-bar {
+      background: linear-gradient(180deg, #ffd54f 0%, #66bb6a 30%, #43a047 100%);
+      box-shadow: inset 0 2px 8px rgba(255,255,255,0.4), 0 6px 20px rgba(76,175,80,0.4);
+      border: 3px solid #4caf50;
+    }
+    .tower-bar.haohao-bar {
+      background: linear-gradient(180deg, #ffd54f 0%, #42a5f5 30%, #1e88e5 100%);
+      box-shadow: inset 0 2px 8px rgba(255,255,255,0.4), 0 6px 20px rgba(33,150,243,0.4);
+      border: 3px solid #2196f3;
+    }
+    .tower-star {
+      font-size: 1.1rem; line-height: 1;
+      animation: towerStarPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes towerStarPop {
+      from { transform: scale(0) rotate(-30deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .tower-count {
+      font-size: 1.8rem; font-weight: 900; color: #5d4037;
+      margin-top: 4px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .tower-name {
+      font-size: 1.15rem; font-weight: 900; margin-top: 2px;
+    }
+    .tower-name.lele-color { color: #2e7d32; }
+    .tower-name.haohao-color { color: #1565c0; }
+    .tower-crown {
+      font-size: 2rem;
+      animation: crownBounce 1s ease-in-out infinite;
+      filter: drop-shadow(0 2px 6px rgba(255,214,0,0.6));
+    }
+    @keyframes crownBounce {
+      0%,100% { transform: translateY(0) rotate(-5deg) scale(1); }
+      50%     { transform: translateY(-8px) rotate(5deg) scale(1.15); }
+    }
+    .tower-vs-badge {
+      position: absolute; top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      border-radius: 50%; border: 4px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 900; color: #fff;
+      box-shadow: 0 4px 16px rgba(255,87,34,0.5);
+      z-index: 3;
+      animation: vsPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes vsPulse {
+      0%,100% { transform: translate(-50%, -50%) scale(1); }
+      50%     { transform: translate(-50%, -50%) scale(1.12); }
+    }
+    .tower-title-badge {
+      display: inline-block; margin-top: 4px;
+      padding: 2px 10px; border-radius: 12px;
+      font-size: 0.75rem; font-weight: 900; color: #fff;
+    }
+    .tower-title-badge.lele-title { background: linear-gradient(135deg, #66bb6a, #43a047); }
+    .tower-title-badge.haohao-title { background: linear-gradient(135deg, #42a5f5, #1e88e5); }
+
+    /* ── 勋章展示柜 ── */
+    .medal-cabinet {
+      margin: 16px 0; padding: 18px 12px;
+      background: linear-gradient(180deg, #fff8e1, #fff3e0);
+      border-radius: 24px;
+      border: 3px solid #ffe082;
+      box-shadow: inset 0 2px 8px rgba(255,183,77,0.15);
+    }
+    .medal-cabinet-title {
+      font-size: 1.2rem; font-weight: 900; color: #e65100; margin-bottom: 14px;
+    }
+    .medal-progress {
+      font-size: 0.85rem; color: #ff8f00; font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .medal-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .medal-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 3px; padding: 10px 2px 8px; border-radius: 16px;
+      background: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      border: 2px solid #f5f5f5;
+    }
+    .medal-item:hover { transform: translateY(-3px); }
+    .medal-item.locked {
+      background: #f5f5f5;
+      border-color: #e0e0e0;
+    }
+    .medal-item.unlocked {
+      border-color: #ffd54f;
+      box-shadow: 0 0 16px rgba(255,214,0,0.45);
+      background: linear-gradient(180deg, #fffde7, #fff);
+    }
+    .medal-icon {
+      font-size: 2rem; line-height: 1;
+      position: relative;
+    }
+    .medal-item.locked .medal-icon {
+      filter: grayscale(100%); opacity: 0.3;
+    }
+    .medal-item.unlocked .medal-icon {
+      animation: medalShine 2.5s ease-in-out infinite;
+    }
+    @keyframes medalShine {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      25%     { transform: scale(1.2) rotate(-8deg); }
+      50%     { transform: scale(1) rotate(0deg); }
+      75%     { transform: scale(1.15) rotate(6deg); }
+    }
+    .medal-lock {
+      position: absolute; top: 6px; right: 6px;
+      font-size: 0.7rem; opacity: 0.5;
+    }
+    .medal-label {
+      font-size: 0.65rem; font-weight: 800; color: #5d4037;
+      text-align: center; line-height: 1.2;
+    }
+    .medal-item.locked .medal-label { color: #bdbdbd; }
+    .medal-who {
+      font-size: 0.6rem; font-weight: 700; color: #ff8f00;
+      text-align: center; line-height: 1.2;
+    }
+    .medal-item.locked .medal-who { color: #ccc; }
+
+    /* ── 详细数据 ── */
     .lb-players {
       display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
       margin-bottom: 20px;
@@ -493,19 +735,11 @@
     .lb-player-block.lele-block .lb-rank-title { background: linear-gradient(135deg, #66bb6a, #43a047); }
     .lb-player-block.haohao-block .lb-rank-title { background: linear-gradient(135deg, #42a5f5, #1e88e5); }
 
-    .lb-streak-section {
-      margin: 16px 0; padding: 12px;
-      background: linear-gradient(135deg, #fff3e0, #fff8e1);
-      border-radius: 16px;
-    }
-    .lb-streak-title { font-size: 1rem; font-weight: 900; color: #e65100; margin-bottom: 8px; }
-    .lb-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-    .lb-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 12px; border-radius: 16px; font-size: 0.85rem; font-weight: 800;
-      background: linear-gradient(135deg, #ffd54f, #ffb300); color: #5d4037;
+    .lb-detail-title {
+      font-size: 1rem; font-weight: 900; color: var(--text); margin-bottom: 12px;
     }
 
+    /* ── 历史记录 ── */
     .lb-history-section { margin-top: 16px; }
     .lb-history-title { font-size: 1rem; font-weight: 900; color: var(--text); margin-bottom: 10px; }
     .lb-history-list { display: flex; flex-direction: column; gap: 8px; }
@@ -584,9 +818,13 @@
 
   <!-- 开始页 -->
   <div class="page active" id="start-page">
-    <div class="dino-hero">🦕</div>
+    <div class="dino-hero-row">
+      <div class="dino-hero">🦕</div>
+      <span class="dino-hero-vs">VS</span>
+      <div class="dino-hero-2">🦖</div>
+    </div>
     <div class="title-main">小恐龙数学冒险</div>
-    <div class="title-sub">帮小恐龙收集星星吧！</div>
+    <div class="title-sub">两只小恐龙，谁能赢得更多星星？</div>
     <div class="stars-row">⭐🌟✨🌟⭐</div>
     <button class="btn-start" id="btn-start">开始冒险！</button>
     <button class="btn-leaderboard" id="btn-lb-home">🏆 排行榜</button>
@@ -657,9 +895,14 @@
         <div class="result-pk-title">🏆 今日总分 PK</div>
         <div class="result-pk-row" id="result-pk-row"></div>
       </div>
+      <div class="new-medal-box" id="new-medal-box" style="display:none;">
+        <div class="new-medal-title">🎉 解锁新勋章！</div>
+        <div class="new-medal-list" id="new-medal-list"></div>
+      </div>
     </div>
     <div class="result-btns">
       <button class="btn-restart" id="btn-restart">再来一次！🦕</button>
+      <button class="btn-leaderboard" id="btn-lb-result">🏆 排行榜</button>
       <button class="btn-back-home" id="btn-back-result">🏠 回首页</button>
     </div>
   </div>
@@ -668,11 +911,26 @@
   <div class="page" id="leaderboard-page">
     <div class="lb-card">
       <div class="lb-title"><span class="lb-title-icon">🏆</span> 冒险排行榜</div>
-      <div class="lb-players" id="lb-players"></div>
-      <div class="lb-streak-section" id="lb-streak-section">
-        <div class="lb-streak-title">🎖️ 荣誉徽章</div>
-        <div class="lb-badges" id="lb-badges"></div>
+
+      <!-- 星星塔 PK -->
+      <div class="star-tower-section">
+        <div class="star-tower-title">⭐ 星星塔 PK ⭐</div>
+        <div class="star-tower-arena" id="star-tower-arena"></div>
+        <div class="star-tower-ground"></div>
       </div>
+
+      <!-- 勋章展示柜 -->
+      <div class="medal-cabinet">
+        <div class="medal-cabinet-title">🎖️ 勋章展示柜</div>
+        <div class="medal-progress">已解锁 0 / 12 枚勋章</div>
+        <div class="medal-grid" id="medal-grid"></div>
+      </div>
+
+      <!-- 详细数据 -->
+      <div class="lb-detail-title">📊 详细数据</div>
+      <div class="lb-players" id="lb-players"></div>
+
+      <!-- 最近记录 -->
       <div class="lb-history-section">
         <div class="lb-history-title">📋 最近答题记录</div>
         <div class="lb-history-list" id="lb-history-list"></div>
@@ -1300,12 +1558,31 @@ function submitAnswer() {
   }
 }
 
+// ── 检测新解锁勋章 ──
+function detectNewMedals(playerId) {
+  if (!playerId) return [];
+  const statsBefore = getPlayerStats(playerId);
+  const beforeSet = new Set(ALL_MEDALS.filter(m => m.check(statsBefore)).map(m => m.id));
+  return { beforeSet };
+}
+function findNewlyUnlocked(playerId, beforeSet) {
+  if (!playerId) return [];
+  const statsAfter = getPlayerStats(playerId);
+  return ALL_MEDALS.filter(m => !beforeSet.has(m.id) && m.check(statsAfter));
+}
+
 // ── 结果页 ──
 function showResult() {
   const totalQ = questions.length;
+
+  let beforeSet = new Set();
   if (currentPlayer) {
+    const pre = detectNewMedals(currentPlayer);
+    beforeSet = pre.beforeSet;
     saveRecord(currentPlayer, score, totalQ);
   }
+
+  const newMedals = currentPlayer ? findNewlyUnlocked(currentPlayer, beforeSet) : [];
 
   showPage('result-page');
   $('final-score').textContent = score;
@@ -1349,10 +1626,31 @@ function showResult() {
 
   renderResultPK();
 
+  // 新勋章提示
+  const medalBox = $('new-medal-box');
+  const medalList = $('new-medal-list');
+  if (newMedals.length > 0) {
+    medalBox.style.display = '';
+    medalList.innerHTML = newMedals.map((m, i) =>
+      `<div class="new-medal-item" style="animation-delay:${i * 0.2}s">
+        <span class="nmi-icon">${m.icon}</span>
+        <span class="nmi-label">${m.label}</span>
+      </div>`
+    ).join('');
+  } else {
+    medalBox.style.display = 'none';
+  }
+
   const nameStr = currentPlayer ? PLAYERS[currentPlayer].name : '';
-  const resultRead = score === totalQ
+  let resultRead = score === totalQ
     ? `哇！${nameStr}满分！你答对了全部${totalQ}道题！你真是数学小天才！`
     : `${nameStr}冒险完成！你答对了 ${score} 道题！`;
+
+  if (newMedals.length > 0) {
+    const medalNames = newMedals.map(m => m.label).join('、');
+    resultRead += `恭喜解锁新勋章：${medalNames}！`;
+  }
+
   setTimeout(() => speak(resultRead), 600);
 }
 
@@ -1389,14 +1687,103 @@ function renderResultPK() {
   `;
 }
 
+// ── 勋章定义 ──
+const ALL_MEDALS = [
+  { id: 'first_game',   icon: '🎯', label: '初次冒险',    check: st => st.games >= 1 },
+  { id: 'perfect',      icon: '💯', label: '满分达人',    check: st => st.perfectGames >= 1 },
+  { id: 'five_games',   icon: '✋', label: '五次挑战',    check: st => st.games >= 5 },
+  { id: 'ten_games',    icon: '🏃', label: '勤奋小将',    check: st => st.games >= 10 },
+  { id: 'twenty_games', icon: '💪', label: '超级勤奋',    check: st => st.games >= 20 },
+  { id: 'stars_10',     icon: '⭐', label: '10颗星星',    check: st => st.totalStars >= 10 },
+  { id: 'stars_30',     icon: '🌟', label: '30颗星星',    check: st => st.totalStars >= 30 },
+  { id: 'stars_60',     icon: '✨', label: '60颗星星',    check: st => st.totalStars >= 60 },
+  { id: 'stars_100',    icon: '🌠', label: '100颗星星',   check: st => st.totalStars >= 100 },
+  { id: 'streak3',      icon: '🔥', label: '三连满分',    check: st => st.streak >= 3 },
+  { id: 'streak5',      icon: '🔥', label: '五连满分',    check: st => st.streak >= 5 },
+  { id: 'perfect5',     icon: '🏆', label: '满分5次',     check: st => st.perfectGames >= 5 },
+];
+
 // ── 排行榜 ──
 function renderLeaderboard() {
   const leleStats = getPlayerStats('lele');
   const haohaoStats = getPlayerStats('haohao');
-
   const leleLeading = leleStats.totalStars > haohaoStats.totalStars;
   const haohaoLeading = haohaoStats.totalStars > leleStats.totalStars;
+  const maxStars = Math.max(leleStats.totalStars, haohaoStats.totalStars, 1);
 
+  // ── 星星塔 ──
+  const towerMax = 190;
+  const leleH = Math.max(12, (leleStats.totalStars / maxStars) * towerMax);
+  const haohaoH = Math.max(12, (haohaoStats.totalStars / maxStars) * towerMax);
+
+  function buildStarIcons(count) {
+    const show = Math.min(count, 20);
+    return Array.from({length: show}, (_, i) =>
+      `<span class="tower-star" style="animation-delay:${i*0.07}s">⭐</span>`
+    ).join('');
+  }
+
+  function towerBlock(pid, stats, height, isLeading) {
+    const p = PLAYERS[pid];
+    const barClass = pid === 'lele' ? 'lele-bar' : 'haohao-bar';
+    const nameClass = pid === 'lele' ? 'lele-color' : 'haohao-color';
+    const titleClass = pid === 'lele' ? 'lele-title' : 'haohao-title';
+    return `
+      <div class="star-tower-player">
+        ${isLeading ? '<span class="tower-crown">👑</span>' : '<span style="height:2rem;display:block"></span>'}
+        <span class="tower-dino ${stats.streak >= 3 ? 'has-flame' : ''}">${p.avatar}</span>
+        <div class="tower-bar-wrap">
+          <div class="tower-bar ${barClass}" id="tower-bar-${pid}" style="height:0px;">
+            ${buildStarIcons(stats.totalStars)}
+          </div>
+        </div>
+        <span class="tower-count">⭐ ${stats.totalStars}</span>
+        <span class="tower-name ${nameClass}">${p.name}</span>
+        <span class="tower-title-badge ${titleClass}">${getTitle(stats)}</span>
+      </div>`;
+  }
+
+  $('star-tower-arena').innerHTML =
+    towerBlock('lele', leleStats, leleH, leleLeading) +
+    '<div class="tower-vs-badge">VS</div>' +
+    towerBlock('haohao', haohaoStats, haohaoH, haohaoLeading);
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const lb = $('tower-bar-lele');
+      const hb = $('tower-bar-haohao');
+      if (lb) lb.style.height = leleH + 'px';
+      if (hb) hb.style.height = haohaoH + 'px';
+    }, 80);
+  });
+
+  // ── 勋章展示柜 ──
+  let unlockedCount = 0;
+  const medalItems = ALL_MEDALS.map(m => {
+    const leleHas = m.check(leleStats);
+    const haohaoHas = m.check(haohaoStats);
+    const unlocked = leleHas || haohaoHas;
+    if (unlocked) unlockedCount++;
+    const owners = [];
+    if (leleHas) owners.push(PLAYERS.lele.name);
+    if (haohaoHas) owners.push(PLAYERS.haohao.name);
+
+    return `<div class="medal-item ${unlocked ? 'unlocked' : 'locked'}">
+      ${unlocked ? '' : '<span class="medal-lock">🔒</span>'}
+      <span class="medal-icon">${m.icon}</span>
+      <span class="medal-label">${m.label}</span>
+      <span class="medal-who">${unlocked ? owners.join('·') : '未解锁'}</span>
+    </div>`;
+  }).join('');
+
+  $('medal-grid').innerHTML = medalItems;
+
+  const progressEl = document.querySelector('.medal-progress');
+  if (progressEl) {
+    progressEl.textContent = `已解锁 ${unlockedCount} / ${ALL_MEDALS.length} 枚勋章`;
+  }
+
+  // ── 详细数据 ──
   $('lb-players').innerHTML = `
     <div class="lb-player-block lele-block ${leleLeading ? 'is-leading' : ''}">
       ${leleLeading ? '<div class="lb-crown">👑</div>' : ''}
@@ -1418,26 +1805,7 @@ function renderLeaderboard() {
     </div>
   `;
 
-  // 荣誉徽章
-  const badges = [];
-  for (const pid of ['lele', 'haohao']) {
-    const st = pid === 'lele' ? leleStats : haohaoStats;
-    const nm = PLAYERS[pid].name;
-    if (st.perfectGames >= 1) badges.push(`${PLAYERS[pid].avatar} ${nm}·满分达人`);
-    if (st.streak >= 3)       badges.push(`${PLAYERS[pid].avatar} ${nm}·三连胜🔥`);
-    if (st.streak >= 5)       badges.push(`${PLAYERS[pid].avatar} ${nm}·五连胜🔥🔥`);
-    if (st.games >= 10)       badges.push(`${PLAYERS[pid].avatar} ${nm}·勤奋小将`);
-    if (st.games >= 20)       badges.push(`${PLAYERS[pid].avatar} ${nm}·超级勤奋`);
-    if (st.totalStars >= 50)  badges.push(`${PLAYERS[pid].avatar} ${nm}·星星收集家`);
-  }
-  const badgesEl = $('lb-badges');
-  if (badges.length === 0) {
-    badgesEl.innerHTML = '<span style="color:#bdbdbd;font-size:0.9rem;">还没有徽章，继续努力！</span>';
-  } else {
-    badgesEl.innerHTML = badges.map(b => `<span class="lb-badge">${b}</span>`).join('');
-  }
-
-  // 最近记录
+  // ── 最近记录 ──
   const allRecords = loadRecords().slice(-10).reverse();
   const histList = $('lb-history-list');
   if (allRecords.length === 0) {
@@ -1561,14 +1929,31 @@ $('btn-back-result').addEventListener('click', () => {
   showPage('player-page');
 });
 
-$('btn-lb-home').addEventListener('click', () => {
+function openLeaderboard() {
   renderLeaderboard();
   showPage('leaderboard-page');
-});
-$('btn-lb-player').addEventListener('click', () => {
-  renderLeaderboard();
-  showPage('leaderboard-page');
-});
+  const ls = getPlayerStats('lele');
+  const hs = getPlayerStats('haohao');
+  if (ls.games === 0 && hs.games === 0) {
+    speak('还没有记录哦，快去答题吧！');
+    return;
+  }
+  const ln = PLAYERS.lele.name, hn = PLAYERS.haohao.name;
+  const diff = ls.totalStars - hs.totalStars;
+  let txt;
+  if (diff > 0) {
+    txt = `${ln}领先${hn} ${diff}颗星星！${hn}要加油追赶哦！`;
+  } else if (diff < 0) {
+    txt = `${hn}领先${ln} ${-diff}颗星星！${ln}要加油追赶哦！`;
+  } else {
+    txt = `${ln}和${hn}打成平手！都是${ls.totalStars}颗星星！谁先拉开差距呢？`;
+  }
+  setTimeout(() => speak(txt, 0.9), 400);
+}
+
+$('btn-lb-home').addEventListener('click', openLeaderboard);
+$('btn-lb-player').addEventListener('click', openLeaderboard);
+$('btn-lb-result').addEventListener('click', openLeaderboard);
 $('btn-back-lb').addEventListener('click', () => {
   updatePlayerPreview();
   showPage('player-page');
