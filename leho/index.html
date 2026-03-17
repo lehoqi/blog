@@ -18,6 +18,7 @@
       --card:   #ffffff;
       --text:   #1b5e20;
       --shadow: 0 8px 24px rgba(0,0,0,0.15);
+      --player-color: #4caf50;
     }
 
     body {
@@ -32,7 +33,6 @@
       position: relative;
     }
 
-    /* 背景草地 */
     body::before {
       content: '';
       position: fixed;
@@ -42,7 +42,6 @@
       z-index: 0;
     }
 
-    /* 云朵 */
     .cloud {
       position: fixed;
       background: white;
@@ -71,7 +70,6 @@
       to   { transform: translateX(calc(100vw + 200px)); }
     }
 
-    /* 主容器 */
     #app {
       position: relative;
       z-index: 1;
@@ -81,7 +79,6 @@
       align-items: center;
     }
 
-    /* 页面切换 */
     .page { display: none; width: 100%; flex-direction: column; align-items: center; }
     .page.active { display: flex; }
 
@@ -136,15 +133,110 @@
     .btn-start:hover  { animation-play-state: paused; transform: scale(1.08); }
     .btn-start:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #2e7d32; }
 
+    /* ===== 选择玩家页 ===== */
+    #player-page { gap: 20px; text-align: center; }
+    .player-title { font-size: 1.8rem; font-weight: 900; color: var(--text); }
+    .player-subtitle { font-size: 1.1rem; color: #558b2f; font-weight: 600; }
+    .player-choices {
+      display: flex; gap: 24px; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .player-card {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 28px 24px 20px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 200px;
+      text-align: center;
+      border: 4px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .player-card:hover {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+    }
+    .player-card:active {
+      transform: translateY(2px) scale(0.97);
+    }
+    .player-card.lele { border-color: #66bb6a; }
+    .player-card.lele::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, #66bb6a, #a5d6a7);
+    }
+    .player-card.haohao { border-color: #42a5f5; }
+    .player-card.haohao::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, #42a5f5, #90caf9);
+    }
+    .player-avatar {
+      font-size: 72px; display: block; margin-bottom: 8px;
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .player-card.haohao .player-avatar { animation-delay: -1s; }
+    .player-name {
+      font-size: 1.6rem; font-weight: 900; margin-bottom: 4px;
+    }
+    .player-card.lele .player-name { color: #2e7d32; }
+    .player-card.haohao .player-name { color: #1565c0; }
+    .player-total-stars {
+      font-size: 1rem; color: #ff8f00; font-weight: 700;
+    }
+    .player-name-row {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .name-edit-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.9rem; opacity: 0.4; padding: 2px 4px;
+      transition: opacity 0.15s, transform 0.15s;
+      line-height: 1;
+    }
+    .name-edit-btn:hover { opacity: 1; transform: scale(1.3); }
+    .player-card:hover .name-edit-btn { opacity: 0.7; }
+
+    .player-rank-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd600, #ffab00);
+      color: #5d4037; font-size: 0.85rem; font-weight: 900;
+      padding: 3px 12px; border-radius: 20px; margin-top: 6px;
+    }
+
+    .btn-leaderboard {
+      background: linear-gradient(135deg, #ffd54f, #ffb300);
+      color: #5d4037; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 1.2rem; font-weight: 900;
+      cursor: pointer; letter-spacing: 1px;
+      box-shadow: 0 5px 0 #ff8f00, var(--shadow);
+      transition: transform 0.15s;
+    }
+    .btn-leaderboard:hover { transform: translateY(-3px) scale(1.05); }
+    .btn-leaderboard:active { transform: translateY(3px) scale(0.96); box-shadow: 0 2px 0 #ff8f00; }
+
     /* ===== 题目页 ===== */
     #quiz-page { gap: 20px; }
+
+    .player-indicator {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); border-radius: 20px; padding: 8px 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+      font-weight: 800; font-size: 1.1rem;
+      border-left: 5px solid var(--player-color);
+    }
+    .player-indicator .pi-avatar { font-size: 1.6rem; }
+    .player-indicator .pi-name { color: var(--player-color); }
+    .player-indicator .pi-vs {
+      font-size: 0.85rem; color: #9e9e9e; margin-left: 4px;
+    }
 
     .progress-bar-wrap {
       width: 100%;
       background: #c8e6c9;
       border-radius: 20px;
       height: 22px;
-      /* 不用 overflow:hidden，让 bump 动画可见 */
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
       position: relative;
     }
@@ -155,7 +247,6 @@
       transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
       transform-origin: left center;
     }
-    /* bump 动画用 JS 的 animate() API 触发，不用 class */
 
     .progress-label {
       font-size: 1rem; color: #558b2f; font-weight: 700; align-self: flex-end;
@@ -168,7 +259,6 @@
       font-size: 1rem; font-weight: 900;
       box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
-    /* 分数跳动 */
     .score-badge.score-pop {
       animation: scorePop 0.35s cubic-bezier(.34,1.56,.64,1);
     }
@@ -183,7 +273,6 @@
       background: var(--card); border-radius: 28px;
       padding: 36px 28px 28px;
       box-shadow: var(--shadow); text-align: center;
-      /* 卡片动画用 JS animate() */
     }
 
     .dino-small {
@@ -251,7 +340,7 @@
     /* ===== 庆祝覆盖层 ===== */
     #celebrate-overlay {
       position: fixed; inset: 0; z-index: 100;
-      display: none;  /* JS 控制显示/隐藏 */
+      display: none;
       flex-direction: column; align-items: center; justify-content: center;
       background: rgba(0,0,0,0.5);
     }
@@ -260,7 +349,6 @@
     .celebrate-dino {
       font-size: 140px;
       filter: drop-shadow(0 16px 32px rgba(0,0,0,0.4));
-      /* 动画完全由 JS animate() 控制 */
     }
     .celebrate-text {
       font-size: 3.2rem; font-weight: 900; color: #fff;
@@ -301,9 +389,34 @@
     }
     .result-stars .star-item {
       display: inline-block;
-      opacity: 0; /* 初始隐藏，JS 触发动画 */
+      opacity: 0;
     }
     .result-msg { font-size: 1.2rem; color: #558b2f; font-weight: 700; margin-top: 8px; }
+
+    .result-pk-box {
+      margin-top: 16px; padding: 16px;
+      background: linear-gradient(135deg, #fff8e1, #fff3e0);
+      border-radius: 18px; border: 2px dashed #ffb74d;
+    }
+    .result-pk-title {
+      font-size: 1.1rem; font-weight: 900; color: #e65100; margin-bottom: 10px;
+    }
+    .result-pk-row {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      font-size: 1rem; font-weight: 700;
+    }
+    .result-pk-player {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .result-pk-player .pk-avatar { font-size: 2.4rem; }
+    .result-pk-player .pk-name { font-size: 0.95rem; }
+    .result-pk-player .pk-score { font-size: 1.8rem; font-weight: 900; }
+    .result-pk-player.leading .pk-score { color: #e65100; }
+    .result-pk-vs {
+      font-size: 1.5rem; font-weight: 900; color: #ff5722;
+    }
+
+    .result-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
     .btn-restart {
       background: linear-gradient(135deg, #ff9800, #f57c00);
@@ -319,6 +432,101 @@
     }
     .btn-restart:hover  { animation-play-state: paused; transform: scale(1.08); }
     .btn-restart:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #e65100; }
+
+    .btn-back-home {
+      background: linear-gradient(135deg, #b0bec5, #90a4ae);
+      color: white; border: none; border-radius: 50px;
+      padding: 14px 32px; font-size: 1.2rem; font-weight: 900;
+      cursor: pointer; box-shadow: 0 5px 0 #607d8b, var(--shadow);
+      transition: transform 0.15s;
+    }
+    .btn-back-home:hover { transform: translateY(-3px) scale(1.05); }
+    .btn-back-home:active { transform: translateY(3px) scale(0.96); box-shadow: 0 2px 0 #607d8b; }
+
+    /* ===== 排行榜页 ===== */
+    #leaderboard-page { gap: 20px; text-align: center; }
+
+    .lb-card {
+      width: 100%; background: var(--card);
+      border-radius: 28px; padding: 28px 20px;
+      box-shadow: var(--shadow);
+    }
+    .lb-title {
+      font-size: 1.8rem; font-weight: 900; color: var(--text);
+      margin-bottom: 20px;
+    }
+    .lb-title-icon { font-size: 2.2rem; vertical-align: middle; }
+
+    .lb-players {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .lb-player-block {
+      flex: 1; min-width: 180px; max-width: 220px;
+      background: #f9fbe7; border-radius: 20px; padding: 18px 12px;
+      position: relative;
+      border: 3px solid #e0e0e0;
+      transition: transform 0.2s;
+    }
+    .lb-player-block:hover { transform: translateY(-4px); }
+    .lb-player-block.lele-block  { border-color: #a5d6a7; background: #f1f8e9; }
+    .lb-player-block.haohao-block { border-color: #90caf9; background: #e3f2fd; }
+    .lb-player-block.is-leading {
+      box-shadow: 0 0 0 3px #ffd600, 0 8px 24px rgba(255,214,0,0.3);
+    }
+    .lb-crown {
+      position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+      font-size: 1.8rem;
+    }
+    .lb-avatar { font-size: 3rem; display: block; margin-bottom: 4px; }
+    .lb-name { font-size: 1.3rem; font-weight: 900; margin-bottom: 2px; }
+    .lb-player-block.lele-block .lb-name { color: #2e7d32; }
+    .lb-player-block.haohao-block .lb-name { color: #1565c0; }
+    .lb-total-stars { font-size: 1.1rem; color: #ff8f00; font-weight: 800; }
+    .lb-total-score { font-size: 0.9rem; color: #795548; font-weight: 600; margin-top: 2px; }
+    .lb-games { font-size: 0.85rem; color: #9e9e9e; margin-top: 2px; }
+    .lb-rank-title {
+      display: inline-block; margin-top: 6px;
+      padding: 3px 14px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 900; color: #fff;
+    }
+    .lb-player-block.lele-block .lb-rank-title { background: linear-gradient(135deg, #66bb6a, #43a047); }
+    .lb-player-block.haohao-block .lb-rank-title { background: linear-gradient(135deg, #42a5f5, #1e88e5); }
+
+    .lb-streak-section {
+      margin: 16px 0; padding: 12px;
+      background: linear-gradient(135deg, #fff3e0, #fff8e1);
+      border-radius: 16px;
+    }
+    .lb-streak-title { font-size: 1rem; font-weight: 900; color: #e65100; margin-bottom: 8px; }
+    .lb-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .lb-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 16px; font-size: 0.85rem; font-weight: 800;
+      background: linear-gradient(135deg, #ffd54f, #ffb300); color: #5d4037;
+    }
+
+    .lb-history-section { margin-top: 16px; }
+    .lb-history-title { font-size: 1rem; font-weight: 900; color: var(--text); margin-bottom: 10px; }
+    .lb-history-list { display: flex; flex-direction: column; gap: 8px; }
+    .lb-history-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fafafa; border-radius: 12px; padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+    .lb-history-item .hi-player {
+      display: flex; align-items: center; gap: 6px; font-weight: 800;
+    }
+    .lb-history-item .hi-score { font-weight: 900; color: var(--orange); }
+    .lb-history-item .hi-date { color: #9e9e9e; font-size: 0.8rem; }
+    .lb-history-item .hi-stars { color: #ff8f00; }
+
+    .btn-clear-data {
+      background: none; border: none; color: #bdbdbd;
+      font-size: 0.8rem; cursor: pointer; margin-top: 8px;
+      text-decoration: underline;
+    }
+    .btn-clear-data:hover { color: #f44336; }
 
     /* ===== 静音按钮 ===== */
     #mute-btn {
@@ -340,13 +548,18 @@
     #mute-btn:active { transform: scale(0.9); }
     #mute-btn.muted  { background: #ffebee; border-color: #ef9a9a; }
 
-    /* 朗读时题目数字高亮脉冲 */
     .speaking .question-text {
       animation: speakPulse 0.8s ease-in-out infinite;
     }
     @keyframes speakPulse {
       0%,100% { text-shadow: none; }
       50%      { text-shadow: 0 0 16px rgba(255,152,0,0.7); }
+    }
+
+    /* 滚动支持 */
+    #leaderboard-page .lb-card {
+      max-height: 75vh;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -359,7 +572,6 @@
 <canvas id="fireworks-canvas"></canvas>
 <div id="red-flash"></div>
 
-<!-- 静音按钮 -->
 <button id="mute-btn" title="开关语音">🔊</button>
 
 <div id="celebrate-overlay">
@@ -370,15 +582,50 @@
 
 <div id="app">
 
+  <!-- 开始页 -->
   <div class="page active" id="start-page">
     <div class="dino-hero">🦕</div>
     <div class="title-main">小恐龙数学冒险</div>
     <div class="title-sub">帮小恐龙收集星星吧！</div>
     <div class="stars-row">⭐🌟✨🌟⭐</div>
     <button class="btn-start" id="btn-start">开始冒险！</button>
+    <button class="btn-leaderboard" id="btn-lb-home">🏆 排行榜</button>
   </div>
 
+  <!-- 选择玩家页 -->
+  <div class="page" id="player-page">
+    <div class="player-title">谁来挑战？</div>
+    <div class="player-subtitle">点击你的头像开始答题吧！</div>
+    <div class="player-choices">
+      <div class="player-card lele" id="pick-lele">
+        <span class="player-avatar">🦕</span>
+        <div class="player-name-row">
+          <span class="player-name" id="lele-name">乐乐</span>
+          <button class="name-edit-btn" id="edit-lele" title="改名字">✏️</button>
+        </div>
+        <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
+        <div class="player-rank-badge" id="lele-preview-title">数学新手</div>
+      </div>
+      <div class="player-card haohao" id="pick-haohao">
+        <span class="player-avatar">🦖</span>
+        <div class="player-name-row">
+          <span class="player-name" id="haohao-name">昊昊</span>
+          <button class="name-edit-btn" id="edit-haohao" title="改名字">✏️</button>
+        </div>
+        <div class="player-total-stars" id="haohao-preview-stars">⭐ 0</div>
+        <div class="player-rank-badge" id="haohao-preview-title">数学新手</div>
+      </div>
+    </div>
+    <button class="btn-leaderboard" id="btn-lb-player" style="margin-top:8px;">🏆 排行榜</button>
+  </div>
+
+  <!-- 题目页 -->
   <div class="page" id="quiz-page">
+    <div id="player-indicator" class="player-indicator">
+      <span class="pi-avatar" id="pi-avatar">🦕</span>
+      <span class="pi-name" id="pi-name">乐乐</span>
+      <span class="pi-vs" id="pi-vs"></span>
+    </div>
     <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
       <span class="progress-label" id="progress-label">第 1 题 / 共 10 题</span>
     </div>
@@ -398,15 +645,41 @@
     <div class="numpad" id="numpad"></div>
   </div>
 
+  <!-- 结果页 -->
   <div class="page" id="result-page">
     <div class="result-card">
-      <span class="result-dino">🦕</span>
-      <div class="result-title">冒险完成！</div>
+      <span class="result-dino" id="result-dino">🦕</span>
+      <div class="result-title" id="result-title">冒险完成！</div>
       <div class="result-score"><span id="final-score">0</span> / 5</div>
       <div class="result-stars" id="result-stars"></div>
       <div class="result-msg" id="result-msg"></div>
+      <div class="result-pk-box" id="result-pk-box">
+        <div class="result-pk-title">🏆 今日总分 PK</div>
+        <div class="result-pk-row" id="result-pk-row"></div>
+      </div>
     </div>
-    <button class="btn-restart" id="btn-restart">再来一次！🦕</button>
+    <div class="result-btns">
+      <button class="btn-restart" id="btn-restart">再来一次！🦕</button>
+      <button class="btn-back-home" id="btn-back-result">🏠 回首页</button>
+    </div>
+  </div>
+
+  <!-- 排行榜页 -->
+  <div class="page" id="leaderboard-page">
+    <div class="lb-card">
+      <div class="lb-title"><span class="lb-title-icon">🏆</span> 冒险排行榜</div>
+      <div class="lb-players" id="lb-players"></div>
+      <div class="lb-streak-section" id="lb-streak-section">
+        <div class="lb-streak-title">🎖️ 荣誉徽章</div>
+        <div class="lb-badges" id="lb-badges"></div>
+      </div>
+      <div class="lb-history-section">
+        <div class="lb-history-title">📋 最近答题记录</div>
+        <div class="lb-history-list" id="lb-history-list"></div>
+      </div>
+      <button class="btn-clear-data" id="btn-clear-data">清除所有记录</button>
+    </div>
+    <button class="btn-back-home" id="btn-back-lb" style="margin-top:12px;">🏠 回首页</button>
   </div>
 
 </div>
@@ -415,11 +688,91 @@
 const $ = id => document.getElementById(id);
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-// ── 语音朗读 (Web Speech API) ──
+// ── 玩家配置 ──
+const NAMES_KEY = 'dino_math_names';
+const DEFAULT_NAMES = { lele: '乐乐', haohao: '昊昊' };
+
+function loadNames() {
+  try {
+    return { ...DEFAULT_NAMES, ...JSON.parse(localStorage.getItem(NAMES_KEY)) };
+  } catch { return { ...DEFAULT_NAMES }; }
+}
+function saveName(playerId, name) {
+  const names = loadNames();
+  names[playerId] = name;
+  localStorage.setItem(NAMES_KEY, JSON.stringify(names));
+  PLAYERS[playerId].name = name;
+}
+
+const savedNames = loadNames();
+const PLAYERS = {
+  lele:   { name: savedNames.lele,   avatar: '🦕', color: '#43a047', colorLight: '#e8f5e9' },
+  haohao: { name: savedNames.haohao, avatar: '🦖', color: '#1e88e5', colorLight: '#e3f2fd' }
+};
+
+let currentPlayer = null;
+
+// ── 数据持久化 (localStorage) ──
+const STORAGE_KEY = 'dino_math_records';
+
+function loadRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch { return []; }
+}
+function saveRecord(playerId, score, totalQ) {
+  const records = loadRecords();
+  records.push({
+    player: playerId,
+    score,
+    total: totalQ,
+    stars: scoreToStarCount(score, totalQ),
+    date: new Date().toISOString()
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+function clearRecords() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+function getPlayerStats(playerId) {
+  const records = loadRecords().filter(r => r.player === playerId);
+  const totalStars = records.reduce((s, r) => s + r.stars, 0);
+  const totalScore = records.reduce((s, r) => s + r.score, 0);
+  const games = records.length;
+  const perfectGames = records.filter(r => r.score === r.total).length;
+
+  let streak = 0;
+  for (let i = records.length - 1; i >= 0; i--) {
+    if (records[i].score === records[i].total) streak++;
+    else break;
+  }
+  return { totalStars, totalScore, games, perfectGames, streak, records };
+}
+function scoreToStarCount(score, total) {
+  const ratio = score / total;
+  if (ratio >= 1) return 5;
+  if (ratio >= 0.8) return 4;
+  if (ratio >= 0.6) return 3;
+  if (ratio >= 0.4) return 2;
+  return 1;
+}
+
+// ── 称号系统 ──
+function getTitle(stats) {
+  const s = stats.totalStars;
+  if (s >= 100) return '数学大王 👑';
+  if (s >= 60)  return '超级学霸 🌟';
+  if (s >= 35)  return '算数达人 🔥';
+  if (s >= 20)  return '聪明小将 💡';
+  if (s >= 10)  return '进步之星 ⭐';
+  if (s >= 3)   return '勇敢冒险家 🦕';
+  return '数学新手 🌱';
+}
+
+// ── 语音朗读 ──
 let voiceMuted = false;
 let speakTimer = null;
 
-// 最简实现：cancel 后等 80ms 再 speak，彻底避免 Chrome 状态卡死
 function speak(text, rate = 0.82) {
   if (voiceMuted || !window.speechSynthesis) return;
   clearTimeout(speakTimer);
@@ -438,7 +791,6 @@ function stopSpeech() {
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
-// 静音按钮
 $('mute-btn').addEventListener('click', () => {
   voiceMuted = !voiceMuted;
   $('mute-btn').textContent = voiceMuted ? '🔇' : '🔊';
@@ -446,7 +798,7 @@ $('mute-btn').addEventListener('click', () => {
   if (voiceMuted) stopSpeech();
 });
 
-// ── 工具：用 Web Animations API 触发动画（每次都能重新播放）──
+// ── 动画工具 ──
 function runAnim(el, keyframes, options) {
   const anim = el.animate(keyframes, { fill: 'forwards', ...options });
   return anim.finished;
@@ -485,28 +837,41 @@ function playStart() {
 }
 
 // ── 题目生成 ──
+// 每条故事自带完整提问语，量词与场景严格匹配
 const STORIES_ADD = [
-  (a,b) => `小恐龙找到了 ${a} 颗星星，又找到 ${b} 颗，`,
-  (a,b) => `恐龙妈妈有 ${a} 个蛋，又生了 ${b} 个，`,
-  (a,b) => `小恐龙吃了 ${a} 个苹果，又吃了 ${b} 个，`,
-  (a,b) => `森林里有 ${a} 只小鸟，飞来了 ${b} 只，`,
-  (a,b) => `小恐龙有 ${a} 块饼干，朋友给了 ${b} 块，`,
+  (a,b) => ({ text: `小恐龙找到了 ${a} 颗星星，又找到 ${b} 颗，`, q: '一共找到多少颗？' }),
+  (a,b) => ({ text: `恐龙妈妈有 ${a} 个蛋，又生了 ${b} 个，`, q: '现在一共有多少个蛋？' }),
+  (a,b) => ({ text: `小恐龙摘了 ${a} 个苹果，又摘了 ${b} 个，`, q: '一共摘了多少个？' }),
+  (a,b) => ({ text: `森林里有 ${a} 只小鸟，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 块饼干，朋友又给了 ${b} 块，`, q: '现在一共有多少块？' }),
+  (a,b) => ({ text: `草地上有 ${a} 只蝴蝶，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
+  (a,b) => ({ text: `小兔子拔了 ${a} 根胡萝卜，又拔了 ${b} 根，`, q: '一共拔了多少根？' }),
+  (a,b) => ({ text: `停车场有 ${a} 辆小汽车，又开来了 ${b} 辆，`, q: '现在一共有多少辆？' }),
+  (a,b) => ({ text: `小恐龙画了 ${a} 幅画，又画了 ${b} 幅，`, q: '一共画了多少幅？' }),
+  (a,b) => ({ text: `花园里开了 ${a} 朵花，又开了 ${b} 朵，`, q: '现在一共有多少朵？' }),
 ];
 const STORIES_SUB = [
-  (a,b) => `小恐龙有 ${a} 颗星星，送给朋友 ${b} 颗，`,
-  (a,b) => `树上有 ${a} 个果子，掉了 ${b} 个，`,
-  (a,b) => `小恐龙有 ${a} 块糖，吃掉了 ${b} 块，`,
-  (a,b) => `池塘里有 ${a} 只青蛙，跳走了 ${b} 只，`,
-  (a,b) => `小恐龙有 ${a} 根骨头，埋掉了 ${b} 根，`,
+  (a,b) => ({ text: `小恐龙有 ${a} 颗星星，送给朋友 ${b} 颗，`, q: '还剩多少颗？' }),
+  (a,b) => ({ text: `树上有 ${a} 个果子，掉了 ${b} 个，`, q: '树上还剩多少个？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 块糖，吃掉了 ${b} 块，`, q: '还剩多少块？' }),
+  (a,b) => ({ text: `池塘里有 ${a} 只青蛙，跳走了 ${b} 只，`, q: '池塘里还剩多少只？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 朵花，送给妈妈 ${b} 朵，`, q: '还剩多少朵？' }),
+  (a,b) => ({ text: `盘子里有 ${a} 个草莓，小猫吃了 ${b} 个，`, q: '盘子里还剩多少个？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 支蜡笔，借给同学 ${b} 支，`, q: '还剩多少支？' }),
+  (a,b) => ({ text: `天上有 ${a} 个气球，飞走了 ${b} 个，`, q: '还剩多少个？' }),
+  (a,b) => ({ text: `书架上有 ${a} 本书，小恐龙拿走了 ${b} 本，`, q: '书架上还剩多少本？' }),
+  (a,b) => ({ text: `小鸭子有 ${a} 条小鱼，吃掉了 ${b} 条，`, q: '还剩多少条？' }),
 ];
 function generateQuestion() {
   const isAdd = Math.random() < 0.55;
   if (isAdd) {
-    const a = randInt(0,19), b = randInt(0,20-a);
-    return { a, b, op:'+', answer:a+b, story: STORIES_ADD[randInt(0,4)](a,b) };
+    const a = randInt(1,15), b = randInt(1,20-a);
+    const s = STORIES_ADD[randInt(0,STORIES_ADD.length-1)](a,b);
+    return { a, b, op:'+', answer:a+b, story: s.text, question: s.q };
   } else {
-    const a = randInt(1,20), b = randInt(0,a);
-    return { a, b, op:'-', answer:a-b, story: STORIES_SUB[randInt(0,4)](a,b) };
+    const a = randInt(2,20), b = randInt(1,a);
+    const s = STORIES_SUB[randInt(0,STORIES_SUB.length-1)](a,b);
+    return { a, b, op:'-', answer:a-b, story: s.text, question: s.q };
   }
 }
 function generateQuestions(n=10) {
@@ -622,7 +987,7 @@ function startFireworks(duration = 2200) {
   setTimeout(() => { fwRunning = false; }, duration);
 }
 
-// ── 庆祝动画（全部用 Web Animations API）──
+// ── 庆祝动画 ──
 const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🦕'];
 
 function showCelebrate(cb) {
@@ -634,7 +999,6 @@ function showCelebrate(cb) {
   textEl.textContent  = CELEBRATE_TEXTS[randInt(0, CELEBRATE_TEXTS.length-1)];
   starsEl.textContent = '⭐⭐⭐';
 
-  // 先重置所有子元素样式，再显示 overlay
   dinoEl.style.transform  = '';
   dinoEl.style.opacity    = '';
   textEl.style.transform  = '';
@@ -642,22 +1006,23 @@ function showCelebrate(cb) {
   starsEl.style.transform = '';
   starsEl.style.opacity   = '';
 
+  if (currentPlayer) {
+    dinoEl.textContent = PLAYERS[currentPlayer].avatar;
+  }
+
   overlay.classList.add('show');
   startFireworks(2000);
   playCorrect();
 
-  // 朗读庆祝语
   const spokenText = textEl.textContent.replace(/[^\u4e00-\u9fa5！？。，、]/g, '').trim();
   setTimeout(() => speak(spokenText, 1.0), 400);
 
-  // 恐龙从底部飞入
   dinoEl.animate([
     { transform: 'translateY(300px) scale(0.2) rotate(25deg)', opacity: 0 },
     { transform: 'translateY(-20px) scale(1.15) rotate(-5deg)', opacity: 1, offset: 0.7 },
     { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 }
   ], { duration: 600, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
 
-  // 恐龙飞入后持续跳动
   setTimeout(() => {
     dinoEl.animate([
       { transform: 'translateY(0) scale(1) rotate(-6deg)' },
@@ -665,14 +1030,12 @@ function showCelebrate(cb) {
     ], { duration: 450, easing: 'ease-in-out', iterations: Infinity, direction: 'alternate' });
   }, 620);
 
-  // 文字弹出
   textEl.animate([
     { transform: 'scale(0.05) rotate(-15deg)', opacity: 0 },
     { transform: 'scale(1.15) rotate(3deg)',   opacity: 1, offset: 0.75 },
     { transform: 'scale(1) rotate(0deg)',       opacity: 1 }
   ], { duration: 500, delay: 280, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
 
-  // 星星弹出 + 旋转
   starsEl.animate([
     { transform: 'scale(0) rotate(-30deg)', opacity: 0 },
     { transform: 'scale(1.2) rotate(10deg)', opacity: 1, offset: 0.7 },
@@ -772,8 +1135,14 @@ function renderQuestion(slideIn = true) {
   const total = questions.length;
   $('progress-label').textContent = `第 ${currentIdx+1} 题 / 共 ${total} 题`;
   $('score-display').textContent  = score;
-  $('quiz-dino').textContent      = DINO_EMOJIS[randInt(0,4)];
-  $('question-story').textContent = q.story + '一共有多少？';
+
+  if (currentPlayer) {
+    $('quiz-dino').textContent = PLAYERS[currentPlayer].avatar;
+  } else {
+    $('quiz-dino').textContent = DINO_EMOJIS[randInt(0,4)];
+  }
+
+  $('question-story').textContent = q.story + q.question;
   $('question-text').innerHTML    = `${q.a} <span class="op">${q.op}</span> ${q.b} <span class="eq">=</span>`;
 
   const ansEl = $('answer-display');
@@ -795,10 +1164,36 @@ function renderQuestion(slideIn = true) {
     ], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
   }
 
-  // 朗读题目
   const opWord   = q.op === '+' ? '加' : '减';
-  const readText = `${q.story}一共有多少？${q.a} ${opWord} ${q.b} 等于多少？`;
+  const readText = `${q.story}${q.question}${q.a} ${opWord} ${q.b} 等于多少？`;
   setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+}
+
+// ── 玩家指示器 ──
+function updatePlayerIndicator() {
+  if (!currentPlayer) return;
+  const p = PLAYERS[currentPlayer];
+  $('pi-avatar').textContent = p.avatar;
+  $('pi-name').textContent = p.name;
+  $('pi-name').style.color = p.color;
+  $('player-indicator').style.borderLeftColor = p.color;
+  document.documentElement.style.setProperty('--player-color', p.color);
+
+  const otherId = currentPlayer === 'lele' ? 'haohao' : 'lele';
+  const otherStats = getPlayerStats(otherId);
+  const myStats = getPlayerStats(currentPlayer);
+  const diff = myStats.totalStars - otherStats.totalStars;
+  if (otherStats.games > 0) {
+    if (diff > 0) {
+      $('pi-vs').textContent = `领先${PLAYERS[otherId].name} ${diff}⭐`;
+    } else if (diff < 0) {
+      $('pi-vs').textContent = `追赶${PLAYERS[otherId].name}，差 ${-diff}⭐`;
+    } else {
+      $('pi-vs').textContent = `和${PLAYERS[otherId].name}打平！`;
+    }
+  } else {
+    $('pi-vs').textContent = '';
+  }
 }
 
 // ── 提交答案 ──
@@ -815,7 +1210,6 @@ function submitAnswer() {
     score++;
     const total = questions.length;
 
-    // 答案变绿爆炸
     ansEl.animate([
       { transform: 'scale(1)',    color: 'var(--blue)',  background: 'transparent' },
       { transform: 'scale(1.7)', color: '#2e7d32', background: '#c8e6c9', offset: 0.4 },
@@ -823,7 +1217,6 @@ function submitAnswer() {
       { transform: 'scale(1)',    color: 'var(--blue)',  background: 'transparent' }
     ], { duration: 500, fill: 'forwards' });
 
-    // 卡片弹跳
     card.animate([
       { transform: 'scale(1) rotate(0deg)' },
       { transform: 'scale(1.07) rotate(1.5deg)',  offset: 0.35 },
@@ -831,7 +1224,6 @@ function submitAnswer() {
       { transform: 'scale(1) rotate(0deg)' }
     ], { duration: 500, easing: 'cubic-bezier(.34,1.56,.64,1)' });
 
-    // 分数徽章弹跳
     $('score-display').textContent = score;
     const badge = $('score-badge');
     badge.animate([
@@ -840,7 +1232,6 @@ function submitAnswer() {
       { transform: 'scale(1)' }
     ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
 
-    // 进度条弹跳
     bar.style.width = `${((currentIdx+1)/total)*100}%`;
     bar.animate([
       { transform: 'scaleY(1)' },
@@ -860,14 +1251,12 @@ function submitAnswer() {
     wrongCount++;
     playWrong();
 
-    // 全屏红闪
     $('red-flash').animate([
       { background: 'rgba(244,67,54,0)' },
       { background: 'rgba(244,67,54,0.42)' },
       { background: 'rgba(244,67,54,0)' }
     ], { duration: 500 });
 
-    // 卡片剧烈抖动
     card.animate([
       { transform: 'translateX(0) rotate(0)' },
       { transform: 'translateX(-22px) rotate(-2.5deg)' },
@@ -879,7 +1268,6 @@ function submitAnswer() {
       { transform: 'translateX(0) rotate(0)' }
     ], { duration: 520, easing: 'ease-in-out' });
 
-    // 答案框抖动变红
     ansEl.animate([
       { transform: 'translateX(0)',    color: 'var(--blue)',  background: 'transparent', borderColor: '#90caf9' },
       { transform: 'translateX(-12px)', color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.2 },
@@ -891,16 +1279,17 @@ function submitAnswer() {
 
     currentAnswer = '';
 
+    const pName = currentPlayer ? PLAYERS[currentPlayer].avatar : '🦕';
     const fb = $('feedback-msg');
     fb.classList.remove('hidden');
     if (wrongCount === 1) {
-      fb.textContent = '🦕 哎呀，再想想！加油！';
+      fb.textContent = `${pName} 哎呀，再想想！加油！`;
       speak('哎呀，再想想，加油！');
     } else if (wrongCount === 2) {
-      fb.textContent = `🦕 提示：答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`;
+      fb.textContent = `${pName} 提示：答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`;
       speak(`提示一下，答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`);
     } else {
-      fb.textContent = `🦕 正确答案是 ${q.answer}，下次一定行！`;
+      fb.textContent = `${pName} 正确答案是 ${q.answer}，下次一定行！`;
       speak(`正确答案是 ${q.answer}，没关系，下次一定行！`);
       setTimeout(() => {
         currentIdx++;
@@ -913,20 +1302,35 @@ function submitAnswer() {
 
 // ── 结果页 ──
 function showResult() {
+  const totalQ = questions.length;
+  if (currentPlayer) {
+    saveRecord(currentPlayer, score, totalQ);
+  }
+
   showPage('result-page');
   $('final-score').textContent = score;
 
-  let stars, msg;
-  if      (score===5)  { stars='⭐⭐⭐⭐⭐'; msg='满分！你是数学小天才！🏆'; }
-  else if (score>=4)   { stars='⭐⭐⭐⭐';   msg='太厉害了！再练练就满分啦！🌟'; }
-  else if (score>=3)   { stars='⭐⭐⭐';     msg='做得不错！继续加油！💪'; }
-  else if (score>=2)   { stars='⭐⭐';       msg='小恐龙为你鼓掌！再来一次吧！👏'; }
-  else                 { stars='⭐';         msg='没关系，多练习就会变厉害！🦕'; }
+  if (currentPlayer) {
+    $('result-dino').textContent = PLAYERS[currentPlayer].avatar;
+    $('result-title').textContent = `${PLAYERS[currentPlayer].name}，冒险完成！`;
+  } else {
+    $('result-dino').textContent = '🦕';
+    $('result-title').textContent = '冒险完成！';
+  }
 
-  // 星星逐个弹出
+  let starsStr, msg;
+  const starCount = scoreToStarCount(score, totalQ);
+  starsStr = '⭐'.repeat(starCount);
+
+  if      (score === totalQ) { msg = '满分！你是数学小天才！🏆'; }
+  else if (starCount >= 4)   { msg = '太厉害了！再练练就满分啦！🌟'; }
+  else if (starCount >= 3)   { msg = '做得不错！继续加油！💪'; }
+  else if (starCount >= 2)   { msg = '小恐龙为你鼓掌！再来一次吧！👏'; }
+  else                       { msg = '没关系，多练习就会变厉害！🦕'; }
+
   const starsEl = $('result-stars');
   starsEl.innerHTML = '';
-  [...stars].forEach((s, i) => {
+  [...starsStr].forEach((s, i) => {
     const span = document.createElement('span');
     span.className   = 'star-item';
     span.textContent = s;
@@ -941,13 +1345,161 @@ function showResult() {
   });
 
   $('result-msg').textContent = msg;
-  if (score >= 4) setTimeout(startFireworks, 400);
+  if (starCount >= 4) setTimeout(startFireworks, 400);
 
-  // 朗读结果
-  const resultRead = score === 5
-    ? '哇！满分！你答对了全部五道题！你真是数学小天才！'
-    : `冒险完成！你答对了 ${score} 道题！`;
+  renderResultPK();
+
+  const nameStr = currentPlayer ? PLAYERS[currentPlayer].name : '';
+  const resultRead = score === totalQ
+    ? `哇！${nameStr}满分！你答对了全部${totalQ}道题！你真是数学小天才！`
+    : `${nameStr}冒险完成！你答对了 ${score} 道题！`;
   setTimeout(() => speak(resultRead), 600);
+}
+
+// ── 结果页 PK 对比 ──
+function renderResultPK() {
+  const pkBox = $('result-pk-box');
+  const pkRow = $('result-pk-row');
+
+  const leleStats = getPlayerStats('lele');
+  const haohaoStats = getPlayerStats('haohao');
+
+  if (leleStats.games === 0 && haohaoStats.games === 0) {
+    pkBox.style.display = 'none';
+    return;
+  }
+  pkBox.style.display = '';
+
+  const leleLeading = leleStats.totalStars > haohaoStats.totalStars;
+  const haohaoLeading = haohaoStats.totalStars > leleStats.totalStars;
+  const tied = leleStats.totalStars === haohaoStats.totalStars;
+
+  pkRow.innerHTML = `
+    <div class="result-pk-player ${leleLeading ? 'leading' : ''}">
+      <span class="pk-avatar">${PLAYERS.lele.avatar}</span>
+      <span class="pk-name" style="color:${PLAYERS.lele.color}">${PLAYERS.lele.name}</span>
+      <span class="pk-score">⭐${leleStats.totalStars}</span>
+    </div>
+    <span class="result-pk-vs">${tied ? '🤝' : '⚡'}</span>
+    <div class="result-pk-player ${haohaoLeading ? 'leading' : ''}">
+      <span class="pk-avatar">${PLAYERS.haohao.avatar}</span>
+      <span class="pk-name" style="color:${PLAYERS.haohao.color}">${PLAYERS.haohao.name}</span>
+      <span class="pk-score">⭐${haohaoStats.totalStars}</span>
+    </div>
+  `;
+}
+
+// ── 排行榜 ──
+function renderLeaderboard() {
+  const leleStats = getPlayerStats('lele');
+  const haohaoStats = getPlayerStats('haohao');
+
+  const leleLeading = leleStats.totalStars > haohaoStats.totalStars;
+  const haohaoLeading = haohaoStats.totalStars > leleStats.totalStars;
+
+  $('lb-players').innerHTML = `
+    <div class="lb-player-block lele-block ${leleLeading ? 'is-leading' : ''}">
+      ${leleLeading ? '<div class="lb-crown">👑</div>' : ''}
+      <span class="lb-avatar">${PLAYERS.lele.avatar}</span>
+      <div class="lb-name">${PLAYERS.lele.name}</div>
+      <div class="lb-total-stars">⭐ ${leleStats.totalStars} 颗星星</div>
+      <div class="lb-total-score">总分 ${leleStats.totalScore} 分</div>
+      <div class="lb-games">答题 ${leleStats.games} 次 · 满分 ${leleStats.perfectGames} 次</div>
+      <div class="lb-rank-title">${getTitle(leleStats)}</div>
+    </div>
+    <div class="lb-player-block haohao-block ${haohaoLeading ? 'is-leading' : ''}">
+      ${haohaoLeading ? '<div class="lb-crown">👑</div>' : ''}
+      <span class="lb-avatar">${PLAYERS.haohao.avatar}</span>
+      <div class="lb-name">${PLAYERS.haohao.name}</div>
+      <div class="lb-total-stars">⭐ ${haohaoStats.totalStars} 颗星星</div>
+      <div class="lb-total-score">总分 ${haohaoStats.totalScore} 分</div>
+      <div class="lb-games">答题 ${haohaoStats.games} 次 · 满分 ${haohaoStats.perfectGames} 次</div>
+      <div class="lb-rank-title">${getTitle(haohaoStats)}</div>
+    </div>
+  `;
+
+  // 荣誉徽章
+  const badges = [];
+  for (const pid of ['lele', 'haohao']) {
+    const st = pid === 'lele' ? leleStats : haohaoStats;
+    const nm = PLAYERS[pid].name;
+    if (st.perfectGames >= 1) badges.push(`${PLAYERS[pid].avatar} ${nm}·满分达人`);
+    if (st.streak >= 3)       badges.push(`${PLAYERS[pid].avatar} ${nm}·三连胜🔥`);
+    if (st.streak >= 5)       badges.push(`${PLAYERS[pid].avatar} ${nm}·五连胜🔥🔥`);
+    if (st.games >= 10)       badges.push(`${PLAYERS[pid].avatar} ${nm}·勤奋小将`);
+    if (st.games >= 20)       badges.push(`${PLAYERS[pid].avatar} ${nm}·超级勤奋`);
+    if (st.totalStars >= 50)  badges.push(`${PLAYERS[pid].avatar} ${nm}·星星收集家`);
+  }
+  const badgesEl = $('lb-badges');
+  if (badges.length === 0) {
+    badgesEl.innerHTML = '<span style="color:#bdbdbd;font-size:0.9rem;">还没有徽章，继续努力！</span>';
+  } else {
+    badgesEl.innerHTML = badges.map(b => `<span class="lb-badge">${b}</span>`).join('');
+  }
+
+  // 最近记录
+  const allRecords = loadRecords().slice(-10).reverse();
+  const histList = $('lb-history-list');
+  if (allRecords.length === 0) {
+    histList.innerHTML = '<span style="color:#bdbdbd;font-size:0.9rem;">还没有记录哦，快去答题吧！</span>';
+  } else {
+    histList.innerHTML = allRecords.map(r => {
+      const p = PLAYERS[r.player] || { avatar: '🦕', name: '?' };
+      const d = new Date(r.date);
+      const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+      return `<div class="lb-history-item">
+        <span class="hi-player">${p.avatar} ${p.name}</span>
+        <span class="hi-score">${r.score}/${r.total}</span>
+        <span class="hi-stars">${'⭐'.repeat(r.stars)}</span>
+        <span class="hi-date">${dateStr}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── 选择玩家页预览 ──
+function updatePlayerPreview() {
+  for (const pid of ['lele', 'haohao']) {
+    const stats = getPlayerStats(pid);
+    $(`${pid}-name`).textContent = PLAYERS[pid].name;
+    $(`${pid}-preview-stars`).textContent = `⭐ ${stats.totalStars}`;
+    $(`${pid}-preview-title`).textContent = getTitle(stats);
+  }
+}
+
+// ── 编辑名字 ──
+function editPlayerName(playerId) {
+  const current = PLAYERS[playerId].name;
+  const nameEl = $(`${playerId}-name`);
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = current;
+  input.maxLength = 6;
+  input.className = 'name-input';
+  input.style.cssText = 'width:80px;font-size:1.4rem;font-weight:900;text-align:center;border:2px solid ' +
+    PLAYERS[playerId].color + ';border-radius:10px;padding:2px 6px;outline:none;';
+
+  nameEl.replaceWith(input);
+  input.addEventListener('click', e => e.stopPropagation());
+  input.focus();
+  input.select();
+
+  function finish() {
+    const val = input.value.trim();
+    const newName = val.length > 0 ? val : current;
+    saveName(playerId, newName);
+    const span = document.createElement('span');
+    span.className = 'player-name';
+    span.id = `${playerId}-name`;
+    span.textContent = newName;
+    input.replaceWith(span);
+  }
+
+  input.addEventListener('blur', finish);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = current; input.blur(); }
+  });
 }
 
 // ── 页面切换 ──
@@ -962,19 +1514,75 @@ function startGame() {
   currentIdx    = 0;
   score         = 0;
   buildNumpad();
+  updatePlayerIndicator();
   showPage('quiz-page');
   $('progress-bar').style.width = '0%';
   renderQuestion(false);
 }
 
+// ── 事件绑定 ──
 $('btn-start').addEventListener('click', () => {
   playStart();
-  startGame();
-  // 开始语不播了，直接让读题开口，避免两条语音竞争
+  updatePlayerPreview();
+  showPage('player-page');
+  speak('谁来挑战？点击你的头像吧！');
 });
+
+$('pick-lele').addEventListener('click', () => {
+  currentPlayer = 'lele';
+  playStart();
+  speak(`${PLAYERS.lele.name}出发！`);
+  startGame();
+});
+
+$('pick-haohao').addEventListener('click', () => {
+  currentPlayer = 'haohao';
+  playStart();
+  speak(`${PLAYERS.haohao.name}出发！`);
+  startGame();
+});
+
+$('edit-lele').addEventListener('click', e => {
+  e.stopPropagation();
+  editPlayerName('lele');
+});
+$('edit-haohao').addEventListener('click', e => {
+  e.stopPropagation();
+  editPlayerName('haohao');
+});
+
 $('btn-restart').addEventListener('click', () => {
   playStart();
   startGame();
+});
+
+$('btn-back-result').addEventListener('click', () => {
+  updatePlayerPreview();
+  showPage('player-page');
+});
+
+$('btn-lb-home').addEventListener('click', () => {
+  renderLeaderboard();
+  showPage('leaderboard-page');
+});
+$('btn-lb-player').addEventListener('click', () => {
+  renderLeaderboard();
+  showPage('leaderboard-page');
+});
+$('btn-back-lb').addEventListener('click', () => {
+  updatePlayerPreview();
+  showPage('player-page');
+});
+
+$('btn-clear-data').addEventListener('click', () => {
+  if (confirm('确定要清除所有记录吗？这个操作不能撤回哦！')) {
+    clearRecords();
+    localStorage.removeItem(NAMES_KEY);
+    PLAYERS.lele.name = DEFAULT_NAMES.lele;
+    PLAYERS.haohao.name = DEFAULT_NAMES.haohao;
+    renderLeaderboard();
+    updatePlayerPreview();
+  }
 });
 
 document.addEventListener('keydown', e => {
