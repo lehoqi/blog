@@ -219,6 +219,19 @@
     .name-edit-btn:hover { opacity: 1; transform: scale(1.3); }
     .player-card:hover .name-edit-btn { opacity: 0.7; }
 
+    .player-vehicle-tag {
+      display: inline-block;
+      font-size: 0.8rem; font-weight: 800;
+      padding: 2px 10px; border-radius: 12px; margin-bottom: 4px;
+    }
+    .combo-avatar {
+      position: relative; display: inline-block; line-height: 1;
+    }
+    .combo-avatar .dino-badge {
+      position: absolute; right: -6px; bottom: -4px;
+      font-size: 0.42em; line-height: 1;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+    }
     .player-rank-badge {
       display: inline-block;
       background: linear-gradient(135deg, #ffd600, #ffab00);
@@ -239,6 +252,10 @@
 
     /* ===== 题目页 ===== */
     #quiz-page { gap: 20px; }
+    .quiz-body {
+      width: 100%;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
 
     .player-indicator {
       display: flex; align-items: center; gap: 10px;
@@ -880,6 +897,103 @@
       .answer-input-display { min-height: 42px; margin-bottom: 4px; }
       .numpad-btn { padding: 8px 0; }
     }
+
+    /* ===== 横屏适配 ===== */
+    @media (orientation: landscape) and (max-height: 500px) {
+      #app { width: min(720px, 96vw); }
+
+      /* -- 开始页 -- */
+      #start-page { gap: 10px; }
+      .dino-hero-row { font-size: 48px; gap: 6px; margin-top: 0; }
+      .title-main, .title { font-size: 1.8rem; }
+      .title-sub { font-size: 0.9rem; }
+      .stars-row { font-size: 1.2rem; }
+      .btn-start { font-size: 1.2rem; padding: 10px 36px; }
+
+      /* -- 选择玩家页 -- */
+      #player-page { gap: 10px; }
+      .player-title { font-size: 1.4rem; }
+      .player-subtitle { font-size: 0.9rem; }
+      .player-card { padding: 14px 12px 10px; width: 170px; }
+      .player-card .player-avatar { font-size: 48px; }
+      .player-name { font-size: 1rem; }
+      .player-rank-badge { font-size: 0.75rem; padding: 2px 8px; }
+
+      /* -- 答题页核心：左右并排 -- */
+      #quiz-page { gap: 6px; padding: 4px 0; }
+      .player-indicator { padding: 4px 12px; }
+      .player-indicator .pi-avatar { font-size: 1.2rem; }
+      .progress-bar-wrap { height: 14px; }
+      .progress-dino { font-size: 13px; right: -8px; }
+      .progress-label { font-size: 0.75rem; }
+
+      .quiz-body {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .question-card {
+        flex: 1; min-width: 0;
+        padding: 10px 12px 8px;
+        border-radius: 18px;
+      }
+      .dino-small { font-size: 20px; margin-bottom: 2px; }
+      .question-story { font-size: 0.85rem; margin-bottom: 4px; min-height: 20px; }
+      .question-text { font-size: 2rem; letter-spacing: 2px; margin-bottom: 2px; }
+      .answer-input-display { font-size: 1.8rem; min-height: 36px; width: 80px; margin-bottom: 4px; }
+      .feedback-msg { font-size: 0.85rem; min-height: 20px; }
+      .score-badge { font-size: 0.75rem; padding: 2px 8px; top: -6px; }
+      .btn-next-q { font-size: 0.85rem; padding: 5px 16px; margin-top: 4px; }
+
+      .numpad {
+        width: 220px; flex-shrink: 0;
+        gap: 5px;
+        align-self: center;
+      }
+      .numpad-btn {
+        font-size: 1.2rem; padding: 7px 0;
+        border-radius: 10px; border-width: 2px;
+        box-shadow: 0 2px 0 #f57f17;
+      }
+      .numpad-btn.del-btn { font-size: 1rem; box-shadow: 0 2px 0 #bf360c; }
+      .numpad-btn.ok-btn  { font-size: 1rem; box-shadow: 0 2px 0 #1b5e20; }
+
+      /* -- 结果页 -- */
+      .result-card { padding: 16px 20px; }
+      .result-dino { font-size: 3rem; }
+      .result-title { font-size: 1.5rem; }
+      .result-score { font-size: 2rem; }
+      .result-stars { font-size: 1.8rem; }
+      .result-msg { font-size: 0.9rem; }
+      .result-btns { gap: 8px; flex-wrap: wrap; }
+      .result-btns button { font-size: 0.9rem; padding: 8px 16px; }
+
+      /* -- 排行榜 -- */
+      #leaderboard-page .lb-card { max-height: 80vh; }
+      .star-tower-section { padding: 12px 8px; }
+      .star-tower-arena { gap: 8px; }
+      .tower-bar-wrap { width: 45px; }
+      .tower-dino { font-size: 32px; }
+      .tower-vs-badge { font-size: 0.8rem; padding: 3px 8px; }
+      .medal-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      .medal-item { padding: 6px 3px; }
+      .medal-item .medal-icon { font-size: 1.4rem; }
+      .lb-players { flex-direction: row; gap: 10px; }
+      .lb-player-block { flex: 1; min-width: 0; }
+    }
+
+    /* 非常矮的横屏（如 iPhone SE 横屏 ~320px 高） */
+    @media (orientation: landscape) and (max-height: 380px) {
+      .dino-hero-row { font-size: 36px; }
+      .title-main, .title { font-size: 1.5rem; }
+      .btn-start { font-size: 1rem; padding: 8px 28px; }
+      .player-card { padding: 10px 8px 8px; width: 150px; }
+      .player-card .player-avatar { font-size: 36px; }
+      .question-text { font-size: 1.6rem; }
+      .answer-input-display { font-size: 1.5rem; min-height: 32px; width: 70px; }
+      .numpad { width: 190px; gap: 4px; }
+      .numpad-btn { font-size: 1rem; padding: 5px 0; }
+    }
   </style>
 </head>
 <body>
@@ -921,22 +1035,24 @@
     <div class="player-subtitle">点击你的头像开始答题吧！</div>
     <div class="player-choices">
       <div class="player-card lele" id="pick-lele">
-        <span class="player-avatar">🦕</span>
+        <span class="player-avatar"><span class="combo-avatar"><span>🚓</span><span class="dino-badge">🦕</span></span></span>
+        <div class="player-vehicle-tag" style="background:#e8f5e9;color:#2e7d32;">🚓 警车迷</div>
         <div class="player-name-row">
           <span class="player-name" id="lele-name">乐乐</span>
           <button class="name-edit-btn" id="edit-lele" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
-        <div class="player-rank-badge" id="lele-preview-title">数学新手</div>
+        <div class="player-rank-badge" id="lele-preview-title">警车新手</div>
       </div>
       <div class="player-card haohao" id="pick-haohao">
-        <span class="player-avatar">🦖</span>
+        <span class="player-avatar"><span class="combo-avatar"><span>🚑</span><span class="dino-badge">🦖</span></span></span>
+        <div class="player-vehicle-tag" style="background:#e3f2fd;color:#1565c0;">🚑 急救迷</div>
         <div class="player-name-row">
           <span class="player-name" id="haohao-name">昊昊</span>
           <button class="name-edit-btn" id="edit-haohao" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="haohao-preview-stars">⭐ 0</div>
-        <div class="player-rank-badge" id="haohao-preview-title">数学新手</div>
+        <div class="player-rank-badge" id="haohao-preview-title">急救新手</div>
       </div>
     </div>
     <button class="btn-leaderboard" id="btn-lb-player" style="margin-top:8px;">🏆 排行榜</button>
@@ -956,17 +1072,19 @@
       <div class="progress-bar-fill" id="progress-bar" style="width:0%"><span class="progress-dino" id="progress-dino">🦕</span></div>
     </div>
 
-    <div class="question-card" id="question-card">
-      <div class="score-badge" id="score-badge">⭐ <span id="score-display">0</span></div>
-      <span class="dino-small" id="quiz-dino">🦕</span>
-      <div class="question-story" id="question-story"></div>
-      <div class="question-text" id="question-text"></div>
-      <div class="answer-input-display" id="answer-display">?</div>
-      <div class="feedback-msg hidden" id="feedback-msg"></div>
-      <button class="btn-next-q hidden" id="btn-next-q">下一题 →</button>
-    </div>
+    <div class="quiz-body">
+      <div class="question-card" id="question-card">
+        <div class="score-badge" id="score-badge">⭐ <span id="score-display">0</span></div>
+        <span class="dino-small" id="quiz-dino">🦕</span>
+        <div class="question-story" id="question-story"></div>
+        <div class="question-text" id="question-text"></div>
+        <div class="answer-input-display" id="answer-display">?</div>
+        <div class="feedback-msg hidden" id="feedback-msg"></div>
+        <button class="btn-next-q hidden" id="btn-next-q">下一题 →</button>
+      </div>
 
-    <div class="numpad" id="numpad"></div>
+      <div class="numpad" id="numpad"></div>
+    </div>
   </div>
 
   <!-- 结果页 -->
@@ -1050,9 +1168,15 @@ function saveName(playerId, name) {
 
 const savedNames = loadNames();
 const PLAYERS = {
-  lele:   { name: savedNames.lele,   avatar: '🦕', color: '#43a047', colorLight: '#e8f5e9' },
-  haohao: { name: savedNames.haohao, avatar: '🦖', color: '#1e88e5', colorLight: '#e3f2fd' }
+  lele:   { name: savedNames.lele,   avatar: '🦕', vehicle: '🚓', vehicleName: '警车恐龙', preferTag: 'police',    color: '#43a047', colorLight: '#e8f5e9' },
+  haohao: { name: savedNames.haohao, avatar: '🦖', vehicle: '🚑', vehicleName: '急救恐龙', preferTag: 'ambulance', color: '#1e88e5', colorLight: '#e3f2fd' }
 };
+
+function comboAvatar(playerId) {
+  const p = PLAYERS[playerId];
+  if (!p) return '🚗';
+  return `<span class="combo-avatar"><span>${p.vehicle}</span><span class="dino-badge">${p.avatar}</span></span>`;
+}
 
 let currentPlayer = null;
 
@@ -1064,14 +1188,15 @@ function loadRecords() {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch { return []; }
 }
-function saveRecord(playerId, score, totalQ) {
+function saveRecord(playerId, score, totalQ, tagScoresData) {
   const records = loadRecords();
   records.push({
     player: playerId,
     score,
     total: totalQ,
     stars: scoreToStarCount(score, totalQ),
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
+    tagScores: tagScoresData || {}
   });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
 }
@@ -1090,7 +1215,17 @@ function getPlayerStats(playerId) {
     if (records[i].score === records[i].total) streak++;
     else break;
   }
-  return { totalStars, totalScore, games, perfectGames, streak, records };
+
+  const totalTagScores = { police: 0, ambulance: 0, general: 0 };
+  records.forEach(r => {
+    if (r.tagScores) {
+      for (const [k, v] of Object.entries(r.tagScores)) {
+        totalTagScores[k] = (totalTagScores[k] || 0) + v;
+      }
+    }
+  });
+
+  return { totalStars, totalScore, games, perfectGames, streak, records, totalTagScores };
 }
 function scoreToStarCount(score, total) {
   const ratio = score / total;
@@ -1102,15 +1237,21 @@ function scoreToStarCount(score, total) {
 }
 
 // ── 称号系统 ──
-function getTitle(stats) {
+const TITLES = {
+  police:    ['🚓 警车新手', '🚓 巡逻小兵', '🚓 巡逻小队长', '🚓 破案能手', '🚓 超级警长', '🚓 传奇警探'],
+  ambulance: ['🚑 急救新手', '🚑 急救小兵', '🚑 急救小队长', '🚑 救护达人', '🚑 急救英雄', '🚑 传奇医生'],
+  default:   ['🌱 数学新手', '🦕 勇敢冒险家', '⭐ 进步之星', '💡 聪明小将', '🔥 算数达人', '👑 数学大王']
+};
+function getTitle(stats, playerId) {
   const s = stats.totalStars;
-  if (s >= 100) return '数学大王 👑';
-  if (s >= 60)  return '超级学霸 🌟';
-  if (s >= 35)  return '算数达人 🔥';
-  if (s >= 20)  return '聪明小将 💡';
-  if (s >= 10)  return '进步之星 ⭐';
-  if (s >= 3)   return '勇敢冒险家 🦕';
-  return '数学新手 🌱';
+  const key = playerId && PLAYERS[playerId] ? PLAYERS[playerId].preferTag : 'default';
+  const t = TITLES[key] || TITLES.default;
+  if (s >= 100) return t[5];
+  if (s >= 60)  return t[4];
+  if (s >= 35)  return t[3];
+  if (s >= 20)  return t[2];
+  if (s >= 10)  return t[1];
+  return t[0];
 }
 
 // ── 语音朗读 ──
@@ -1193,11 +1334,11 @@ const STORIES_ADD = [
   (a,b) => ({ text: `停车场有 ${a} 辆小汽车，又开来了 ${b} 辆，`, q: '现在一共有多少辆？' }),
   (a,b) => ({ text: `小恐龙画了 ${a} 幅画，又画了 ${b} 幅，`, q: '一共画了多少幅？' }),
   (a,b) => ({ text: `花园里开了 ${a} 朵花，又开了 ${b} 朵，`, q: '现在一共有多少朵？' }),
-  (a,b) => ({ text: `🚓 警车出动！先救了 ${a} 个人，又救了 ${b} 个人，`, q: '一共救了多少人？' }),
-  (a,b) => ({ text: `🚑 救护车忙碌的一天！上午送了 ${a} 位病人，下午又送了 ${b} 位，`, q: '一共送了多少位病人？' }),
-  (a,b) => ({ text: `🚓 警察叔叔巡逻，上午抓了 ${a} 个坏蛋，下午又抓了 ${b} 个，`, q: '一共抓了多少个坏蛋？' }),
-  (a,b) => ({ text: `🚑 救护车车队有 ${a} 辆，又调来了 ${b} 辆支援，`, q: '现在一共有多少辆救护车？' }),
-  (a,b) => ({ text: `🚓 停车场有 ${a} 辆警车，又开来了 ${b} 辆，`, q: '现在一共有多少辆警车？' }),
+  (a,b) => ({ text: `🚓 警车出动！先救了 ${a} 个人，又救了 ${b} 个人，`, q: '一共救了多少人？', tag: 'police' }),
+  (a,b) => ({ text: `🚓 警察叔叔巡逻，上午抓了 ${a} 个坏蛋，下午又抓了 ${b} 个，`, q: '一共抓了多少个坏蛋？', tag: 'police' }),
+  (a,b) => ({ text: `🚓 停车场有 ${a} 辆警车，又开来了 ${b} 辆，`, q: '现在一共有多少辆警车？', tag: 'police' }),
+  (a,b) => ({ text: `🚑 救护车忙碌的一天！上午送了 ${a} 位病人，下午又送了 ${b} 位，`, q: '一共送了多少位病人？', tag: 'ambulance' }),
+  (a,b) => ({ text: `🚑 救护车车队有 ${a} 辆，又调来了 ${b} 辆支援，`, q: '现在一共有多少辆救护车？', tag: 'ambulance' }),
 ];
 const STORIES_SUB = [
   (a,b) => ({ text: `小恐龙有 ${a} 颗星星，送给朋友 ${b} 颗，`, q: '还剩多少颗？' }),
@@ -1210,22 +1351,36 @@ const STORIES_SUB = [
   (a,b) => ({ text: `天上有 ${a} 个气球，飞走了 ${b} 个，`, q: '还剩多少个？' }),
   (a,b) => ({ text: `书架上有 ${a} 本书，小恐龙拿走了 ${b} 本，`, q: '书架上还剩多少本？' }),
   (a,b) => ({ text: `小鸭子有 ${a} 条小鱼，吃掉了 ${b} 条，`, q: '还剩多少条？' }),
-  (a,b) => ({ text: `🚓 警车队有 ${a} 辆警车，出警派走了 ${b} 辆，`, q: '车队还剩多少辆？' }),
-  (a,b) => ({ text: `🚑 医院有 ${a} 辆救护车，出发了 ${b} 辆去救人，`, q: '医院还剩多少辆？' }),
-  (a,b) => ({ text: `🚓 警察叔叔有 ${a} 个对讲机，借给同事 ${b} 个，`, q: '还剩多少个？' }),
-  (a,b) => ({ text: `🚑 救护车上有 ${a} 个急救包，用掉了 ${b} 个，`, q: '还剩多少个急救包？' }),
-  (a,b) => ({ text: `🚓 警察局有 ${a} 顶警帽，发出去了 ${b} 顶，`, q: '还剩多少顶？' }),
+  (a,b) => ({ text: `🚓 警车队有 ${a} 辆警车，出警派走了 ${b} 辆，`, q: '车队还剩多少辆？', tag: 'police' }),
+  (a,b) => ({ text: `🚓 警察叔叔有 ${a} 个对讲机，借给同事 ${b} 个，`, q: '还剩多少个？', tag: 'police' }),
+  (a,b) => ({ text: `🚓 警察局有 ${a} 顶警帽，发出去了 ${b} 顶，`, q: '还剩多少顶？', tag: 'police' }),
+  (a,b) => ({ text: `🚑 医院有 ${a} 辆救护车，出发了 ${b} 辆去救人，`, q: '医院还剩多少辆？', tag: 'ambulance' }),
+  (a,b) => ({ text: `🚑 救护车上有 ${a} 个急救包，用掉了 ${b} 个，`, q: '还剩多少个急救包？', tag: 'ambulance' }),
 ];
+function pickStory(pool, preferTag) {
+  if (preferTag && Math.random() < 0.6) {
+    const preferred = pool.filter((_, i) => {
+      const test = pool[i](1,1);
+      return test.tag === preferTag;
+    });
+    if (preferred.length > 0) return preferred[randInt(0, preferred.length - 1)];
+  }
+  return pool[randInt(0, pool.length - 1)];
+}
+
 function generateQuestion() {
+  const preferTag = currentPlayer ? PLAYERS[currentPlayer].preferTag : null;
   const isAdd = Math.random() < 0.55;
   if (isAdd) {
     const a = randInt(1,15), b = randInt(1,20-a);
-    const s = STORIES_ADD[randInt(0,STORIES_ADD.length-1)](a,b);
-    return { a, b, op:'+', answer:a+b, story: s.text, question: s.q };
+    const storyFn = pickStory(STORIES_ADD, preferTag);
+    const s = storyFn(a,b);
+    return { a, b, op:'+', answer:a+b, story: s.text, question: s.q, tag: s.tag || null };
   } else {
     const a = randInt(2,20), b = randInt(1,a);
-    const s = STORIES_SUB[randInt(0,STORIES_SUB.length-1)](a,b);
-    return { a, b, op:'-', answer:a-b, story: s.text, question: s.q };
+    const storyFn = pickStory(STORIES_SUB, preferTag);
+    const s = storyFn(a,b);
+    return { a, b, op:'-', answer:a-b, story: s.text, question: s.q, tag: s.tag || null };
   }
 }
 function generateQuestions(n=10) {
@@ -1343,6 +1498,8 @@ function startFireworks(duration = 2200) {
 
 // ── 庆祝动画 ──
 const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🦕'];
+const CELEBRATE_POLICE    = ['🚓 警笛响起！嘀嘟嘀嘟～','🚓 破案成功！太厉害了！','🚓 警长出击！答对啦！'];
+const CELEBRATE_AMBULANCE = ['🚑 急救成功！你是小英雄！','🚑 嘀嘟嘀嘟～救到啦！','🚑 急救达人！太棒了！'];
 
 function showCelebrate(cb) {
   const overlay  = $('celebrate-overlay');
@@ -1350,7 +1507,15 @@ function showCelebrate(cb) {
   const textEl   = $('celebrate-text');
   const starsEl  = $('celebrate-stars');
 
-  textEl.textContent  = CELEBRATE_TEXTS[randInt(0, CELEBRATE_TEXTS.length-1)];
+  const curQ = questions[currentIdx];
+  const isThemeQ = currentPlayer && curQ && curQ.tag && PLAYERS[currentPlayer].preferTag === curQ.tag;
+  if (isThemeQ && curQ.tag === 'police') {
+    textEl.textContent = CELEBRATE_POLICE[randInt(0, CELEBRATE_POLICE.length-1)];
+  } else if (isThemeQ && curQ.tag === 'ambulance') {
+    textEl.textContent = CELEBRATE_AMBULANCE[randInt(0, CELEBRATE_AMBULANCE.length-1)];
+  } else {
+    textEl.textContent = CELEBRATE_TEXTS[randInt(0, CELEBRATE_TEXTS.length-1)];
+  }
   starsEl.textContent = '⭐⭐⭐';
 
   dinoEl.style.transform  = '';
@@ -1361,7 +1526,7 @@ function showCelebrate(cb) {
   starsEl.style.opacity   = '';
 
   if (currentPlayer) {
-    dinoEl.textContent = PLAYERS[currentPlayer].avatar;
+    dinoEl.innerHTML = comboAvatar(currentPlayer);
   }
 
   overlay.classList.add('show');
@@ -1415,6 +1580,8 @@ let currentIdx    = 0;
 let score         = 0;
 let currentAnswer = '';
 let wrongCount    = 0;
+let correctStreak = 0;
+let tagScores     = { police: 0, ambulance: 0, general: 0 };
 
 // ── 数字键盘 ──
 function buildNumpad() {
@@ -1491,8 +1658,9 @@ function renderQuestion(slideIn = true) {
   $('score-display').textContent  = score;
 
   if (currentPlayer) {
-    $('quiz-dino').textContent = PLAYERS[currentPlayer].avatar;
-    $('progress-dino').textContent = PLAYERS[currentPlayer].avatar;
+    const p = PLAYERS[currentPlayer];
+    $('quiz-dino').innerHTML = comboAvatar(currentPlayer);
+    $('progress-dino').textContent = p.vehicle;
   } else {
     $('quiz-dino').textContent = DINO_EMOJIS[randInt(0,4)];
     $('progress-dino').textContent = '🦕';
@@ -1530,7 +1698,7 @@ function renderQuestion(slideIn = true) {
 function updatePlayerIndicator() {
   if (!currentPlayer) return;
   const p = PLAYERS[currentPlayer];
-  $('pi-avatar').textContent = p.avatar;
+  $('pi-avatar').innerHTML = comboAvatar(currentPlayer);
   $('pi-name').textContent = p.name;
   $('pi-name').style.color = p.color;
   $('player-indicator').style.borderLeftColor = p.color;
@@ -1553,6 +1721,560 @@ function updatePlayerIndicator() {
   }
 }
 
+// ── 警笛 / 救护车音效（Web Audio API） ──
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) {
+    try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  return _audioCtx;
+}
+
+function playPoliceSiren() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const dur = 2.8;
+  const lo = 392, hi = 660;
+
+  const masterGain = ctx.createGain();
+  masterGain.connect(ctx.destination);
+  masterGain.gain.setValueAtTime(0, now);
+  masterGain.gain.linearRampToValueAtTime(0.18, now + 0.04);
+  masterGain.gain.setValueAtTime(0.18, now + dur - 0.2);
+  masterGain.gain.linearRampToValueAtTime(0, now + dur);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 3500;
+  filter.Q.value = 0.7;
+  filter.connect(masterGain);
+
+  const osc = ctx.createOscillator();
+  osc.type = 'square';
+  osc.connect(filter);
+
+  const step = 0.4;
+  for (let i = 0; i < 7; i++) {
+    const t = now + i * step;
+    const freq = (i % 2 === 0) ? hi : lo;
+    osc.frequency.setValueAtTime(freq, t);
+  }
+
+  osc.start(now);
+  osc.stop(now + dur);
+}
+
+function playAmbulanceSiren() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const dur = 3.0;
+
+  const masterGain = ctx.createGain();
+  masterGain.connect(ctx.destination);
+  masterGain.gain.setValueAtTime(0, now);
+  masterGain.gain.linearRampToValueAtTime(0.16, now + 0.05);
+  masterGain.gain.setValueAtTime(0.16, now + dur - 0.25);
+  masterGain.gain.linearRampToValueAtTime(0, now + dur);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 3000;
+  filter.Q.value = 0.8;
+  filter.connect(masterGain);
+
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.connect(filter);
+
+  osc.frequency.setValueAtTime(440, now);
+  osc.frequency.linearRampToValueAtTime(700, now + 0.7);
+  osc.frequency.setValueAtTime(700, now + 0.72);
+  osc.frequency.linearRampToValueAtTime(440, now + 1.4);
+  osc.frequency.setValueAtTime(440, now + 1.42);
+  osc.frequency.linearRampToValueAtTime(700, now + 2.1);
+  osc.frequency.setValueAtTime(700, now + 2.12);
+  osc.frequency.linearRampToValueAtTime(440, now + dur);
+
+  osc.start(now);
+  osc.stop(now + dur);
+}
+
+// ── 全屏飞车动效（Canvas 粒子系统，三段式：冲入→亮相→冲出） ──
+function showVehicleRush(vehicleEmoji, type, combo, onDone) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (onDone) onDone();
+    return;
+  }
+
+  if (type === 'police') playPoliceSiren();
+  else playAmbulanceSiren();
+
+  const W = window.innerWidth, H = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
+  document.body.appendChild(canvas);
+  const c = canvas.getContext('2d');
+  c.scale(dpr, dpr);
+
+  const intensity = Math.min(combo, 5);
+  const pMul = 1 + intensity * 0.15;
+  const sMul = 1 + intensity * 0.08;
+
+  const C1 = type === 'police' ? [244,67,54] : [244,67,54];
+  const C2 = type === 'police' ? [21,101,192] : [255,255,255];
+  const GOLD = [255,235,59];
+  const rushText = type === 'police' ? '🚓 破案成功！' : '🚑 急救成功！';
+  const glow = type === 'police' ? 'rgba(21,101,192,0.9)' : 'rgba(244,67,54,0.9)';
+
+  const DUR = 3800;
+  const midX = W / 2, midY = H * 0.40;
+  const vcx = midX - 40, vcy = midY;
+
+  const trails = [];
+  const bursts = [];
+  const sparks = [];
+  const speedLines = [];
+  const shockwaves = [];
+  let lastBurstMs = 0;
+  let exitTriggered = false;
+  let shakeOffset = { x: 0, y: 0 };
+
+  function easeOut(t) { return t * (2 - t); }
+  function easeIn(t) { return t * t; }
+
+  function vehicleAt(ms) {
+    const p = ms / DUR;
+    let x, y = vcy, sc, rot;
+
+    if (p < 0.05) {
+      x = -250 + 80 * (p / 0.05);
+      sc = 0.2 + 0.1 * (p / 0.05);
+      rot = 0;
+    } else if (p < 0.22) {
+      const lp = easeOut((p - 0.05) / 0.17);
+      x = -170 + (vcx + 170) * lp;
+      sc = 0.3 + 1.3 * sMul * lp;
+      rot = -5 * (1 - lp);
+    } else if (p < 0.26) {
+      const lp = (p - 0.22) / 0.04;
+      const shake = Math.sin(lp * Math.PI * 6) * 5 * (1 - lp);
+      x = vcx + shake;
+      y = vcy + Math.sin(lp * Math.PI * 4) * 3 * (1 - lp);
+      sc = 1.3 * sMul + 0.15 * Math.sin(lp * Math.PI * 3);
+      rot = shake * 0.3;
+    } else if (p < 0.56) {
+      const lp = (p - 0.26) / 0.30;
+      x = vcx + Math.sin(lp * Math.PI * 5) * 3;
+      y = vcy + Math.sin(lp * Math.PI * 2.5) * 5;
+      const pulse = Math.sin(lp * Math.PI * 4);
+      sc = (1.4 + pulse * 0.12) * sMul;
+      rot = Math.sin(lp * Math.PI * 7) * 1.2;
+    } else if (p < 0.80) {
+      const lp = easeIn((p - 0.56) / 0.24);
+      x = vcx + (W + 300 - vcx) * lp;
+      sc = (1.4 - 0.9 * lp) * sMul;
+      rot = 4 * lp;
+    } else {
+      x = W + 400; sc = 0; rot = 0;
+    }
+    return { x, y, sc, rot };
+  }
+
+  const t0 = performance.now();
+
+  function render(now) {
+    const ms = now - t0;
+    if (ms > DUR) { canvas.remove(); if (onDone) onDone(); return; }
+
+    c.save();
+    c.translate(shakeOffset.x, shakeOffset.y);
+    if (shakeOffset.x !== 0 || shakeOffset.y !== 0) {
+      shakeOffset.x *= 0.85;
+      shakeOffset.y *= 0.85;
+      if (Math.abs(shakeOffset.x) < 0.3) shakeOffset.x = 0;
+      if (Math.abs(shakeOffset.y) < 0.3) shakeOffset.y = 0;
+    }
+
+    c.clearRect(-10, -10, W + 20, H + 20);
+    const v = vehicleAt(ms);
+    const p = ms / DUR;
+
+    // ── 1. Background flash (smooth hue transition + white strobe) ──
+    if (p < 0.78) {
+      const isHold = p >= 0.26 && p < 0.56;
+      const freq = isHold ? 70 : 150;
+      const t = (ms % (freq * 2)) / (freq * 2);
+      const blend = (Math.sin(t * Math.PI * 2) + 1) / 2;
+      const r = C1[0] + (C2[0] - C1[0]) * blend;
+      const g = C1[1] + (C2[1] - C1[1]) * blend;
+      const b = C1[2] + (C2[2] - C1[2]) * blend;
+      const baseI = (isHold ? 0.30 : 0.15) * pMul * (1 - p / 0.78);
+      const grd = c.createRadialGradient(v.x, v.y, 0, v.x, v.y, Math.max(W, H) * 0.85);
+      grd.addColorStop(0, `rgba(${r|0},${g|0},${b|0},${baseI})`);
+      grd.addColorStop(0.3, `rgba(${r|0},${g|0},${b|0},${baseI * 0.45})`);
+      grd.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = grd;
+      c.fillRect(-10, -10, W + 20, H + 20);
+
+      if (isHold) {
+        const strobeCycle = ms % 200;
+        if (strobeCycle < 30) {
+          const sA = 0.2 * pMul * (1 - strobeCycle / 30);
+          c.fillStyle = `rgba(255,255,255,${sA})`;
+          c.fillRect(-10, -10, W + 20, H + 20);
+        }
+      }
+    }
+
+    // ── 2. Approach headlight (distant glow before vehicle enters) ──
+    if (p < 0.08) {
+      const lp = p / 0.08;
+      const hlX = -180 + 100 * lp;
+      const hlR = 40 + 60 * lp;
+      const hlA = 0.3 + 0.4 * lp;
+      const hlg = c.createRadialGradient(hlX, vcy, 0, hlX, vcy, hlR);
+      hlg.addColorStop(0, `rgba(255,255,200,${hlA})`);
+      hlg.addColorStop(0.5, `rgba(255,200,100,${hlA * 0.3})`);
+      hlg.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = hlg;
+      c.fillRect(-10, -10, W + 20, H + 20);
+    }
+
+    // ── 3. Ground shadow & tire marks ──
+    if (v.sc > 0.1) {
+      const groundY = v.y + 46 * v.sc;
+      const shadowW = 60 * v.sc;
+      const shadowH = 8 * v.sc;
+      c.save();
+      c.globalAlpha = Math.min(v.sc * 0.35, 0.45);
+      c.fillStyle = 'rgba(0,0,0,0.4)';
+      c.beginPath();
+      c.ellipse(v.x, groundY, shadowW, shadowH, 0, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
+
+      if (p >= 0.56 && p < 0.80) {
+        const trackA = 0.12 * (1 - (p - 0.56) / 0.24);
+        c.save();
+        c.globalAlpha = trackA;
+        c.strokeStyle = 'rgba(80,80,80,0.6)';
+        c.lineWidth = 3;
+        c.setLineDash([8, 6]);
+        const trackStartX = Math.max(0, vcx - 30);
+        c.beginPath();
+        c.moveTo(trackStartX, groundY - 6);
+        c.lineTo(v.x - 20, groundY - 6);
+        c.stroke();
+        c.beginPath();
+        c.moveTo(trackStartX, groundY + 6);
+        c.lineTo(v.x - 20, groundY + 6);
+        c.stroke();
+        c.setLineDash([]);
+        c.restore();
+      }
+    }
+
+    // ── 4. Speed lines ──
+    if (v.sc > 0.3 && p < 0.80) {
+      const isMovingFast = p < 0.22 || p >= 0.56;
+      const count = isMovingFast ? Math.floor(4 * pMul) : Math.floor(1.5 * pMul);
+      for (let i = 0; i < count; i++) {
+        speedLines.push({
+          x: v.x - 10 - Math.random() * 30 * v.sc,
+          y: v.y - 30 * v.sc + Math.random() * 60 * v.sc,
+          len: (30 + Math.random() * 60) * (isMovingFast ? 1.5 : 0.7),
+          life: 1.0,
+          decay: 0.03 + Math.random() * 0.02,
+          w: 1 + Math.random() * 2,
+          col: Math.random() < 0.6 ? [255,255,255] : (Math.random() < 0.5 ? C1 : C2)
+        });
+      }
+    }
+    for (let i = speedLines.length - 1; i >= 0; i--) {
+      const sl = speedLines[i];
+      sl.life -= sl.decay;
+      sl.x -= 3 + sl.len * 0.04;
+      if (sl.life <= 0 || sl.x + sl.len < 0) { speedLines.splice(i, 1); continue; }
+      c.save();
+      c.globalAlpha = sl.life * 0.6;
+      c.strokeStyle = `rgb(${sl.col[0]},${sl.col[1]},${sl.col[2]})`;
+      c.lineWidth = sl.w * sl.life;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(sl.x, sl.y);
+      c.lineTo(sl.x - sl.len * sl.life, sl.y);
+      c.stroke();
+      c.restore();
+    }
+
+    // ── 5. Light trails (glow orbs behind vehicle) ──
+    if (v.sc > 0 && p < 0.80) {
+      const n = (p >= 0.26 && p < 0.56 ? 6 : 4) * pMul | 0;
+      const baseR = 24 * v.sc;
+      for (let i = 0; i < n; i++) {
+        trails.push({
+          x: v.x - 5 + Math.random() * 25,
+          y: v.y + (Math.random() - 0.5) * 55,
+          r: baseR * (0.4 + Math.random() * 0.6),
+          life: 1.0,
+          decay: 0.010 + Math.random() * 0.008,
+          col: Math.random() < 0.5 ? C1 : C2
+        });
+      }
+    }
+    for (let i = trails.length - 1; i >= 0; i--) {
+      const d = trails[i];
+      d.life -= d.decay;
+      if (d.life <= 0) { trails.splice(i, 1); continue; }
+      const r = d.r * d.life;
+      const tg = c.createRadialGradient(d.x, d.y, 0, d.x, d.y, r);
+      tg.addColorStop(0, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},${d.life * 0.5})`);
+      tg.addColorStop(1, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},0)`);
+      c.fillStyle = tg;
+      c.beginPath(); c.arc(d.x, d.y, r, 0, Math.PI * 2); c.fill();
+    }
+
+    // ── 6. Sparks with motion trails ──
+    if (v.sc > 0.3 && p < 0.78) {
+      const sn = Math.floor((2 + intensity * 0.5) * pMul);
+      for (let i = 0; i < sn; i++) {
+        sparks.push({
+          x: v.x + Math.random() * 15,
+          y: v.y + (Math.random() - 0.5) * 36,
+          px: v.x + Math.random() * 15,
+          py: v.y + (Math.random() - 0.5) * 36,
+          vx: -2 - Math.random() * 3,
+          vy: (Math.random() - 0.5) * 4,
+          r: 1.5 + Math.random() * 2.5,
+          life: 1.0,
+          decay: 0.018 + Math.random() * 0.012,
+          col: Math.random() < 0.4 ? GOLD : (Math.random() < 0.5 ? [255,167,38] : [255,138,101])
+        });
+      }
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.life -= s.decay;
+      s.px = s.x; s.py = s.y;
+      s.x += s.vx; s.y += s.vy;
+      s.vy += 0.08;
+      if (s.life <= 0) { sparks.splice(i, 1); continue; }
+      c.save();
+      c.globalAlpha = s.life * 0.85;
+      c.strokeStyle = `rgb(${s.col[0]},${s.col[1]},${s.col[2]})`;
+      c.lineWidth = s.r * s.life * 1.5;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(s.px, s.py);
+      c.lineTo(s.x, s.y);
+      c.stroke();
+      c.fillStyle = `rgb(${s.col[0]},${s.col[1]},${s.col[2]})`;
+      c.beginPath(); c.arc(s.x, s.y, s.r * s.life, 0, Math.PI * 2); c.fill();
+      c.restore();
+    }
+
+    // ── 7. Burst particles (initial + continuous during hold) ──
+    const holdStart = DUR * 0.26, holdEnd = DUR * 0.56;
+    if (ms >= holdStart && ms < holdEnd) {
+      if (ms - lastBurstMs > (200 / pMul)) {
+        lastBurstMs = ms;
+        const isFirst = bursts.length < 20;
+        const bn = isFirst ? Math.floor(52 * pMul) : Math.floor(10 * pMul);
+        for (let i = 0; i < bn; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (isFirst ? 2.2 : 1.2) + Math.random() * (isFirst ? 4 : 2.5);
+          bursts.push({
+            x: v.x, y: v.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            r: (isFirst ? 3 : 2) + Math.random() * (isFirst ? 7 : 4),
+            life: 1.0,
+            decay: 0.007 + Math.random() * 0.006,
+            col: Math.random() < 0.35 ? C1 : Math.random() < 0.6 ? C2 : GOLD
+          });
+        }
+      }
+    }
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      b.life -= b.decay; b.x += b.vx; b.y += b.vy;
+      b.vx *= 0.982; b.vy *= 0.982;
+      if (b.life <= 0) { bursts.splice(i, 1); continue; }
+      c.globalAlpha = b.life;
+      const r = b.r * (0.3 + b.life * 0.7);
+      const bg = c.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+      bg.addColorStop(0, `rgba(${b.col[0]},${b.col[1]},${b.col[2]},${b.life})`);
+      bg.addColorStop(1, `rgba(${b.col[0]},${b.col[1]},${b.col[2]},0)`);
+      c.fillStyle = bg;
+      c.beginPath(); c.arc(b.x, b.y, r, 0, Math.PI * 2); c.fill();
+      c.globalAlpha = 1;
+    }
+
+    // ── 8. Shockwave ring on exit ──
+    if (p >= 0.56 && !exitTriggered) {
+      exitTriggered = true;
+      shakeOffset.x = (Math.random() - 0.5) * 12;
+      shakeOffset.y = (Math.random() - 0.5) * 8;
+      for (let i = 0; i < 3; i++) {
+        shockwaves.push({
+          x: vcx, y: vcy,
+          r: 20 + i * 15,
+          maxR: Math.max(W, H) * (0.5 + i * 0.15),
+          life: 1.0,
+          decay: 0.012 + i * 0.003,
+          col: i === 0 ? C1 : (i === 1 ? C2 : [255,255,255])
+        });
+      }
+    }
+    for (let i = shockwaves.length - 1; i >= 0; i--) {
+      const sw = shockwaves[i];
+      sw.life -= sw.decay;
+      sw.r += (sw.maxR - sw.r) * 0.06;
+      if (sw.life <= 0) { shockwaves.splice(i, 1); continue; }
+      c.save();
+      c.globalAlpha = sw.life * 0.5;
+      c.strokeStyle = `rgba(${sw.col[0]},${sw.col[1]},${sw.col[2]},${sw.life * 0.7})`;
+      c.lineWidth = 3 * sw.life + 1;
+      c.beginPath(); c.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2); c.stroke();
+      c.restore();
+    }
+
+    // ── 9. Police lights (red-blue rotating beacons on top of vehicle) ──
+    if (v.sc > 0.1) {
+      const lx = v.x, ly = v.y - 32 * v.sc;
+      const lightCycle = ms % 120;
+      const isRed = lightCycle < 60;
+      const lightCol = isRed ? C1 : C2;
+      const otherCol = isRed ? C2 : C1;
+
+      const beaconR = (8 + 4 * Math.sin(ms * 0.03)) * v.sc * pMul;
+      const lg1 = c.createRadialGradient(lx - 12 * v.sc, ly, 0, lx - 12 * v.sc, ly, beaconR * 2.5);
+      lg1.addColorStop(0, `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},0.9)`);
+      lg1.addColorStop(0.3, `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},0.4)`);
+      lg1.addColorStop(1, `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},0)`);
+      c.fillStyle = lg1;
+      c.beginPath(); c.arc(lx - 12 * v.sc, ly, beaconR * 2.5, 0, Math.PI * 2); c.fill();
+
+      const lg2 = c.createRadialGradient(lx + 12 * v.sc, ly, 0, lx + 12 * v.sc, ly, beaconR * 2.5);
+      lg2.addColorStop(0, `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},0.9)`);
+      lg2.addColorStop(0.3, `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},0.4)`);
+      lg2.addColorStop(1, `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},0)`);
+      c.fillStyle = lg2;
+      c.beginPath(); c.arc(lx + 12 * v.sc, ly, beaconR * 2.5, 0, Math.PI * 2); c.fill();
+
+      c.fillStyle = `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},1)`;
+      c.beginPath(); c.arc(lx - 12 * v.sc, ly, beaconR * 0.5, 0, Math.PI * 2); c.fill();
+      c.fillStyle = `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},1)`;
+      c.beginPath(); c.arc(lx + 12 * v.sc, ly, beaconR * 0.5, 0, Math.PI * 2); c.fill();
+
+      const isHold = p >= 0.26 && p < 0.56;
+      if (isHold) {
+        const coneAngle = isRed ? -0.4 : 0.4;
+        const coneLen = 100 * v.sc * pMul;
+        c.save();
+        c.globalAlpha = 0.12 * pMul;
+        c.fillStyle = `rgb(${lightCol[0]},${lightCol[1]},${lightCol[2]})`;
+        c.beginPath();
+        c.moveTo(lx - 12 * v.sc, ly);
+        c.lineTo(lx - 12 * v.sc + Math.cos(-Math.PI/2 + coneAngle - 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 + coneAngle - 0.4) * coneLen);
+        c.lineTo(lx - 12 * v.sc + Math.cos(-Math.PI/2 + coneAngle + 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 + coneAngle + 0.4) * coneLen);
+        c.closePath(); c.fill();
+
+        c.fillStyle = `rgb(${otherCol[0]},${otherCol[1]},${otherCol[2]})`;
+        c.beginPath();
+        c.moveTo(lx + 12 * v.sc, ly);
+        c.lineTo(lx + 12 * v.sc + Math.cos(-Math.PI/2 - coneAngle - 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 - coneAngle - 0.4) * coneLen);
+        c.lineTo(lx + 12 * v.sc + Math.cos(-Math.PI/2 - coneAngle + 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 - coneAngle + 0.4) * coneLen);
+        c.closePath(); c.fill();
+        c.restore();
+      }
+    }
+
+    // ── 10. Vehicle emoji with enhanced glow ──
+    if (v.sc > 0.05) {
+      c.save();
+      c.translate(v.x, v.y);
+      c.rotate(v.rot * Math.PI / 180);
+      c.scale(v.sc, v.sc);
+      c.shadowColor = glow;
+      c.shadowBlur = 50 * pMul;
+      c.font = `${72 + intensity * 4}px serif`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.fillText(vehicleEmoji, 0, 0);
+      c.shadowBlur = 25;
+      c.fillText(vehicleEmoji, 0, 0);
+      c.shadowBlur = 0;
+      c.restore();
+    }
+
+    // ── 11. Text with per-character bounce-in ──
+    const tIn = DUR * 0.36, tHold = DUR * 0.54, tOut = DUR * 0.78;
+    if (ms >= tIn && ms <= tOut) {
+      const chars = [...rushText];
+      const charDelay = 50;
+      const totalCharTime = chars.length * charDelay;
+      const textY = H * 0.62;
+
+      c.save();
+      c.font = `bold ${32 + intensity * 2}px "PingFang SC","Microsoft YaHei",sans-serif`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+
+      const metrics = chars.map(ch => c.measureText(ch).width);
+      const totalW = metrics.reduce((a, b) => a + b, 0);
+      let cx = W / 2 - totalW / 2;
+
+      for (let i = 0; i < chars.length; i++) {
+        const charStart = tIn + i * charDelay;
+        if (ms < charStart) { cx += metrics[i]; continue; }
+
+        let alpha, offy;
+        const charAge = ms - charStart;
+
+        if (ms < tHold) {
+          const tp = Math.min(charAge / 300, 1);
+          const bounce = tp < 0.6
+            ? easeOut(tp / 0.6)
+            : 1 + Math.sin((tp - 0.6) / 0.4 * Math.PI) * 0.15;
+          alpha = Math.min(tp * 2, 1);
+          offy = -20 * (1 - bounce);
+        } else {
+          alpha = 1 - easeIn((ms - tHold) / (tOut - tHold));
+          offy = 0;
+        }
+
+        c.globalAlpha = Math.max(0, Math.min(1, alpha));
+        c.shadowColor = glow;
+        c.shadowBlur = 25;
+        c.fillStyle = '#fff';
+        c.fillText(chars[i], cx + metrics[i] / 2, textY + offy);
+        c.shadowBlur = 12;
+        c.fillText(chars[i], cx + metrics[i] / 2, textY + offy);
+        c.shadowBlur = 0;
+        cx += metrics[i];
+      }
+
+      c.globalAlpha = 1;
+      c.restore();
+    }
+
+    c.restore();
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+}
+
 // ── 提交答案 ──
 function submitAnswer() {
   if (currentAnswer === '') return;
@@ -1565,6 +2287,9 @@ function submitAnswer() {
 
   if (userAns === q.answer) {
     score++;
+    correctStreak++;
+    const qTag = q.tag || 'general';
+    tagScores[qTag] = (tagScores[qTag] || 0) + 1;
     const total = questions.length;
 
     ansEl.animate([
@@ -1596,16 +2321,29 @@ function submitAnswer() {
       { transform: 'scaleY(1)' }
     ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
 
+    const isThemeMatch = currentPlayer && q.tag && PLAYERS[currentPlayer].preferTag === q.tag;
+
     setTimeout(() => {
       showCelebrate(() => {
-        currentIdx++;
-        if (currentIdx >= questions.length) showResult();
-        else renderQuestion();
+        const goNext = () => {
+          currentIdx++;
+          if (currentIdx >= questions.length) showResult();
+          else renderQuestion();
+        };
+
+        if (isThemeMatch) {
+          const vType = q.tag;
+          const vEmoji = vType === 'police' ? '🚓' : '🚑';
+          showVehicleRush(vEmoji, vType, correctStreak, goNext);
+        } else {
+          goNext();
+        }
       });
     }, 220);
 
   } else {
     wrongCount++;
+    correctStreak = 0;
     playWrong();
 
     $('red-flash').animate([
@@ -1674,7 +2412,7 @@ function showResult() {
   if (currentPlayer) {
     const pre = detectNewMedals(currentPlayer);
     beforeSet = pre.beforeSet;
-    saveRecord(currentPlayer, score, totalQ);
+    saveRecord(currentPlayer, score, totalQ, { ...tagScores });
   }
 
   const newMedals = currentPlayer ? findNewlyUnlocked(currentPlayer, beforeSet) : [];
@@ -1683,7 +2421,7 @@ function showResult() {
   $('final-score').textContent = score;
 
   if (currentPlayer) {
-    $('result-dino').textContent = PLAYERS[currentPlayer].avatar;
+    $('result-dino').innerHTML = comboAvatar(currentPlayer);
     $('result-title').textContent = `${PLAYERS[currentPlayer].name}，冒险完成！`;
   } else {
     $('result-dino').textContent = '🦕';
@@ -1769,13 +2507,13 @@ function renderResultPK() {
 
   pkRow.innerHTML = `
     <div class="result-pk-player ${leleLeading ? 'leading' : ''}">
-      <span class="pk-avatar">${PLAYERS.lele.avatar}</span>
+      <span class="pk-avatar">${comboAvatar('lele')}</span>
       <span class="pk-name" style="color:${PLAYERS.lele.color}">${PLAYERS.lele.name}</span>
       <span class="pk-score">⭐${leleStats.totalStars}</span>
     </div>
     <span class="result-pk-vs">${tied ? '🤝' : '⚡'}</span>
     <div class="result-pk-player ${haohaoLeading ? 'leading' : ''}">
-      <span class="pk-avatar">${PLAYERS.haohao.avatar}</span>
+      <span class="pk-avatar">${comboAvatar('haohao')}</span>
       <span class="pk-name" style="color:${PLAYERS.haohao.color}">${PLAYERS.haohao.name}</span>
       <span class="pk-score">⭐${haohaoStats.totalStars}</span>
     </div>
@@ -1796,6 +2534,10 @@ const ALL_MEDALS = [
   { id: 'streak3',      icon: '🔥', label: '三连满分',    check: st => st.streak >= 3 },
   { id: 'streak5',      icon: '🔥', label: '五连满分',    check: st => st.streak >= 5 },
   { id: 'perfect5',     icon: '🏆', label: '满分5次',     check: st => st.perfectGames >= 5 },
+  { id: 'police_10',    icon: '🚓', label: '小小警长',    check: st => st.totalTagScores && st.totalTagScores.police >= 10 },
+  { id: 'police_30',    icon: '🚔', label: '金牌警探',    check: st => st.totalTagScores && st.totalTagScores.police >= 30 },
+  { id: 'ambulance_10', icon: '🚑', label: '急救先锋',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 10 },
+  { id: 'ambulance_30', icon: '🏥', label: '金牌医生',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 30 },
 ];
 
 // ── 排行榜 ──
@@ -1826,7 +2568,7 @@ function renderLeaderboard() {
     return `
       <div class="star-tower-player">
         ${isLeading ? '<span class="tower-crown">👑</span>' : '<span style="height:2rem;display:block"></span>'}
-        <span class="tower-dino ${stats.streak >= 3 ? 'has-flame' : ''}">${p.avatar}</span>
+        <span class="tower-dino ${stats.streak >= 3 ? 'has-flame' : ''}">${comboAvatar(pid)}</span>
         <div class="tower-bar-wrap">
           <div class="tower-bar ${barClass}" id="tower-bar-${pid}" style="height:0px;">
             ${buildStarIcons(stats.totalStars)}
@@ -1834,7 +2576,7 @@ function renderLeaderboard() {
         </div>
         <span class="tower-count">⭐ ${stats.totalStars}</span>
         <span class="tower-name ${nameClass}">${p.name}</span>
-        <span class="tower-title-badge ${titleClass}">${getTitle(stats)}</span>
+        <span class="tower-title-badge ${titleClass}">${getTitle(stats, pid)}</span>
       </div>`;
   }
 
@@ -1882,21 +2624,21 @@ function renderLeaderboard() {
   $('lb-players').innerHTML = `
     <div class="lb-player-block lele-block ${leleLeading ? 'is-leading' : ''}">
       ${leleLeading ? '<div class="lb-crown">👑</div>' : ''}
-      <span class="lb-avatar">${PLAYERS.lele.avatar}</span>
+      <span class="lb-avatar">${comboAvatar('lele')}</span>
       <div class="lb-name">${PLAYERS.lele.name}</div>
       <div class="lb-total-stars">⭐ ${leleStats.totalStars} 颗星星</div>
       <div class="lb-total-score">总分 ${leleStats.totalScore} 分</div>
       <div class="lb-games">答题 ${leleStats.games} 次 · 满分 ${leleStats.perfectGames} 次</div>
-      <div class="lb-rank-title">${getTitle(leleStats)}</div>
+      <div class="lb-rank-title">${getTitle(leleStats, 'lele')}</div>
     </div>
     <div class="lb-player-block haohao-block ${haohaoLeading ? 'is-leading' : ''}">
       ${haohaoLeading ? '<div class="lb-crown">👑</div>' : ''}
-      <span class="lb-avatar">${PLAYERS.haohao.avatar}</span>
+      <span class="lb-avatar">${comboAvatar('haohao')}</span>
       <div class="lb-name">${PLAYERS.haohao.name}</div>
       <div class="lb-total-stars">⭐ ${haohaoStats.totalStars} 颗星星</div>
       <div class="lb-total-score">总分 ${haohaoStats.totalScore} 分</div>
       <div class="lb-games">答题 ${haohaoStats.games} 次 · 满分 ${haohaoStats.perfectGames} 次</div>
-      <div class="lb-rank-title">${getTitle(haohaoStats)}</div>
+      <div class="lb-rank-title">${getTitle(haohaoStats, 'haohao')}</div>
     </div>
   `;
 
@@ -1907,11 +2649,11 @@ function renderLeaderboard() {
     histList.innerHTML = '<span style="color:#bdbdbd;font-size:0.9rem;">还没有记录哦，快去答题吧！</span>';
   } else {
     histList.innerHTML = allRecords.map(r => {
-      const p = PLAYERS[r.player] || { avatar: '🦕', name: '?' };
+      const p = PLAYERS[r.player] || { avatar: '🦕', vehicle: '', name: '?' };
       const d = new Date(r.date);
       const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
       return `<div class="lb-history-item">
-        <span class="hi-player">${p.avatar} ${p.name}</span>
+        <span class="hi-player">${comboAvatar(r.player)} ${p.name}</span>
         <span class="hi-score">${r.score}/${r.total}</span>
         <span class="hi-stars">${'⭐'.repeat(r.stars)}</span>
         <span class="hi-date">${dateStr}</span>
@@ -1926,7 +2668,7 @@ function updatePlayerPreview() {
     const stats = getPlayerStats(pid);
     $(`${pid}-name`).textContent = PLAYERS[pid].name;
     $(`${pid}-preview-stars`).textContent = `⭐ ${stats.totalStars}`;
-    $(`${pid}-preview-title`).textContent = getTitle(stats);
+    $(`${pid}-preview-title`).textContent = getTitle(stats, pid);
   }
 }
 
@@ -1976,6 +2718,8 @@ function startGame() {
   questions     = generateQuestions(5);
   currentIdx    = 0;
   score         = 0;
+  correctStreak = 0;
+  tagScores     = { police: 0, ambulance: 0, general: 0 };
   buildNumpad();
   updatePlayerIndicator();
   showPage('quiz-page');
