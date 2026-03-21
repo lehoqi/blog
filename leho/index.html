@@ -340,6 +340,48 @@
     }
     .question-text .op { color: var(--orange); }
     .question-text .eq { color: var(--purple); }
+    #question-text.hidden { display: none; }
+
+    .quiz-progress-row {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 4px; gap: 8px; flex-wrap: wrap;
+    }
+    .btn-reread {
+      flex-shrink: 0; font-size: 0.85rem; font-weight: 800;
+      padding: 6px 12px; border-radius: 16px;
+      border: 2px solid #90caf9; background: #fff;
+      color: var(--blue); cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: transform 0.12s;
+    }
+    .btn-reread:hover { background: #e3f2fd; }
+    .btn-reread:active { transform: scale(0.96); }
+
+    .start-secondary-row {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 12px; margin-top: 8px;
+    }
+
+    #settings-page { gap: 16px; text-align: center; align-items: center; }
+    .settings-card {
+      width: 100%; max-width: 400px;
+      background: var(--card); border-radius: 28px; padding: 24px 20px;
+      box-shadow: var(--shadow); text-align: left;
+    }
+    .settings-title {
+      font-size: 1.6rem; font-weight: 900; color: var(--text);
+      margin-bottom: 16px; text-align: center;
+    }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 14px; font-size: 1rem; font-weight: 700; color: #5d4037;
+    }
+    .settings-row input[type="checkbox"] {
+      width: 22px; height: 22px; accent-color: #43a047; cursor: pointer; flex-shrink: 0;
+    }
+    .settings-hint {
+      font-size: 0.85rem; color: #8d6e63; margin: 4px 0 18px; line-height: 1.45;
+    }
 
     .answer-input-display {
       font-size: 3rem; font-weight: 900; color: var(--blue);
@@ -1026,7 +1068,27 @@
     <div class="title-sub">两只小恐龙，谁能赢得更多星星？</div>
     <div class="stars-row">⭐🌟✨🌟⭐</div>
     <button class="btn-start" id="btn-start">开始冒险！</button>
-    <button class="btn-leaderboard" id="btn-lb-home">🏆 排行榜</button>
+    <div class="start-secondary-row">
+      <button type="button" class="btn-leaderboard" id="btn-settings-home">⚙️ 设置</button>
+      <button type="button" class="btn-leaderboard" id="btn-lb-home">🏆 排行榜</button>
+    </div>
+  </div>
+
+  <!-- 设置页 -->
+  <div class="page" id="settings-page">
+    <div class="settings-card">
+      <div class="settings-title">⚙️ 设置</div>
+      <label class="settings-row" for="chk-show-equation">
+        <span>显示算式行（如 3 + 5 =）</span>
+        <input type="checkbox" id="chk-show-equation" checked />
+      </label>
+      <label class="settings-row" for="chk-speak-equation">
+        <span>语音朗读算式（几加/减几等于多少）</span>
+        <input type="checkbox" id="chk-speak-equation" checked />
+      </label>
+      <p class="settings-hint">两项可分别开关。关闭朗读算式时，仍会朗读故事与提问。</p>
+      <button type="button" class="btn-back-home" id="btn-back-settings">🏠 返回首页</button>
+    </div>
   </div>
 
   <!-- 选择玩家页 -->
@@ -1065,8 +1127,9 @@
       <span class="pi-name" id="pi-name">乐乐</span>
       <span class="pi-vs" id="pi-vs"></span>
     </div>
-    <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+    <div class="quiz-progress-row">
       <span class="progress-label" id="progress-label">第 1 题 / 共 10 题</span>
+      <button type="button" class="btn-reread" id="btn-reread" title="重新读题" aria-label="重新读题">🔊 读题</button>
     </div>
     <div class="progress-bar-wrap">
       <div class="progress-bar-fill" id="progress-bar" style="width:0%"><span class="progress-dino" id="progress-dino">🦕</span></div>
@@ -1165,6 +1228,24 @@ function saveName(playerId, name) {
   localStorage.setItem(NAMES_KEY, JSON.stringify(names));
   PLAYERS[playerId].name = name;
 }
+
+const SHOW_EQUATION_KEY = 'dino_math_show_equation';
+const SPEAK_EQUATION_KEY = 'dino_math_speak_equation';
+
+function loadBoolSetting(key, defaultVal = true) {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === null) return defaultVal;
+    return JSON.parse(v) !== false;
+  } catch { return defaultVal; }
+}
+function saveBoolSetting(key, val) {
+  localStorage.setItem(key, JSON.stringify(!!val));
+}
+function loadShowEquation() { return loadBoolSetting(SHOW_EQUATION_KEY); }
+function saveShowEquation(on) { saveBoolSetting(SHOW_EQUATION_KEY, on); }
+function loadSpeakEquation() { return loadBoolSetting(SPEAK_EQUATION_KEY); }
+function saveSpeakEquation(on) { saveBoolSetting(SPEAK_EQUATION_KEY, on); }
 
 const savedNames = loadNames();
 const PLAYERS = {
@@ -1648,6 +1729,13 @@ function updateAnswerDisplay() {
 // ── 题目渲染 ──
 const DINO_EMOJIS = ['🦕','🦖','🦕','🦖','🦕'];
 
+function buildReadText(q) {
+  const base = q.story + q.question;
+  if (!loadSpeakEquation()) return base;
+  const opWord = q.op === '+' ? '加' : '减';
+  return `${base}${q.a} ${opWord} ${q.b} 等于多少？`;
+}
+
 function renderQuestion(slideIn = true) {
   const q = questions[currentIdx];
   currentAnswer = '';
@@ -1668,6 +1756,7 @@ function renderQuestion(slideIn = true) {
 
   $('question-story').textContent = q.story + q.question;
   $('question-text').innerHTML    = `${q.a} <span class="op">${q.op}</span> ${q.b} <span class="eq">=</span>`;
+  $('question-text').classList.toggle('hidden', !loadShowEquation());
 
   const ansEl = $('answer-display');
   ansEl.textContent = '?';
@@ -1689,9 +1778,13 @@ function renderQuestion(slideIn = true) {
     ], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
   }
 
-  const opWord   = q.op === '+' ? '加' : '减';
-  const readText = `${q.story}${q.question}${q.a} ${opWord} ${q.b} 等于多少？`;
+  const readText = buildReadText(q);
   setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+}
+
+function rereadCurrentQuestion() {
+  if (!questions.length || currentIdx < 0 || currentIdx >= questions.length) return;
+  speak(buildReadText(questions[currentIdx]), 0.8);
 }
 
 // ── 玩家指示器 ──
@@ -2713,6 +2806,12 @@ function showPage(id) {
   $(id).classList.add('active');
 }
 
+function openSettings() {
+  $('chk-show-equation').checked = loadShowEquation();
+  $('chk-speak-equation').checked = loadSpeakEquation();
+  showPage('settings-page');
+}
+
 // ── 游戏启动 ──
 function startGame() {
   questions     = generateQuestions(5);
@@ -2796,6 +2895,26 @@ function openLeaderboard() {
   }
   setTimeout(() => speak(txt, 0.9), 400);
 }
+
+$('btn-settings-home').addEventListener('click', () => {
+  playClick();
+  openSettings();
+});
+$('btn-back-settings').addEventListener('click', () => {
+  playClick();
+  showPage('start-page');
+});
+$('chk-show-equation').addEventListener('change', () => {
+  saveShowEquation($('chk-show-equation').checked);
+});
+$('chk-speak-equation').addEventListener('change', () => {
+  saveSpeakEquation($('chk-speak-equation').checked);
+});
+
+$('btn-reread').addEventListener('click', () => {
+  playClick();
+  rereadCurrentQuestion();
+});
 
 $('btn-lb-home').addEventListener('click', openLeaderboard);
 $('btn-lb-player').addEventListener('click', openLeaderboard);
