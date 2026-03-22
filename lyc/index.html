@@ -1,0 +1,2839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>消防车数学冒险 🚒</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:  #4caf50;
+      --yellow: #ffd600;
+      --orange: #ff9800;
+      --red:    #f44336;
+      --blue:   #2196f3;
+      --purple: #9c27b0;
+      --bg:     #e8f5e9;
+      --card:   #ffffff;
+      --text:   #1b5e20;
+      --shadow: 0 8px 24px rgba(0,0,0,0.15);
+      --player-color: #4caf50;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to top, #a5d6a7, transparent);
+      z-index: 0;
+    }
+
+    .cloud {
+      position: fixed;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.8;
+      z-index: 0;
+      animation: floatCloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud-1 { width:100px; height:40px; top:8%;  animation-duration:25s; animation-delay:-5s; }
+    .cloud-1::before { width:50px; height:50px; top:-25px; left:15px; }
+    .cloud-1::after  { width:35px; height:35px; top:-18px; left:45px; }
+    .cloud-2 { width:140px; height:50px; top:18%; animation-duration:35s; animation-delay:-15s; }
+    .cloud-2::before { width:65px; height:65px; top:-35px; left:20px; }
+    .cloud-2::after  { width:50px; height:50px; top:-28px; left:65px; }
+    .cloud-3 { width:80px;  height:32px; top:5%;  animation-duration:20s; animation-delay:-10s; }
+    .cloud-3::before { width:40px; height:40px; top:-20px; left:12px; }
+    .cloud-3::after  { width:28px; height:28px; top:-14px; left:38px; }
+    @keyframes floatCloud {
+      from { transform: translateX(-200px); }
+      to   { transform: translateX(calc(100vw + 200px)); }
+    }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      width: min(520px, 95vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .page.active { display: flex; }
+
+    /* ===== 开始页 ===== */
+    #start-page { gap: 24px; text-align: center; }
+
+    .dino-hero-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; position: relative;
+    }
+    .dino-hero {
+      font-size: 90px;
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+      animation: dinoFloat 2s ease-in-out infinite;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+    }
+    .dino-hero-2 {
+      font-size: 90px;
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+      animation: dinoFloat 2s ease-in-out infinite;
+      animation-delay: -1s;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.2));
+    }
+    .dino-hero::after, .dino-hero-2::after {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,214,0,0.45) 0%, transparent 70%);
+      animation: glowPulse 1.5s ease-in-out infinite;
+      z-index: -1;
+    }
+    .dino-hero-solo {
+      animation-delay: 0s;
+    }
+    .dino-hero-vs {
+      font-size: 1.6rem; font-weight: 900; color: #ff5722;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin: 0 -8px; z-index: 2;
+      animation: vsPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes dinoFloat {
+      0%,100% { transform: translateY(0)    rotate(-3deg) scale(1);    }
+      50%      { transform: translateY(-20px) rotate(5deg)  scale(1.08); }
+    }
+    @keyframes glowPulse {
+      0%,100% { transform: scale(0.8); opacity: 0.5; }
+      50%      { transform: scale(1.4); opacity: 1;   }
+    }
+
+    .title-main {
+      font-size: 2.4rem; font-weight: 900; color: var(--text);
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.1); letter-spacing: 2px;
+    }
+    .title-sub { font-size: 1.1rem; color: #558b2f; font-weight: 600; }
+    .stars-row { display: flex; gap: 8px; justify-content: center; font-size: 2rem; }
+
+    .btn-start {
+      background: linear-gradient(135deg, #66bb6a, #43a047);
+      color: white; border: none; border-radius: 50px;
+      padding: 18px 56px; font-size: 1.6rem; font-weight: 900;
+      cursor: pointer; letter-spacing: 2px;
+      box-shadow: 0 6px 0 #2e7d32, var(--shadow);
+      animation: btnBounce 1.2s ease-in-out infinite;
+    }
+    @keyframes btnBounce {
+      0%,100% { transform: translateY(0)   scale(1);    box-shadow: 0 6px 0 #2e7d32, var(--shadow); }
+      50%      { transform: translateY(-7px) scale(1.05); box-shadow: 0 10px 0 #2e7d32, var(--shadow); }
+    }
+    .btn-start:hover  { animation-play-state: paused; transform: scale(1.08); }
+    .btn-start:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #2e7d32; }
+
+    /* ===== 选择玩家页 ===== */
+    #player-page { gap: 20px; text-align: center; }
+    .player-title { font-size: 1.8rem; font-weight: 900; color: var(--text); }
+    .player-subtitle { font-size: 1.1rem; color: #558b2f; font-weight: 600; }
+    .player-choices {
+      display: flex; gap: 24px; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .player-card {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 28px 24px 20px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 200px;
+      text-align: center;
+      border: 4px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .player-card:hover {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+    }
+    .player-card:active {
+      transform: translateY(2px) scale(0.97);
+    }
+    .player-card.hero { border-color: #ff7043; }
+    .player-card.hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, #ff7043, #ffab91);
+    }
+    .player-avatar {
+      font-size: 72px; display: block; margin-bottom: 8px;
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .player-name {
+      font-size: 1.6rem; font-weight: 900; margin-bottom: 4px;
+    }
+    .player-card.hero .player-name { color: #bf360c; }
+    .player-total-stars {
+      font-size: 1rem; color: #ff8f00; font-weight: 700;
+    }
+    .player-name-row {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .name-edit-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.9rem; opacity: 0.4; padding: 2px 4px;
+      transition: opacity 0.15s, transform 0.15s;
+      line-height: 1;
+    }
+    .name-edit-btn:hover { opacity: 1; transform: scale(1.3); }
+    .player-card:hover .name-edit-btn { opacity: 0.7; }
+
+    .player-vehicle-tag {
+      display: inline-block;
+      font-size: 0.8rem; font-weight: 800;
+      padding: 2px 10px; border-radius: 12px; margin-bottom: 4px;
+    }
+    .combo-avatar {
+      position: relative; display: inline-block; line-height: 1;
+    }
+    .combo-avatar .dino-badge {
+      position: absolute; right: -6px; bottom: -4px;
+      font-size: 0.42em; line-height: 1;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+    }
+    .player-rank-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd600, #ffab00);
+      color: #5d4037; font-size: 0.85rem; font-weight: 900;
+      padding: 3px 12px; border-radius: 20px; margin-top: 6px;
+    }
+
+    .btn-leaderboard {
+      background: linear-gradient(135deg, #ffd54f, #ffb300);
+      color: #5d4037; border: none; border-radius: 50px;
+      padding: 14px 36px; font-size: 1.2rem; font-weight: 900;
+      cursor: pointer; letter-spacing: 1px;
+      box-shadow: 0 5px 0 #ff8f00, var(--shadow);
+      transition: transform 0.15s;
+    }
+    .btn-leaderboard:hover { transform: translateY(-3px) scale(1.05); }
+    .btn-leaderboard:active { transform: translateY(3px) scale(0.96); box-shadow: 0 2px 0 #ff8f00; }
+
+    /* ===== 题目页 ===== */
+    #quiz-page { gap: 20px; }
+    .quiz-body {
+      width: 100%;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+    }
+
+    .player-indicator {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card); border-radius: 20px; padding: 8px 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+      font-weight: 800; font-size: 1.1rem;
+      border-left: 5px solid var(--player-color);
+    }
+    .player-indicator .pi-avatar { font-size: 1.6rem; }
+    .player-indicator .pi-name { color: var(--player-color); }
+    .player-indicator .pi-vs {
+      font-size: 0.85rem; color: #9e9e9e; margin-left: 4px;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      background: #c8e6c9;
+      border-radius: 20px;
+      height: 22px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #66bb6a, #ffd600);
+      border-radius: 20px;
+      transition: width 0.6s cubic-bezier(.34,1.56,.64,1);
+      transform-origin: left center;
+      position: relative;
+    }
+    .progress-dino {
+      position: absolute;
+      right: -14px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+      transition: transform 0.3s;
+    }
+    .progress-bar-fill:hover .progress-dino {
+      transform: translateY(-50%) scale(1.3);
+    }
+
+    .progress-label {
+      font-size: 1rem; color: #558b2f; font-weight: 700; align-self: flex-end;
+    }
+
+    .score-badge {
+      position: absolute; top: -10px; right: 0;
+      background: var(--yellow); color: #5d4037;
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 1rem; font-weight: 900;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+    .score-badge.score-pop {
+      animation: scorePop 0.35s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes scorePop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.5) rotate(-5deg); }
+      100% { transform: scale(1); }
+    }
+
+    .question-card {
+      position: relative; width: 100%;
+      background: var(--card); border-radius: 28px;
+      padding: 28px 24px 22px;
+      box-shadow: var(--shadow); text-align: center;
+    }
+
+    .dino-small {
+      font-size: 32px;
+      display: block; margin-bottom: 4px;
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .question-story {
+      font-size: 1rem; color: #795548; font-weight: 600;
+      margin-bottom: 16px; min-height: 28px;
+    }
+    .question-text {
+      font-size: 3.2rem; font-weight: 900;
+      color: var(--text); letter-spacing: 4px; margin-bottom: 8px;
+    }
+    .question-text .op { color: var(--orange); }
+    .question-text .eq { color: var(--purple); }
+    #question-text.hidden { display: none; }
+
+    .quiz-progress-row {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 4px; gap: 8px; flex-wrap: wrap;
+    }
+    .btn-reread {
+      flex-shrink: 0; font-size: 0.85rem; font-weight: 800;
+      padding: 6px 12px; border-radius: 16px;
+      border: 2px solid #90caf9; background: #fff;
+      color: var(--blue); cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: transform 0.12s;
+    }
+    .btn-reread:hover { background: #e3f2fd; }
+    .btn-reread:active { transform: scale(0.96); }
+
+    .start-secondary-row {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 12px; margin-top: 8px;
+    }
+
+    #settings-page { gap: 16px; text-align: center; align-items: center; }
+    .settings-card {
+      width: 100%; max-width: 400px;
+      background: var(--card); border-radius: 28px; padding: 24px 20px;
+      box-shadow: var(--shadow); text-align: left;
+    }
+    .settings-title {
+      font-size: 1.6rem; font-weight: 900; color: var(--text);
+      margin-bottom: 16px; text-align: center;
+    }
+    .settings-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 14px; font-size: 1rem; font-weight: 700; color: #5d4037;
+    }
+    .settings-row input[type="checkbox"] {
+      width: 22px; height: 22px; accent-color: #43a047; cursor: pointer; flex-shrink: 0;
+    }
+    .settings-hint {
+      font-size: 0.85rem; color: #8d6e63; margin: 4px 0 18px; line-height: 1.45;
+    }
+
+    .answer-input-display {
+      font-size: 3rem; font-weight: 900; color: var(--blue);
+      min-height: 60px;
+      border-bottom: 4px dashed #90caf9;
+      width: 130px; margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+    }
+
+    .feedback-msg {
+      font-size: 1.1rem; font-weight: 700;
+      min-height: 28px; color: var(--red);
+    }
+    .feedback-msg.hidden { visibility: hidden; }
+
+    .btn-next-q {
+      margin-top: 8px;
+      padding: 8px 28px;
+      font-size: 1.1rem; font-weight: 800;
+      border: none; border-radius: 20px;
+      background: linear-gradient(135deg, #66bb6a, #43a047);
+      color: #fff; cursor: pointer;
+      box-shadow: 0 3px 10px rgba(76,175,80,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-next-q:active { transform: scale(0.95); }
+    .btn-next-q.hidden { display: none; }
+
+    /* ===== 数字键盘 ===== */
+    .numpad {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .numpad-btn {
+      background: linear-gradient(135deg, #fff9c4, #fff176);
+      border: 3px solid #f9a825; border-radius: 16px;
+      font-size: 1.8rem; font-weight: 900; color: #e65100;
+      padding: 14px 0; cursor: pointer;
+      box-shadow: 0 5px 0 #f57f17;
+      transition: background 0.1s;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    .numpad-btn:hover {
+      background: linear-gradient(135deg, #ffee58, #fdd835);
+    }
+    .numpad-btn.del-btn {
+      background: linear-gradient(135deg, #ffccbc, #ffab91);
+      border-color: #e64a19; color: #bf360c;
+      box-shadow: 0 5px 0 #bf360c; font-size: 1.4rem;
+    }
+    .numpad-btn.ok-btn {
+      background: linear-gradient(135deg, #a5d6a7, #66bb6a);
+      border-color: #2e7d32; color: white;
+      box-shadow: 0 5px 0 #1b5e20; font-size: 1.4rem;
+      grid-column: span 2;
+    }
+
+    /* ===== 庆祝覆盖层 ===== */
+    #celebrate-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.5);
+    }
+    #celebrate-overlay.show { display: flex; }
+
+    .celebrate-dino {
+      font-size: 140px;
+      filter: drop-shadow(0 16px 32px rgba(0,0,0,0.4));
+    }
+    .celebrate-text {
+      font-size: 3.2rem; font-weight: 900; color: #fff;
+      text-shadow: 4px 4px 0 rgba(0,0,0,0.35), 0 0 30px rgba(255,214,0,0.9);
+      margin-top: 16px;
+    }
+    .celebrate-stars {
+      font-size: 2.8rem; margin-top: 8px;
+    }
+
+    /* ===== Canvas 烟花 ===== */
+    #fireworks-canvas {
+      position: fixed; inset: 0; z-index: 99; pointer-events: none;
+    }
+
+    /* 答错红闪层 */
+    #red-flash {
+      position: fixed; inset: 0; z-index: 98;
+      pointer-events: none; background: transparent;
+    }
+
+    /* ===== 总结页 ===== */
+    #result-page { gap: 20px; text-align: center; }
+    .result-card {
+      width: 100%; background: var(--card);
+      border-radius: 28px; padding: 36px 28px;
+      box-shadow: var(--shadow);
+    }
+    .result-dino {
+      font-size: 90px; display: block;
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .result-title { font-size: 2rem; font-weight: 900; color: var(--text); margin: 12px 0 8px; }
+    .result-score { font-size: 4rem; font-weight: 900; color: var(--orange); }
+    .result-stars {
+      font-size: 2.4rem; margin: 8px 0;
+      display: flex; gap: 4px; justify-content: center;
+    }
+    .result-stars .star-item {
+      display: inline-block;
+      opacity: 0;
+    }
+    .result-msg { font-size: 1.2rem; color: #558b2f; font-weight: 700; margin-top: 8px; }
+
+    .new-medal-box {
+      margin-top: 16px; padding: 14px;
+      background: linear-gradient(135deg, #ede7f6, #e8eaf6);
+      border-radius: 18px; border: 3px solid #b39ddb;
+      animation: newMedalGlow 1.5s ease-in-out infinite;
+    }
+    @keyframes newMedalGlow {
+      0%,100% { box-shadow: 0 0 8px rgba(179,157,219,0.3); }
+      50%     { box-shadow: 0 0 24px rgba(179,157,219,0.7); }
+    }
+    .new-medal-title {
+      font-size: 1.1rem; font-weight: 900; color: #7b1fa2; margin-bottom: 10px;
+    }
+    .new-medal-list {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+    .new-medal-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      animation: newMedalPop 0.6s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .new-medal-item .nmi-icon { font-size: 2.4rem; }
+    .new-medal-item .nmi-label {
+      font-size: 0.85rem; font-weight: 800; color: #5d4037;
+    }
+    @keyframes newMedalPop {
+      from { transform: scale(0) rotate(-20deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .result-pk-box {
+      margin-top: 16px; padding: 16px;
+      background: linear-gradient(135deg, #fff8e1, #fff3e0);
+      border-radius: 18px; border: 2px dashed #ffb74d;
+    }
+    .result-pk-title {
+      font-size: 1.1rem; font-weight: 900; color: #e65100; margin-bottom: 10px;
+    }
+    .result-pk-row {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      font-size: 1rem; font-weight: 700;
+    }
+    .result-pk-player {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .result-pk-player .pk-avatar { font-size: 2.4rem; }
+    .result-pk-player .pk-name { font-size: 0.95rem; }
+    .result-pk-player .pk-score { font-size: 1.8rem; font-weight: 900; }
+    .result-pk-player.leading .pk-score { color: #e65100; }
+    .result-pk-vs {
+      font-size: 1.5rem; font-weight: 900; color: #ff5722;
+    }
+
+    .result-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+    .btn-restart {
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white; border: none; border-radius: 50px;
+      padding: 18px 48px; font-size: 1.5rem; font-weight: 900;
+      cursor: pointer; letter-spacing: 2px;
+      box-shadow: 0 6px 0 #e65100, var(--shadow);
+      animation: btnBounce2 1.2s ease-in-out infinite;
+    }
+    @keyframes btnBounce2 {
+      0%,100% { transform: translateY(0)   scale(1);    box-shadow: 0 6px 0 #e65100, var(--shadow); }
+      50%      { transform: translateY(-7px) scale(1.05); box-shadow: 0 10px 0 #e65100, var(--shadow); }
+    }
+    .btn-restart:hover  { animation-play-state: paused; transform: scale(1.08); }
+    .btn-restart:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #e65100; }
+
+    .btn-back-home {
+      background: linear-gradient(135deg, #b0bec5, #90a4ae);
+      color: white; border: none; border-radius: 50px;
+      padding: 14px 32px; font-size: 1.2rem; font-weight: 900;
+      cursor: pointer; box-shadow: 0 5px 0 #607d8b, var(--shadow);
+      transition: transform 0.15s;
+    }
+    .btn-back-home:hover { transform: translateY(-3px) scale(1.05); }
+    .btn-back-home:active { transform: translateY(3px) scale(0.96); box-shadow: 0 2px 0 #607d8b; }
+
+    /* ===== 排行榜页 ===== */
+    #leaderboard-page { gap: 20px; text-align: center; }
+
+    .lb-card {
+      width: 100%; background: var(--card);
+      border-radius: 28px; padding: 28px 20px;
+      box-shadow: var(--shadow);
+    }
+    .lb-title {
+      font-size: 1.8rem; font-weight: 900; color: var(--text);
+      margin-bottom: 20px;
+    }
+    .lb-title-icon { font-size: 2.2rem; vertical-align: middle; }
+
+    /* ── 星星塔 PK ── */
+    .star-tower-section {
+      margin-bottom: 24px;
+      padding: 24px 12px 0;
+      background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 70%, #a5d6a7 100%);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .star-tower-ground {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 36px;
+      background: repeating-linear-gradient(90deg, #81c784 0px, #66bb6a 8px, #81c784 16px);
+      border-radius: 0 0 24px 24px;
+    }
+    .star-tower-ground::before {
+      content: '🌿🌱🌿🌱🌿🌱🌿🌱🌿';
+      position: absolute; top: -10px; left: 0; right: 0;
+      font-size: 0.9rem; letter-spacing: 4px;
+      text-align: center; overflow: hidden;
+    }
+    .star-tower-title {
+      font-size: 1.2rem; font-weight: 900; color: #e65100;
+      margin-bottom: 12px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .star-tower-arena {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 16px; min-height: 260px; position: relative;
+      padding-bottom: 36px;
+    }
+    .star-tower-player {
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; width: 120px;
+    }
+    .tower-dino {
+      font-size: 3rem; position: relative; z-index: 2;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+      animation: dinoFloat 2s ease-in-out infinite;
+    }
+    .tower-dino.has-flame::after {
+      content: '🔥'; position: absolute; top: -12px; right: -8px;
+      font-size: 1.4rem;
+      animation: flameFlicker 0.35s ease-in-out infinite alternate;
+    }
+    @keyframes flameFlicker {
+      from { transform: scale(1) rotate(-8deg); opacity: 0.8; }
+      to   { transform: scale(1.3) rotate(8deg); opacity: 1; }
+    }
+    .tower-bar-wrap {
+      width: 100px; position: relative; z-index: 1;
+    }
+    .tower-bar {
+      width: 100%;
+      border-radius: 16px 16px 6px 6px;
+      min-height: 10px;
+      transition: height 1.4s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      display: flex; flex-wrap: wrap; align-content: flex-end;
+      align-items: center; justify-content: center;
+      padding: 6px 4px;
+      overflow: hidden;
+    }
+    .tower-bar.hero-bar {
+      background: linear-gradient(180deg, #ffd54f 0%, #ff7043 35%, #d84315 100%);
+      box-shadow: inset 0 2px 8px rgba(255,255,255,0.4), 0 6px 20px rgba(255,87,34,0.45);
+      border: 3px solid #e64a19;
+    }
+    .tower-star {
+      font-size: 1.1rem; line-height: 1;
+      animation: towerStarPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes towerStarPop {
+      from { transform: scale(0) rotate(-30deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .tower-count {
+      font-size: 1.8rem; font-weight: 900; color: #5d4037;
+      margin-top: 4px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .tower-name {
+      font-size: 1.15rem; font-weight: 900; margin-top: 2px;
+    }
+    .tower-name.hero-color { color: #bf360c; }
+    .tower-crown {
+      font-size: 2rem;
+      animation: crownBounce 1s ease-in-out infinite;
+      filter: drop-shadow(0 2px 6px rgba(255,214,0,0.6));
+    }
+    @keyframes crownBounce {
+      0%,100% { transform: translateY(0) rotate(-5deg) scale(1); }
+      50%     { transform: translateY(-8px) rotate(5deg) scale(1.15); }
+    }
+    .tower-vs-badge {
+      position: absolute; top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #ff5722, #ff9800);
+      border-radius: 50%; border: 4px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 900; color: #fff;
+      box-shadow: 0 4px 16px rgba(255,87,34,0.5);
+      z-index: 3;
+      animation: vsPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes vsPulse {
+      0%,100% { transform: translate(-50%, -50%) scale(1); }
+      50%     { transform: translate(-50%, -50%) scale(1.12); }
+    }
+    .tower-title-badge {
+      display: inline-block; margin-top: 4px;
+      padding: 2px 10px; border-radius: 12px;
+      font-size: 0.75rem; font-weight: 900; color: #fff;
+    }
+    .tower-title-badge.hero-title { background: linear-gradient(135deg, #ff7043, #d84315); }
+
+    /* ── 勋章展示柜 ── */
+    .medal-cabinet {
+      margin: 16px 0; padding: 18px 12px;
+      background: linear-gradient(180deg, #fff8e1, #fff3e0);
+      border-radius: 24px;
+      border: 3px solid #ffe082;
+      box-shadow: inset 0 2px 8px rgba(255,183,77,0.15);
+    }
+    .medal-cabinet-title {
+      font-size: 1.2rem; font-weight: 900; color: #e65100; margin-bottom: 14px;
+    }
+    .medal-progress {
+      font-size: 0.85rem; color: #ff8f00; font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .medal-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .medal-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 3px; padding: 10px 2px 8px; border-radius: 16px;
+      background: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      border: 2px solid #f5f5f5;
+    }
+    .medal-item:hover { transform: translateY(-3px); }
+    .medal-item.locked {
+      background: #f5f5f5;
+      border-color: #e0e0e0;
+    }
+    .medal-item.unlocked {
+      border-color: #ffd54f;
+      box-shadow: 0 0 16px rgba(255,214,0,0.45);
+      background: linear-gradient(180deg, #fffde7, #fff);
+    }
+    .medal-icon {
+      font-size: 2rem; line-height: 1;
+      position: relative;
+    }
+    .medal-item.locked .medal-icon {
+      filter: grayscale(100%); opacity: 0.3;
+    }
+    .medal-item.unlocked .medal-icon {
+      animation: medalShine 2.5s ease-in-out infinite;
+    }
+    @keyframes medalShine {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      25%     { transform: scale(1.2) rotate(-8deg); }
+      50%     { transform: scale(1) rotate(0deg); }
+      75%     { transform: scale(1.15) rotate(6deg); }
+    }
+    .medal-lock {
+      position: absolute; top: 6px; right: 6px;
+      font-size: 0.7rem; opacity: 0.5;
+    }
+    .medal-label {
+      font-size: 0.65rem; font-weight: 800; color: #5d4037;
+      text-align: center; line-height: 1.2;
+    }
+    .medal-item.locked .medal-label { color: #bdbdbd; }
+    .medal-who {
+      font-size: 0.6rem; font-weight: 700; color: #ff8f00;
+      text-align: center; line-height: 1.2;
+    }
+    .medal-item.locked .medal-who { color: #ccc; }
+
+    /* ── 详细数据 ── */
+    .lb-players {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .lb-player-block {
+      flex: 1; min-width: 180px; max-width: 320px;
+      background: #f9fbe7; border-radius: 20px; padding: 18px 12px;
+      position: relative;
+      border: 3px solid #e0e0e0;
+      transition: transform 0.2s;
+    }
+    .lb-player-block:hover { transform: translateY(-4px); }
+    .lb-player-block.hero-block  { border-color: #ffab91; background: #fff3e0; }
+    .lb-crown {
+      position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+      font-size: 1.8rem;
+    }
+    .lb-avatar { font-size: 3rem; display: block; margin-bottom: 4px; }
+    .lb-name { font-size: 1.3rem; font-weight: 900; margin-bottom: 2px; }
+    .lb-player-block.hero-block .lb-name { color: #bf360c; }
+    .lb-total-stars { font-size: 1.1rem; color: #ff8f00; font-weight: 800; }
+    .lb-total-score { font-size: 0.9rem; color: #795548; font-weight: 600; margin-top: 2px; }
+    .lb-games { font-size: 0.85rem; color: #9e9e9e; margin-top: 2px; }
+    .lb-rank-title {
+      display: inline-block; margin-top: 6px;
+      padding: 3px 14px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 900; color: #fff;
+    }
+    .lb-player-block.hero-block .lb-rank-title { background: linear-gradient(135deg, #ff7043, #d84315); }
+
+    .lb-detail-title {
+      font-size: 1rem; font-weight: 900; color: var(--text); margin-bottom: 12px;
+    }
+
+    /* ── 历史记录 ── */
+    .lb-history-section { margin-top: 16px; }
+    .lb-history-title { font-size: 1rem; font-weight: 900; color: var(--text); margin-bottom: 10px; }
+    .lb-history-list { display: flex; flex-direction: column; gap: 8px; }
+    .lb-history-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fafafa; border-radius: 12px; padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+    .lb-history-item .hi-player {
+      display: flex; align-items: center; gap: 6px; font-weight: 800;
+    }
+    .lb-history-item .hi-score { font-weight: 900; color: var(--orange); }
+    .lb-history-item .hi-date { color: #9e9e9e; font-size: 0.8rem; }
+    .lb-history-item .hi-stars { color: #ff8f00; }
+
+    .btn-clear-data {
+      background: none; border: none; color: #bdbdbd;
+      font-size: 0.8rem; cursor: pointer; margin-top: 8px;
+      text-decoration: underline;
+    }
+    .btn-clear-data:hover { color: #f44336; }
+
+    /* ===== 静音按钮 ===== */
+    #mute-btn {
+      position: fixed;
+      top: 16px; right: 16px;
+      z-index: 200;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 3px solid #a5d6a7;
+      background: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s, background 0.15s;
+      user-select: none;
+    }
+    #mute-btn:hover  { transform: scale(1.15); background: #f1f8e9; }
+    #mute-btn:active { transform: scale(0.9); }
+    #mute-btn.muted  { background: #ffebee; border-color: #ef9a9a; }
+
+    .speaking .question-text {
+      animation: speakPulse 0.8s ease-in-out infinite;
+    }
+    @keyframes speakPulse {
+      0%,100% { text-shadow: none; }
+      50%      { text-shadow: 0 0 16px rgba(255,152,0,0.7); }
+    }
+
+    /* 滚动支持 */
+    #leaderboard-page .lb-card {
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    /* ===== 小屏响应式 ===== */
+    @media (max-width: 420px) {
+      .title { font-size: 2rem; }
+      .title-sub { font-size: 0.95rem; }
+      .dino-hero-row { font-size: 52px; gap: 6px; }
+      .dino-hero-vs { font-size: 0.8rem; padding: 3px 10px; }
+      .btn-start { font-size: 1.3rem; padding: 14px 40px; }
+
+      .question-card { padding: 18px 14px 14px; border-radius: 20px; }
+      .dino-small { font-size: 24px; margin-bottom: 2px; }
+      .question-story { font-size: 0.9rem; margin-bottom: 10px; }
+      .question-text { font-size: 2.4rem; letter-spacing: 2px; }
+      .answer-input-display { font-size: 2.2rem; min-height: 46px; width: 100px; }
+      .feedback-msg { font-size: 0.95rem; }
+      .score-badge { font-size: 0.85rem; padding: 3px 10px; }
+
+      .numpad { gap: 6px; }
+      .numpad-btn { font-size: 1.4rem; padding: 10px 0; border-radius: 12px; border-width: 2px; box-shadow: 0 3px 0 #f57f17; }
+      .numpad-btn.del-btn { font-size: 1.1rem; box-shadow: 0 3px 0 #bf360c; }
+      .numpad-btn.ok-btn  { font-size: 1.1rem; box-shadow: 0 3px 0 #1b5e20; }
+
+      .player-card { padding: 18px 10px; border-radius: 20px; }
+      .player-card .player-avatar { font-size: 52px; }
+      .player-name { font-size: 1.1rem; }
+
+      .result-title { font-size: 1.8rem; }
+      .result-stars { font-size: 2.2rem; }
+      .result-msg { font-size: 1rem; }
+
+      .star-tower-arena { gap: 10px; }
+      .tower-bar-wrap { width: 50px; }
+      .tower-dino { font-size: 36px; }
+      .tower-vs-badge { font-size: 0.9rem; padding: 4px 10px; }
+      .medal-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .medal-item { padding: 8px 4px; }
+      .medal-item .medal-icon { font-size: 1.6rem; }
+
+      .progress-bar-wrap { height: 18px; }
+      .progress-dino { font-size: 16px; right: -10px; }
+      .progress-label { font-size: 0.85rem; }
+
+      .btn-next-q { font-size: 0.95rem; padding: 7px 22px; }
+    }
+
+    @media (max-width: 360px) {
+      .question-text { font-size: 2rem; }
+      .answer-input-display { font-size: 1.8rem; min-height: 40px; width: 90px; }
+      .numpad-btn { font-size: 1.2rem; padding: 8px 0; }
+      .question-card { padding: 14px 10px 10px; }
+    }
+
+    @media (max-height: 700px) {
+      .question-card { padding: 16px 14px 12px; }
+      .dino-small { font-size: 22px; }
+      .question-story { margin-bottom: 6px; }
+      .question-text { font-size: 2.4rem; margin-bottom: 4px; }
+      .answer-input-display { min-height: 42px; margin-bottom: 4px; }
+      .numpad-btn { padding: 8px 0; }
+    }
+
+    /* ===== 横屏适配 ===== */
+    @media (orientation: landscape) and (max-height: 500px) {
+      #app { width: min(720px, 96vw); }
+
+      /* -- 开始页 -- */
+      #start-page { gap: 10px; }
+      .dino-hero-row { font-size: 48px; gap: 6px; margin-top: 0; }
+      .title-main, .title { font-size: 1.8rem; }
+      .title-sub { font-size: 0.9rem; }
+      .stars-row { font-size: 1.2rem; }
+      .btn-start { font-size: 1.2rem; padding: 10px 36px; }
+
+      /* -- 选择玩家页 -- */
+      #player-page { gap: 10px; }
+      .player-title { font-size: 1.4rem; }
+      .player-subtitle { font-size: 0.9rem; }
+      .player-card { padding: 14px 12px 10px; width: 170px; }
+      .player-card .player-avatar { font-size: 48px; }
+      .player-name { font-size: 1rem; }
+      .player-rank-badge { font-size: 0.75rem; padding: 2px 8px; }
+
+      /* -- 答题页核心：左右并排 -- */
+      #quiz-page { gap: 6px; padding: 4px 0; }
+      .player-indicator { padding: 4px 12px; }
+      .player-indicator .pi-avatar { font-size: 1.2rem; }
+      .progress-bar-wrap { height: 14px; }
+      .progress-dino { font-size: 13px; right: -8px; }
+      .progress-label { font-size: 0.75rem; }
+
+      .quiz-body {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .question-card {
+        flex: 1; min-width: 0;
+        padding: 10px 12px 8px;
+        border-radius: 18px;
+      }
+      .dino-small { font-size: 20px; margin-bottom: 2px; }
+      .question-story { font-size: 0.85rem; margin-bottom: 4px; min-height: 20px; }
+      .question-text { font-size: 2rem; letter-spacing: 2px; margin-bottom: 2px; }
+      .answer-input-display { font-size: 1.8rem; min-height: 36px; width: 80px; margin-bottom: 4px; }
+      .feedback-msg { font-size: 0.85rem; min-height: 20px; }
+      .score-badge { font-size: 0.75rem; padding: 2px 8px; top: -6px; }
+      .btn-next-q { font-size: 0.85rem; padding: 5px 16px; margin-top: 4px; }
+
+      .numpad {
+        width: 220px; flex-shrink: 0;
+        gap: 5px;
+        align-self: center;
+      }
+      .numpad-btn {
+        font-size: 1.2rem; padding: 7px 0;
+        border-radius: 10px; border-width: 2px;
+        box-shadow: 0 2px 0 #f57f17;
+      }
+      .numpad-btn.del-btn { font-size: 1rem; box-shadow: 0 2px 0 #bf360c; }
+      .numpad-btn.ok-btn  { font-size: 1rem; box-shadow: 0 2px 0 #1b5e20; }
+
+      /* -- 结果页 -- */
+      .result-card { padding: 16px 20px; }
+      .result-dino { font-size: 3rem; }
+      .result-title { font-size: 1.5rem; }
+      .result-score { font-size: 2rem; }
+      .result-stars { font-size: 1.8rem; }
+      .result-msg { font-size: 0.9rem; }
+      .result-btns { gap: 8px; flex-wrap: wrap; }
+      .result-btns button { font-size: 0.9rem; padding: 8px 16px; }
+
+      /* -- 排行榜 -- */
+      #leaderboard-page .lb-card { max-height: 80vh; }
+      .star-tower-section { padding: 12px 8px; }
+      .star-tower-arena { gap: 8px; }
+      .tower-bar-wrap { width: 45px; }
+      .tower-dino { font-size: 32px; }
+      .tower-vs-badge { font-size: 0.8rem; padding: 3px 8px; }
+      .medal-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      .medal-item { padding: 6px 3px; }
+      .medal-item .medal-icon { font-size: 1.4rem; }
+      .lb-players { flex-direction: row; gap: 10px; }
+      .lb-player-block { flex: 1; min-width: 0; }
+    }
+
+    /* 非常矮的横屏（如 iPhone SE 横屏 ~320px 高） */
+    @media (orientation: landscape) and (max-height: 380px) {
+      .dino-hero-row { font-size: 36px; }
+      .title-main, .title { font-size: 1.5rem; }
+      .btn-start { font-size: 1rem; padding: 8px 28px; }
+      .player-card { padding: 10px 8px 8px; width: 150px; }
+      .player-card .player-avatar { font-size: 36px; }
+      .question-text { font-size: 1.6rem; }
+      .answer-input-display { font-size: 1.5rem; min-height: 32px; width: 70px; }
+      .numpad { width: 190px; gap: 4px; }
+      .numpad-btn { font-size: 1rem; padding: 5px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cloud cloud-1"></div>
+<div class="cloud cloud-2"></div>
+<div class="cloud cloud-3"></div>
+
+<canvas id="fireworks-canvas"></canvas>
+<div id="red-flash"></div>
+
+<button id="mute-btn" title="开关语音">🔊</button>
+
+<div id="celebrate-overlay">
+  <div class="celebrate-dino" id="celebrate-dino">🚒</div>
+  <div class="celebrate-text" id="celebrate-text">太棒了！</div>
+  <div class="celebrate-stars" id="celebrate-stars">⭐⭐⭐</div>
+</div>
+
+<div id="app">
+
+  <!-- 开始页 -->
+  <div class="page active" id="start-page">
+    <div class="dino-hero-row">
+      <div class="dino-hero dino-hero-solo">🚒</div>
+    </div>
+    <div class="title-main">消防车数学冒险</div>
+    <div class="title-sub">开着消防车，收集更多星星吧！</div>
+    <div class="stars-row">⭐🌟✨🌟⭐</div>
+    <button class="btn-start" id="btn-start">开始冒险！</button>
+    <div class="start-secondary-row">
+      <button type="button" class="btn-leaderboard" id="btn-settings-home">⚙️ 设置</button>
+      <button type="button" class="btn-leaderboard" id="btn-lb-home">🏆 排行榜</button>
+    </div>
+  </div>
+
+  <!-- 设置页 -->
+  <div class="page" id="settings-page">
+    <div class="settings-card">
+      <div class="settings-title">⚙️ 设置</div>
+      <label class="settings-row" for="chk-show-equation">
+        <span>显示算式行（如 3 + 5 =）</span>
+        <input type="checkbox" id="chk-show-equation" checked />
+      </label>
+      <label class="settings-row" for="chk-speak-equation">
+        <span>语音朗读算式（几加/减几等于多少）</span>
+        <input type="checkbox" id="chk-speak-equation" checked />
+      </label>
+      <p class="settings-hint">两项可分别开关。关闭朗读算式时，仍会朗读故事与提问。</p>
+      <button type="button" class="btn-back-home" id="btn-back-settings">🏠 返回首页</button>
+    </div>
+  </div>
+
+  <!-- 准备出发页（单人） -->
+  <div class="page" id="player-page">
+    <div class="player-title">准备出发</div>
+    <div class="player-subtitle">点击消防车开始答题，或先改个名字吧！</div>
+    <div class="player-choices">
+      <div class="player-card hero" id="pick-hero">
+        <span class="player-avatar"><span class="combo-avatar"><span>🚒</span></span></span>
+        <div class="player-vehicle-tag" style="background:#ffebee;color:#bf360c;">🚒 小小消防员</div>
+        <div class="player-name-row">
+          <span class="player-name" id="hero-name">小勇士</span>
+          <button class="name-edit-btn" id="edit-hero" title="改名字">✏️</button>
+        </div>
+        <div class="player-total-stars" id="hero-preview-stars">⭐ 0</div>
+        <div class="player-rank-badge" id="hero-preview-title">🚒 消防新手</div>
+      </div>
+    </div>
+    <button class="btn-leaderboard" id="btn-lb-player" style="margin-top:8px;">🏆 排行榜</button>
+  </div>
+
+  <!-- 题目页 -->
+  <div class="page" id="quiz-page">
+    <div id="player-indicator" class="player-indicator">
+      <span class="pi-avatar" id="pi-avatar">🚒</span>
+      <span class="pi-name" id="pi-name">小勇士</span>
+      <span class="pi-vs" id="pi-vs"></span>
+    </div>
+    <div class="quiz-progress-row">
+      <span class="progress-label" id="progress-label">第 1 题 / 共 10 题</span>
+      <button type="button" class="btn-reread" id="btn-reread" title="重新读题" aria-label="重新读题">🔊 读题</button>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar" style="width:0%"><span class="progress-dino" id="progress-dino">🚒</span></div>
+    </div>
+
+    <div class="quiz-body">
+      <div class="question-card" id="question-card">
+        <div class="score-badge" id="score-badge">⭐ <span id="score-display">0</span></div>
+        <span class="dino-small" id="quiz-dino">🚒</span>
+        <div class="question-story" id="question-story"></div>
+        <div class="question-text" id="question-text"></div>
+        <div class="answer-input-display" id="answer-display">?</div>
+        <div class="feedback-msg hidden" id="feedback-msg"></div>
+        <button class="btn-next-q hidden" id="btn-next-q">下一题 →</button>
+      </div>
+
+      <div class="numpad" id="numpad"></div>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div class="page" id="result-page">
+    <div class="result-card">
+      <span class="result-dino" id="result-dino">🚒</span>
+      <div class="result-title" id="result-title">冒险完成！</div>
+      <div class="result-score"><span id="final-score">0</span> / 5</div>
+      <div class="result-stars" id="result-stars"></div>
+      <div class="result-msg" id="result-msg"></div>
+      <div class="result-pk-box" id="result-pk-box" style="display:none;"></div>
+      <div class="new-medal-box" id="new-medal-box" style="display:none;">
+        <div class="new-medal-title">🎉 解锁新勋章！</div>
+        <div class="new-medal-list" id="new-medal-list"></div>
+      </div>
+    </div>
+    <div class="result-btns">
+      <button class="btn-restart" id="btn-restart">再来一次！🚒</button>
+      <button class="btn-leaderboard" id="btn-lb-result">🏆 排行榜</button>
+      <button class="btn-back-home" id="btn-back-result">🏠 回首页</button>
+    </div>
+  </div>
+
+  <!-- 排行榜页 -->
+  <div class="page" id="leaderboard-page">
+    <div class="lb-card">
+      <div class="lb-title"><span class="lb-title-icon">🏆</span> 冒险排行榜</div>
+
+      <!-- 星星塔 PK -->
+      <div class="star-tower-section">
+        <div class="star-tower-title">⭐ 星星塔 ⭐</div>
+        <div class="star-tower-arena" id="star-tower-arena"></div>
+        <div class="star-tower-ground"></div>
+      </div>
+
+      <!-- 勋章展示柜 -->
+      <div class="medal-cabinet">
+        <div class="medal-cabinet-title">🎖️ 勋章展示柜</div>
+        <div class="medal-progress">已解锁 0 / 14 枚勋章</div>
+        <div class="medal-grid" id="medal-grid"></div>
+      </div>
+
+      <!-- 详细数据 -->
+      <div class="lb-detail-title">📊 详细数据</div>
+      <div class="lb-players" id="lb-players"></div>
+
+      <!-- 最近记录 -->
+      <div class="lb-history-section">
+        <div class="lb-history-title">📋 最近答题记录</div>
+        <div class="lb-history-list" id="lb-history-list"></div>
+      </div>
+      <button class="btn-clear-data" id="btn-clear-data">清除所有记录</button>
+    </div>
+    <button class="btn-back-home" id="btn-back-lb" style="margin-top:12px;">🏠 回首页</button>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+// ── 玩家配置（单人 · 消防车）──
+const PLAYER_NAME_KEY = 'lyc_math_solo_v1_player_name';
+const DEFAULT_PLAYER_NAME = '小勇士';
+
+function loadPlayerName() {
+  try {
+    const v = localStorage.getItem(PLAYER_NAME_KEY);
+    if (v === null) return DEFAULT_PLAYER_NAME;
+    return JSON.parse(v);
+  } catch { return DEFAULT_PLAYER_NAME; }
+}
+function savePlayerName(name) {
+  const n = (name && String(name).trim()) || DEFAULT_PLAYER_NAME;
+  localStorage.setItem(PLAYER_NAME_KEY, JSON.stringify(n));
+  PLAYERS.hero.name = n;
+}
+
+const SHOW_EQUATION_KEY = 'lyc_math_solo_v1_show_equation';
+const SPEAK_EQUATION_KEY = 'lyc_math_solo_v1_speak_equation';
+
+function loadBoolSetting(key, defaultVal = true) {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === null) return defaultVal;
+    return JSON.parse(v) !== false;
+  } catch { return defaultVal; }
+}
+function saveBoolSetting(key, val) {
+  localStorage.setItem(key, JSON.stringify(!!val));
+}
+function loadShowEquation() { return loadBoolSetting(SHOW_EQUATION_KEY); }
+function saveShowEquation(on) { saveBoolSetting(SHOW_EQUATION_KEY, on); }
+function loadSpeakEquation() { return loadBoolSetting(SPEAK_EQUATION_KEY); }
+function saveSpeakEquation(on) { saveBoolSetting(SPEAK_EQUATION_KEY, on); }
+
+const PLAYERS = {
+  hero: {
+    name: loadPlayerName(),
+    vehicle: '🚒',
+    vehicleName: '消防车',
+    preferTag: 'fire',
+    color: '#e65100',
+    colorLight: '#ffebee'
+  }
+};
+
+function comboAvatar(playerId) {
+  const p = PLAYERS[playerId];
+  if (!p) return '🚒';
+  return `<span class="combo-avatar"><span>${p.vehicle}</span></span>`;
+}
+
+let currentPlayer = null;
+
+// ── 数据持久化 (localStorage) ──
+const STORAGE_KEY = 'lyc_math_solo_v1_records';
+
+function loadRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch { return []; }
+}
+function saveRecord(playerId, score, totalQ, tagScoresData) {
+  const records = loadRecords();
+  records.push({
+    player: playerId,
+    score,
+    total: totalQ,
+    stars: scoreToStarCount(score, totalQ),
+    date: new Date().toISOString(),
+    tagScores: tagScoresData || {}
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+function clearRecords() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+function getPlayerStats(playerId) {
+  const records = loadRecords().filter(r => r.player === playerId);
+  const totalStars = records.reduce((s, r) => s + r.stars, 0);
+  const totalScore = records.reduce((s, r) => s + r.score, 0);
+  const games = records.length;
+  const perfectGames = records.filter(r => r.score === r.total).length;
+
+  let streak = 0;
+  for (let i = records.length - 1; i >= 0; i--) {
+    if (records[i].score === records[i].total) streak++;
+    else break;
+  }
+
+  const totalTagScores = { fire: 0, general: 0 };
+  records.forEach(r => {
+    if (r.tagScores) {
+      for (const [k, v] of Object.entries(r.tagScores)) {
+        totalTagScores[k] = (totalTagScores[k] || 0) + v;
+      }
+    }
+  });
+
+  return { totalStars, totalScore, games, perfectGames, streak, records, totalTagScores };
+}
+function scoreToStarCount(score, total) {
+  const ratio = score / total;
+  if (ratio >= 1) return 5;
+  if (ratio >= 0.8) return 4;
+  if (ratio >= 0.6) return 3;
+  if (ratio >= 0.4) return 2;
+  return 1;
+}
+
+// ── 称号系统 ──
+const TITLES = {
+  fire:    ['🚒 消防新手', '🚒 见习队员', '🚒 水枪小将', '🚒 灭火能手', '🚒 消防英雄', '🚒 传奇队长'],
+  default: ['🌱 数学新手', '🚒 勇敢冒险家', '⭐ 进步之星', '💡 聪明小将', '🔥 算数达人', '👑 数学大王']
+};
+function getTitle(stats, playerId) {
+  const s = stats.totalStars;
+  const key = playerId && PLAYERS[playerId] ? PLAYERS[playerId].preferTag : 'default';
+  const t = TITLES[key] || TITLES.default;
+  if (s >= 100) return t[5];
+  if (s >= 60)  return t[4];
+  if (s >= 35)  return t[3];
+  if (s >= 20)  return t[2];
+  if (s >= 10)  return t[1];
+  return t[0];
+}
+
+// ── 语音朗读 ──
+let voiceMuted = false;
+let speakTimer = null;
+
+function speak(text, rate = 0.82) {
+  if (voiceMuted || !window.speechSynthesis) return;
+  clearTimeout(speakTimer);
+  window.speechSynthesis.cancel();
+  speakTimer = setTimeout(() => {
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang  = 'zh-CN';
+    utt.rate  = rate;
+    utt.pitch = 1.1;
+    window.speechSynthesis.speak(utt);
+  }, 80);
+}
+
+function stopSpeech() {
+  clearTimeout(speakTimer);
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+$('mute-btn').addEventListener('click', () => {
+  voiceMuted = !voiceMuted;
+  $('mute-btn').textContent = voiceMuted ? '🔇' : '🔊';
+  $('mute-btn').classList.toggle('muted', voiceMuted);
+  if (voiceMuted) stopSpeech();
+});
+
+// ── 动画工具 ──
+function runAnim(el, keyframes, options) {
+  const anim = el.animate(keyframes, { fill: 'forwards', ...options });
+  return anim.finished;
+}
+
+// ── 音效 ──
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, type, duration, gain, delay = 0) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.connect(g); g.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    g.gain.setValueAtTime(gain, ctx.currentTime + delay);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + duration);
+  } catch(e) {}
+}
+function playCorrect() {
+  [523,659,784,1047].forEach((f,i) => playTone(f,'sine',0.25,0.4,i*0.1));
+}
+function playWrong() {
+  playTone(220,'sawtooth',0.3,0.35);
+  playTone(165,'sawtooth',0.3,0.25,0.18);
+}
+function playClick() { playTone(880,'sine',0.07,0.18); }
+function playStart() {
+  [392,523,659,784].forEach((f,i) => playTone(f,'sine',0.2,0.35,i*0.08));
+}
+
+// ── 题目生成 ──
+// 每条故事自带完整提问语，量词与场景严格匹配
+const STORIES_ADD = [
+  (a,b) => ({ text: `小恐龙找到了 ${a} 颗星星，又找到 ${b} 颗，`, q: '一共找到多少颗？' }),
+  (a,b) => ({ text: `恐龙妈妈有 ${a} 个蛋，又生了 ${b} 个，`, q: '现在一共有多少个蛋？' }),
+  (a,b) => ({ text: `小恐龙摘了 ${a} 个苹果，又摘了 ${b} 个，`, q: '一共摘了多少个？' }),
+  (a,b) => ({ text: `森林里有 ${a} 只小鸟，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 块饼干，朋友又给了 ${b} 块，`, q: '现在一共有多少块？' }),
+  (a,b) => ({ text: `草地上有 ${a} 只蝴蝶，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
+  (a,b) => ({ text: `小兔子拔了 ${a} 根胡萝卜，又拔了 ${b} 根，`, q: '一共拔了多少根？' }),
+  (a,b) => ({ text: `停车场有 ${a} 辆小汽车，又开来了 ${b} 辆，`, q: '现在一共有多少辆？' }),
+  (a,b) => ({ text: `小恐龙画了 ${a} 幅画，又画了 ${b} 幅，`, q: '一共画了多少幅？' }),
+  (a,b) => ({ text: `花园里开了 ${a} 朵花，又开了 ${b} 朵，`, q: '现在一共有多少朵？' }),
+  (a,b) => ({ text: `🚒 消防车出动！先救了 ${a} 个人，又救了 ${b} 个人，`, q: '一共救了多少人？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 消防站演练，上午接了 ${a} 通警，下午又接了 ${b} 通，`, q: '一共多少通出警？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 车库里有 ${a} 辆消防车，又开来了 ${b} 辆，`, q: '现在一共有多少辆消防车？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 消防云梯升了 ${a} 米，又升高了 ${b} 米，`, q: '一共升高了多少米？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 消防队储备了 ${a} 条水带，又运来 ${b} 条，`, q: '现在一共有多少条水带？', tag: 'fire' }),
+];
+const STORIES_SUB = [
+  (a,b) => ({ text: `小恐龙有 ${a} 颗星星，送给朋友 ${b} 颗，`, q: '还剩多少颗？' }),
+  (a,b) => ({ text: `树上有 ${a} 个果子，掉了 ${b} 个，`, q: '树上还剩多少个？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 块糖，吃掉了 ${b} 块，`, q: '还剩多少块？' }),
+  (a,b) => ({ text: `池塘里有 ${a} 只青蛙，跳走了 ${b} 只，`, q: '池塘里还剩多少只？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 朵花，送给妈妈 ${b} 朵，`, q: '还剩多少朵？' }),
+  (a,b) => ({ text: `盘子里有 ${a} 个草莓，小猫吃了 ${b} 个，`, q: '盘子里还剩多少个？' }),
+  (a,b) => ({ text: `小恐龙有 ${a} 支蜡笔，借给同学 ${b} 支，`, q: '还剩多少支？' }),
+  (a,b) => ({ text: `天上有 ${a} 个气球，飞走了 ${b} 个，`, q: '还剩多少个？' }),
+  (a,b) => ({ text: `书架上有 ${a} 本书，小恐龙拿走了 ${b} 本，`, q: '书架上还剩多少本？' }),
+  (a,b) => ({ text: `小鸭子有 ${a} 条小鱼，吃掉了 ${b} 条，`, q: '还剩多少条？' }),
+  (a,b) => ({ text: `🚒 消防站有 ${a} 辆消防车，出警开走了 ${b} 辆，`, q: '车队还剩多少辆？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 消防员有 ${a} 个对讲机，借给队友 ${b} 个，`, q: '还剩多少个？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 消防站有 ${a} 顶头盔，借出去 ${b} 顶，`, q: '还剩多少顶？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 车库里有 ${a} 辆消防车，维修开走了 ${b} 辆，`, q: '还剩多少辆在库？', tag: 'fire' }),
+  (a,b) => ({ text: `🚒 消防水箱里有 ${a} 吨水，灭火用掉了 ${b} 吨，`, q: '还剩多少吨？', tag: 'fire' }),
+];
+function pickStory(pool, preferTag) {
+  if (preferTag && Math.random() < 0.6) {
+    const preferred = pool.filter((_, i) => {
+      const test = pool[i](1,1);
+      return test.tag === preferTag;
+    });
+    if (preferred.length > 0) return preferred[randInt(0, preferred.length - 1)];
+  }
+  return pool[randInt(0, pool.length - 1)];
+}
+
+function generateQuestion() {
+  const preferTag = currentPlayer ? PLAYERS[currentPlayer].preferTag : null;
+  const isAdd = Math.random() < 0.55;
+  if (isAdd) {
+    const a = randInt(1,15), b = randInt(1,20-a);
+    const storyFn = pickStory(STORIES_ADD, preferTag);
+    const s = storyFn(a,b);
+    return { a, b, op:'+', answer:a+b, story: s.text, question: s.q, tag: s.tag || null };
+  } else {
+    const a = randInt(2,20), b = randInt(1,a);
+    const storyFn = pickStory(STORIES_SUB, preferTag);
+    const s = storyFn(a,b);
+    return { a, b, op:'-', answer:a-b, story: s.text, question: s.q, tag: s.tag || null };
+  }
+}
+function generateQuestions(n=10) {
+  return Array.from({length:n}, generateQuestion);
+}
+
+// ── 烟花 ──
+const fwCanvas = $('fireworks-canvas');
+const fwCtx    = fwCanvas.getContext('2d');
+let particles  = [];
+let fwAnimId   = null;
+let fwRunning  = false;
+
+function resizeCanvas() {
+  fwCanvas.width  = window.innerWidth;
+  fwCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+  constructor(x, y, color, type='circle') {
+    this.x = x; this.y = y; this.color = color; this.type = type;
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = type === 'trail' ? randInt(1,4) : randInt(5,15);
+    this.vx     = Math.cos(angle) * spd;
+    this.vy     = Math.sin(angle) * spd - (type==='trail' ? 0 : 3);
+    this.alpha  = 1;
+    this.r      = type === 'trail' ? randInt(2,4) : randInt(4,10);
+    this.gravity= type === 'trail' ? 0.06 : 0.32;
+    this.decay  = type === 'trail' ? 0.03+Math.random()*0.02 : 0.011+Math.random()*0.007;
+    this.rot    = Math.random() * Math.PI * 2;
+    this.rotSpd = (Math.random()-0.5) * 0.35;
+    this.history= [];
+  }
+  update() {
+    if (this.type !== 'trail') {
+      this.history.push({x:this.x, y:this.y, a:this.alpha});
+      if (this.history.length > 6) this.history.shift();
+    }
+    this.x  += this.vx;
+    this.y  += this.vy;
+    this.vy += this.gravity;
+    this.vx *= 0.97;
+    this.alpha -= this.decay;
+    this.rot   += this.rotSpd;
+  }
+  drawStar(cx, cy, r) {
+    fwCtx.beginPath();
+    for (let i=0; i<10; i++) {
+      const a = (i*Math.PI)/5 - Math.PI/2 + this.rot;
+      const d = i%2===0 ? r : r*0.4;
+      i===0 ? fwCtx.moveTo(cx+Math.cos(a)*d, cy+Math.sin(a)*d)
+            : fwCtx.lineTo(cx+Math.cos(a)*d, cy+Math.sin(a)*d);
+    }
+    fwCtx.closePath();
+    fwCtx.fill();
+  }
+  draw() {
+    this.history.forEach((h,i) => {
+      fwCtx.save();
+      fwCtx.globalAlpha = h.a * (i/this.history.length) * 0.35;
+      fwCtx.fillStyle   = this.color;
+      fwCtx.beginPath();
+      fwCtx.arc(h.x, h.y, this.r*(i/this.history.length)*0.5, 0, Math.PI*2);
+      fwCtx.fill();
+      fwCtx.restore();
+    });
+    fwCtx.save();
+    fwCtx.globalAlpha = Math.max(0, this.alpha);
+    fwCtx.fillStyle   = this.color;
+    if (this.type === 'star') this.drawStar(this.x, this.y, this.r);
+    else { fwCtx.beginPath(); fwCtx.arc(this.x,this.y,this.r,0,Math.PI*2); fwCtx.fill(); }
+    fwCtx.restore();
+  }
+}
+
+const FW_COLORS = ['#ff5252','#ff9800','#ffd600','#69f0ae','#40c4ff','#e040fb','#ff4081','#fff','#b2ff59','#ffab40'];
+
+function launchBurst(x, y) {
+  const c1 = FW_COLORS[randInt(0,FW_COLORS.length-1)];
+  const c2 = FW_COLORS[randInt(0,FW_COLORS.length-1)];
+  for (let j=0; j<90; j++) particles.push(new Particle(x,y, j%3===0?c2:c1, 'circle'));
+  for (let j=0; j<25; j++) particles.push(new Particle(x,y, '#ffd600', 'star'));
+  for (let j=0; j<35; j++) particles.push(new Particle(x,y, c1, 'trail'));
+}
+
+function fwLoop() {
+  fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+  particles = particles.filter(p => p.alpha > 0);
+  particles.forEach(p => { p.update(); p.draw(); });
+  if (fwRunning || particles.length > 0) {
+    fwAnimId = requestAnimationFrame(fwLoop);
+  } else {
+    fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+    fwAnimId = null;
+  }
+}
+
+function startFireworks(duration = 2200) {
+  fwRunning = true;
+  if (!fwAnimId) fwLoop();
+
+  const bursts = 12;
+  for (let i=0; i<bursts; i++) {
+    setTimeout(() => {
+      const x = randInt(fwCanvas.width*0.1, fwCanvas.width*0.9);
+      const y = randInt(fwCanvas.height*0.05, fwCanvas.height*0.55);
+      launchBurst(x, y);
+    }, i * 160);
+  }
+
+  setTimeout(() => { fwRunning = false; }, duration);
+}
+
+// ── 庆祝动画 ──
+const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🚒'];
+const CELEBRATE_FIRE = ['🚒 出警成功！灭火小英雄！','🚒 嘀嘟嘀嘟～水枪就位！','🚒 消防员出击！答对啦！'];
+
+function showCelebrate(cb) {
+  const overlay  = $('celebrate-overlay');
+  const dinoEl   = $('celebrate-dino');
+  const textEl   = $('celebrate-text');
+  const starsEl  = $('celebrate-stars');
+
+  const curQ = questions[currentIdx];
+  const isThemeQ = currentPlayer && curQ && curQ.tag && PLAYERS[currentPlayer].preferTag === curQ.tag;
+  if (isThemeQ && curQ.tag === 'fire') {
+    textEl.textContent = CELEBRATE_FIRE[randInt(0, CELEBRATE_FIRE.length-1)];
+  } else {
+    textEl.textContent = CELEBRATE_TEXTS[randInt(0, CELEBRATE_TEXTS.length-1)];
+  }
+  starsEl.textContent = '⭐⭐⭐';
+
+  dinoEl.style.transform  = '';
+  dinoEl.style.opacity    = '';
+  textEl.style.transform  = '';
+  textEl.style.opacity    = '';
+  starsEl.style.transform = '';
+  starsEl.style.opacity   = '';
+
+  if (currentPlayer) {
+    dinoEl.innerHTML = comboAvatar(currentPlayer);
+  }
+
+  overlay.classList.add('show');
+  startFireworks(2000);
+  playCorrect();
+
+  const spokenText = textEl.textContent.replace(/[^\u4e00-\u9fa5！？。，、]/g, '').trim();
+  setTimeout(() => speak(spokenText, 1.0), 400);
+
+  dinoEl.animate([
+    { transform: 'translateY(300px) scale(0.2) rotate(25deg)', opacity: 0 },
+    { transform: 'translateY(-20px) scale(1.15) rotate(-5deg)', opacity: 1, offset: 0.7 },
+    { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 1 }
+  ], { duration: 600, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+
+  setTimeout(() => {
+    dinoEl.animate([
+      { transform: 'translateY(0) scale(1) rotate(-6deg)' },
+      { transform: 'translateY(-45px) scale(1.2) rotate(6deg)' }
+    ], { duration: 450, easing: 'ease-in-out', iterations: Infinity, direction: 'alternate' });
+  }, 620);
+
+  textEl.animate([
+    { transform: 'scale(0.05) rotate(-15deg)', opacity: 0 },
+    { transform: 'scale(1.15) rotate(3deg)',   opacity: 1, offset: 0.75 },
+    { transform: 'scale(1) rotate(0deg)',       opacity: 1 }
+  ], { duration: 500, delay: 280, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+
+  starsEl.animate([
+    { transform: 'scale(0) rotate(-30deg)', opacity: 0 },
+    { transform: 'scale(1.2) rotate(10deg)', opacity: 1, offset: 0.7 },
+    { transform: 'scale(1) rotate(0deg)',    opacity: 1 }
+  ], { duration: 500, delay: 500, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+
+  setTimeout(() => {
+    starsEl.animate([
+      { transform: 'scale(1) rotate(0deg)' },
+      { transform: 'scale(1.25) rotate(360deg)' }
+    ], { duration: 900, iterations: Infinity, easing: 'linear' });
+  }, 1050);
+
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    if (cb) cb();
+  }, 1900);
+}
+
+// ── 游戏状态 ──
+let questions     = [];
+let currentIdx    = 0;
+let score         = 0;
+let currentAnswer = '';
+let wrongCount    = 0;
+let correctStreak = 0;
+let tagScores     = { fire: 0, general: 0 };
+
+// ── 数字键盘 ──
+function buildNumpad() {
+  const numpad = $('numpad');
+  numpad.innerHTML = '';
+
+  function tapAnim(btn) {
+    btn.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(0.78)' },
+      { transform: 'scale(1.1)' },
+      { transform: 'scale(1)' }
+    ], { duration: 220, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+  }
+
+  for (let i=1; i<=9; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'numpad-btn';
+    btn.textContent = i;
+    btn.addEventListener('click', () => { playClick(); tapAnim(btn); inputDigit(String(i)); });
+    numpad.appendChild(btn);
+  }
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'numpad-btn del-btn';
+  delBtn.textContent = '⌫ 删';
+  delBtn.addEventListener('click', () => { playClick(); tapAnim(delBtn); deleteDigit(); });
+  numpad.appendChild(delBtn);
+
+  const zeroBtn = document.createElement('button');
+  zeroBtn.className = 'numpad-btn';
+  zeroBtn.textContent = '0';
+  zeroBtn.addEventListener('click', () => { playClick(); tapAnim(zeroBtn); inputDigit('0'); });
+  numpad.appendChild(zeroBtn);
+
+  const okBtn = document.createElement('button');
+  okBtn.className = 'numpad-btn ok-btn';
+  okBtn.textContent = '✔ 确认';
+  okBtn.addEventListener('click', () => { tapAnim(okBtn); submitAnswer(); });
+  numpad.appendChild(okBtn);
+}
+
+function inputDigit(d) {
+  if (currentAnswer.length >= 2) return;
+  currentAnswer = currentAnswer === '0' ? d : currentAnswer + d;
+  updateAnswerDisplay();
+}
+function deleteDigit() {
+  currentAnswer = currentAnswer.slice(0,-1);
+  updateAnswerDisplay();
+}
+function updateAnswerDisplay() {
+  const el = $('answer-display');
+  el.textContent = currentAnswer === '' ? '?' : currentAnswer;
+  if (currentAnswer !== '') {
+    el.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.35)' },
+      { transform: 'scale(1)' }
+    ], { duration: 180, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+  }
+}
+
+// ── 题目渲染 ──
+const DINO_EMOJIS = ['🚒','🚒','🚒','🚒','🚒'];
+
+function buildReadText(q) {
+  const base = q.story + q.question;
+  if (!loadSpeakEquation()) return base;
+  const opWord = q.op === '+' ? '加' : '减';
+  return `${base}${q.a} ${opWord} ${q.b} 等于多少？`;
+}
+
+function renderQuestion(slideIn = true) {
+  const q = questions[currentIdx];
+  currentAnswer = '';
+  wrongCount    = 0;
+
+  const total = questions.length;
+  $('progress-label').textContent = `第 ${currentIdx+1} 题 / 共 ${total} 题`;
+  $('score-display').textContent  = score;
+
+  if (currentPlayer) {
+    const p = PLAYERS[currentPlayer];
+    $('quiz-dino').innerHTML = comboAvatar(currentPlayer);
+    $('progress-dino').textContent = p.vehicle;
+  } else {
+    $('quiz-dino').textContent = DINO_EMOJIS[randInt(0,4)];
+    $('progress-dino').textContent = '🚒';
+  }
+
+  $('question-story').textContent = q.story + q.question;
+  $('question-text').innerHTML    = `${q.a} <span class="op">${q.op}</span> ${q.b} <span class="eq">=</span>`;
+  $('question-text').classList.toggle('hidden', !loadShowEquation());
+
+  const ansEl = $('answer-display');
+  ansEl.textContent = '?';
+  ansEl.style.color      = 'var(--blue)';
+  ansEl.style.background = 'transparent';
+  ansEl.style.borderColor= '#90caf9';
+
+  const fb = $('feedback-msg');
+  fb.textContent = '';
+  fb.classList.add('hidden');
+  $('btn-next-q').classList.add('hidden');
+
+  if (slideIn) {
+    const card = $('question-card');
+    card.animate([
+      { transform: 'translateX(110px) scale(0.9)', opacity: 0 },
+      { transform: 'translateX(-8px)  scale(1.02)', opacity: 1, offset: 0.75 },
+      { transform: 'translateX(0)     scale(1)',    opacity: 1 }
+    ], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+  }
+
+  const readText = buildReadText(q);
+  setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+}
+
+function rereadCurrentQuestion() {
+  if (!questions.length || currentIdx < 0 || currentIdx >= questions.length) return;
+  speak(buildReadText(questions[currentIdx]), 0.8);
+}
+
+// ── 玩家指示器 ──
+function updatePlayerIndicator() {
+  if (!currentPlayer) return;
+  const p = PLAYERS[currentPlayer];
+  $('pi-avatar').innerHTML = comboAvatar(currentPlayer);
+  $('pi-name').textContent = p.name;
+  $('pi-name').style.color = p.color;
+  $('player-indicator').style.borderLeftColor = p.color;
+  document.documentElement.style.setProperty('--player-color', p.color);
+
+  const myStats = getPlayerStats(currentPlayer);
+  $('pi-vs').textContent = myStats.games > 0 ? `累计 ${myStats.totalStars}⭐` : '';
+}
+
+// ── 警笛 / 救护车音效（Web Audio API） ──
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) {
+    try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  return _audioCtx;
+}
+
+function playPoliceSiren() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const dur = 2.8;
+  const lo = 392, hi = 660;
+
+  const masterGain = ctx.createGain();
+  masterGain.connect(ctx.destination);
+  masterGain.gain.setValueAtTime(0, now);
+  masterGain.gain.linearRampToValueAtTime(0.18, now + 0.04);
+  masterGain.gain.setValueAtTime(0.18, now + dur - 0.2);
+  masterGain.gain.linearRampToValueAtTime(0, now + dur);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 3500;
+  filter.Q.value = 0.7;
+  filter.connect(masterGain);
+
+  const osc = ctx.createOscillator();
+  osc.type = 'square';
+  osc.connect(filter);
+
+  const step = 0.4;
+  for (let i = 0; i < 7; i++) {
+    const t = now + i * step;
+    const freq = (i % 2 === 0) ? hi : lo;
+    osc.frequency.setValueAtTime(freq, t);
+  }
+
+  osc.start(now);
+  osc.stop(now + dur);
+}
+
+function playAmbulanceSiren() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const dur = 3.0;
+
+  const masterGain = ctx.createGain();
+  masterGain.connect(ctx.destination);
+  masterGain.gain.setValueAtTime(0, now);
+  masterGain.gain.linearRampToValueAtTime(0.16, now + 0.05);
+  masterGain.gain.setValueAtTime(0.16, now + dur - 0.25);
+  masterGain.gain.linearRampToValueAtTime(0, now + dur);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 3000;
+  filter.Q.value = 0.8;
+  filter.connect(masterGain);
+
+  const osc = ctx.createOscillator();
+  osc.type = 'sine';
+  osc.connect(filter);
+
+  osc.frequency.setValueAtTime(440, now);
+  osc.frequency.linearRampToValueAtTime(700, now + 0.7);
+  osc.frequency.setValueAtTime(700, now + 0.72);
+  osc.frequency.linearRampToValueAtTime(440, now + 1.4);
+  osc.frequency.setValueAtTime(440, now + 1.42);
+  osc.frequency.linearRampToValueAtTime(700, now + 2.1);
+  osc.frequency.setValueAtTime(700, now + 2.12);
+  osc.frequency.linearRampToValueAtTime(440, now + dur);
+
+  osc.start(now);
+  osc.stop(now + dur);
+}
+
+function playFireSiren() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const dur = 2.6;
+  const masterGain = ctx.createGain();
+  masterGain.connect(ctx.destination);
+  masterGain.gain.setValueAtTime(0, now);
+  masterGain.gain.linearRampToValueAtTime(0.17, now + 0.04);
+  masterGain.gain.setValueAtTime(0.17, now + dur - 0.2);
+  masterGain.gain.linearRampToValueAtTime(0, now + dur);
+  const osc = ctx.createOscillator();
+  osc.type = 'square';
+  osc.connect(masterGain);
+  const step = 0.35;
+  for (let i = 0; i < 8; i++) {
+    const t = now + i * step;
+    const freq = (i % 2 === 0) ? 520 : 380;
+    osc.frequency.setValueAtTime(freq, t);
+  }
+  osc.start(now);
+  osc.stop(now + dur);
+}
+
+// ── 全屏飞车动效（Canvas 粒子系统，三段式：冲入→亮相→冲出） ──
+function showVehicleRush(vehicleEmoji, type, combo, onDone) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (onDone) onDone();
+    return;
+  }
+
+  if (type === 'police') playPoliceSiren();
+  else if (type === 'fire') playFireSiren();
+  else playAmbulanceSiren();
+
+  const W = window.innerWidth, H = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
+  document.body.appendChild(canvas);
+  const c = canvas.getContext('2d');
+  c.scale(dpr, dpr);
+
+  const intensity = Math.min(combo, 5);
+  const pMul = 1 + intensity * 0.15;
+  const sMul = 1 + intensity * 0.08;
+
+  const C1 = type === 'police' ? [244,67,54] : type === 'fire' ? [255,87,34] : [244,67,54];
+  const C2 = type === 'police' ? [21,101,192] : type === 'fire' ? [255,193,7] : [255,255,255];
+  const GOLD = [255,235,59];
+  const rushText = type === 'police' ? '🚓 破案成功！' : type === 'fire' ? '🚒 灭火成功！' : '🚑 急救成功！';
+  const glow = type === 'police' ? 'rgba(21,101,192,0.9)' : type === 'fire' ? 'rgba(230,74,25,0.9)' : 'rgba(244,67,54,0.9)';
+
+  const DUR = 3800;
+  const midX = W / 2, midY = H * 0.40;
+  const vcx = midX - 40, vcy = midY;
+
+  const trails = [];
+  const bursts = [];
+  const sparks = [];
+  const speedLines = [];
+  const shockwaves = [];
+  let lastBurstMs = 0;
+  let exitTriggered = false;
+  let shakeOffset = { x: 0, y: 0 };
+
+  function easeOut(t) { return t * (2 - t); }
+  function easeIn(t) { return t * t; }
+
+  function vehicleAt(ms) {
+    const p = ms / DUR;
+    let x, y = vcy, sc, rot;
+
+    if (p < 0.05) {
+      x = -250 + 80 * (p / 0.05);
+      sc = 0.2 + 0.1 * (p / 0.05);
+      rot = 0;
+    } else if (p < 0.22) {
+      const lp = easeOut((p - 0.05) / 0.17);
+      x = -170 + (vcx + 170) * lp;
+      sc = 0.3 + 1.3 * sMul * lp;
+      rot = -5 * (1 - lp);
+    } else if (p < 0.26) {
+      const lp = (p - 0.22) / 0.04;
+      const shake = Math.sin(lp * Math.PI * 6) * 5 * (1 - lp);
+      x = vcx + shake;
+      y = vcy + Math.sin(lp * Math.PI * 4) * 3 * (1 - lp);
+      sc = 1.3 * sMul + 0.15 * Math.sin(lp * Math.PI * 3);
+      rot = shake * 0.3;
+    } else if (p < 0.56) {
+      const lp = (p - 0.26) / 0.30;
+      x = vcx + Math.sin(lp * Math.PI * 5) * 3;
+      y = vcy + Math.sin(lp * Math.PI * 2.5) * 5;
+      const pulse = Math.sin(lp * Math.PI * 4);
+      sc = (1.4 + pulse * 0.12) * sMul;
+      rot = Math.sin(lp * Math.PI * 7) * 1.2;
+    } else if (p < 0.80) {
+      const lp = easeIn((p - 0.56) / 0.24);
+      x = vcx + (W + 300 - vcx) * lp;
+      sc = (1.4 - 0.9 * lp) * sMul;
+      rot = 4 * lp;
+    } else {
+      x = W + 400; sc = 0; rot = 0;
+    }
+    return { x, y, sc, rot };
+  }
+
+  const t0 = performance.now();
+
+  function render(now) {
+    const ms = now - t0;
+    if (ms > DUR) { canvas.remove(); if (onDone) onDone(); return; }
+
+    c.save();
+    c.translate(shakeOffset.x, shakeOffset.y);
+    if (shakeOffset.x !== 0 || shakeOffset.y !== 0) {
+      shakeOffset.x *= 0.85;
+      shakeOffset.y *= 0.85;
+      if (Math.abs(shakeOffset.x) < 0.3) shakeOffset.x = 0;
+      if (Math.abs(shakeOffset.y) < 0.3) shakeOffset.y = 0;
+    }
+
+    c.clearRect(-10, -10, W + 20, H + 20);
+    const v = vehicleAt(ms);
+    const p = ms / DUR;
+
+    // ── 1. Background flash (smooth hue transition + white strobe) ──
+    if (p < 0.78) {
+      const isHold = p >= 0.26 && p < 0.56;
+      const freq = isHold ? 70 : 150;
+      const t = (ms % (freq * 2)) / (freq * 2);
+      const blend = (Math.sin(t * Math.PI * 2) + 1) / 2;
+      const r = C1[0] + (C2[0] - C1[0]) * blend;
+      const g = C1[1] + (C2[1] - C1[1]) * blend;
+      const b = C1[2] + (C2[2] - C1[2]) * blend;
+      const baseI = (isHold ? 0.30 : 0.15) * pMul * (1 - p / 0.78);
+      const grd = c.createRadialGradient(v.x, v.y, 0, v.x, v.y, Math.max(W, H) * 0.85);
+      grd.addColorStop(0, `rgba(${r|0},${g|0},${b|0},${baseI})`);
+      grd.addColorStop(0.3, `rgba(${r|0},${g|0},${b|0},${baseI * 0.45})`);
+      grd.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = grd;
+      c.fillRect(-10, -10, W + 20, H + 20);
+
+      if (isHold) {
+        const strobeCycle = ms % 200;
+        if (strobeCycle < 30) {
+          const sA = 0.2 * pMul * (1 - strobeCycle / 30);
+          c.fillStyle = `rgba(255,255,255,${sA})`;
+          c.fillRect(-10, -10, W + 20, H + 20);
+        }
+      }
+    }
+
+    // ── 2. Approach headlight (distant glow before vehicle enters) ──
+    if (p < 0.08) {
+      const lp = p / 0.08;
+      const hlX = -180 + 100 * lp;
+      const hlR = 40 + 60 * lp;
+      const hlA = 0.3 + 0.4 * lp;
+      const hlg = c.createRadialGradient(hlX, vcy, 0, hlX, vcy, hlR);
+      hlg.addColorStop(0, `rgba(255,255,200,${hlA})`);
+      hlg.addColorStop(0.5, `rgba(255,200,100,${hlA * 0.3})`);
+      hlg.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = hlg;
+      c.fillRect(-10, -10, W + 20, H + 20);
+    }
+
+    // ── 3. Ground shadow & tire marks ──
+    if (v.sc > 0.1) {
+      const groundY = v.y + 46 * v.sc;
+      const shadowW = 60 * v.sc;
+      const shadowH = 8 * v.sc;
+      c.save();
+      c.globalAlpha = Math.min(v.sc * 0.35, 0.45);
+      c.fillStyle = 'rgba(0,0,0,0.4)';
+      c.beginPath();
+      c.ellipse(v.x, groundY, shadowW, shadowH, 0, 0, Math.PI * 2);
+      c.fill();
+      c.restore();
+
+      if (p >= 0.56 && p < 0.80) {
+        const trackA = 0.12 * (1 - (p - 0.56) / 0.24);
+        c.save();
+        c.globalAlpha = trackA;
+        c.strokeStyle = 'rgba(80,80,80,0.6)';
+        c.lineWidth = 3;
+        c.setLineDash([8, 6]);
+        const trackStartX = Math.max(0, vcx - 30);
+        c.beginPath();
+        c.moveTo(trackStartX, groundY - 6);
+        c.lineTo(v.x - 20, groundY - 6);
+        c.stroke();
+        c.beginPath();
+        c.moveTo(trackStartX, groundY + 6);
+        c.lineTo(v.x - 20, groundY + 6);
+        c.stroke();
+        c.setLineDash([]);
+        c.restore();
+      }
+    }
+
+    // ── 4. Speed lines ──
+    if (v.sc > 0.3 && p < 0.80) {
+      const isMovingFast = p < 0.22 || p >= 0.56;
+      const count = isMovingFast ? Math.floor(4 * pMul) : Math.floor(1.5 * pMul);
+      for (let i = 0; i < count; i++) {
+        speedLines.push({
+          x: v.x - 10 - Math.random() * 30 * v.sc,
+          y: v.y - 30 * v.sc + Math.random() * 60 * v.sc,
+          len: (30 + Math.random() * 60) * (isMovingFast ? 1.5 : 0.7),
+          life: 1.0,
+          decay: 0.03 + Math.random() * 0.02,
+          w: 1 + Math.random() * 2,
+          col: Math.random() < 0.6 ? [255,255,255] : (Math.random() < 0.5 ? C1 : C2)
+        });
+      }
+    }
+    for (let i = speedLines.length - 1; i >= 0; i--) {
+      const sl = speedLines[i];
+      sl.life -= sl.decay;
+      sl.x -= 3 + sl.len * 0.04;
+      if (sl.life <= 0 || sl.x + sl.len < 0) { speedLines.splice(i, 1); continue; }
+      c.save();
+      c.globalAlpha = sl.life * 0.6;
+      c.strokeStyle = `rgb(${sl.col[0]},${sl.col[1]},${sl.col[2]})`;
+      c.lineWidth = sl.w * sl.life;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(sl.x, sl.y);
+      c.lineTo(sl.x - sl.len * sl.life, sl.y);
+      c.stroke();
+      c.restore();
+    }
+
+    // ── 5. Light trails (glow orbs behind vehicle) ──
+    if (v.sc > 0 && p < 0.80) {
+      const n = (p >= 0.26 && p < 0.56 ? 6 : 4) * pMul | 0;
+      const baseR = 24 * v.sc;
+      for (let i = 0; i < n; i++) {
+        trails.push({
+          x: v.x - 5 + Math.random() * 25,
+          y: v.y + (Math.random() - 0.5) * 55,
+          r: baseR * (0.4 + Math.random() * 0.6),
+          life: 1.0,
+          decay: 0.010 + Math.random() * 0.008,
+          col: Math.random() < 0.5 ? C1 : C2
+        });
+      }
+    }
+    for (let i = trails.length - 1; i >= 0; i--) {
+      const d = trails[i];
+      d.life -= d.decay;
+      if (d.life <= 0) { trails.splice(i, 1); continue; }
+      const r = d.r * d.life;
+      const tg = c.createRadialGradient(d.x, d.y, 0, d.x, d.y, r);
+      tg.addColorStop(0, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},${d.life * 0.5})`);
+      tg.addColorStop(1, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},0)`);
+      c.fillStyle = tg;
+      c.beginPath(); c.arc(d.x, d.y, r, 0, Math.PI * 2); c.fill();
+    }
+
+    // ── 6. Sparks with motion trails ──
+    if (v.sc > 0.3 && p < 0.78) {
+      const sn = Math.floor((2 + intensity * 0.5) * pMul);
+      for (let i = 0; i < sn; i++) {
+        sparks.push({
+          x: v.x + Math.random() * 15,
+          y: v.y + (Math.random() - 0.5) * 36,
+          px: v.x + Math.random() * 15,
+          py: v.y + (Math.random() - 0.5) * 36,
+          vx: -2 - Math.random() * 3,
+          vy: (Math.random() - 0.5) * 4,
+          r: 1.5 + Math.random() * 2.5,
+          life: 1.0,
+          decay: 0.018 + Math.random() * 0.012,
+          col: Math.random() < 0.4 ? GOLD : (Math.random() < 0.5 ? [255,167,38] : [255,138,101])
+        });
+      }
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.life -= s.decay;
+      s.px = s.x; s.py = s.y;
+      s.x += s.vx; s.y += s.vy;
+      s.vy += 0.08;
+      if (s.life <= 0) { sparks.splice(i, 1); continue; }
+      c.save();
+      c.globalAlpha = s.life * 0.85;
+      c.strokeStyle = `rgb(${s.col[0]},${s.col[1]},${s.col[2]})`;
+      c.lineWidth = s.r * s.life * 1.5;
+      c.lineCap = 'round';
+      c.beginPath();
+      c.moveTo(s.px, s.py);
+      c.lineTo(s.x, s.y);
+      c.stroke();
+      c.fillStyle = `rgb(${s.col[0]},${s.col[1]},${s.col[2]})`;
+      c.beginPath(); c.arc(s.x, s.y, s.r * s.life, 0, Math.PI * 2); c.fill();
+      c.restore();
+    }
+
+    // ── 7. Burst particles (initial + continuous during hold) ──
+    const holdStart = DUR * 0.26, holdEnd = DUR * 0.56;
+    if (ms >= holdStart && ms < holdEnd) {
+      if (ms - lastBurstMs > (200 / pMul)) {
+        lastBurstMs = ms;
+        const isFirst = bursts.length < 20;
+        const bn = isFirst ? Math.floor(52 * pMul) : Math.floor(10 * pMul);
+        for (let i = 0; i < bn; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (isFirst ? 2.2 : 1.2) + Math.random() * (isFirst ? 4 : 2.5);
+          bursts.push({
+            x: v.x, y: v.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            r: (isFirst ? 3 : 2) + Math.random() * (isFirst ? 7 : 4),
+            life: 1.0,
+            decay: 0.007 + Math.random() * 0.006,
+            col: Math.random() < 0.35 ? C1 : Math.random() < 0.6 ? C2 : GOLD
+          });
+        }
+      }
+    }
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      b.life -= b.decay; b.x += b.vx; b.y += b.vy;
+      b.vx *= 0.982; b.vy *= 0.982;
+      if (b.life <= 0) { bursts.splice(i, 1); continue; }
+      c.globalAlpha = b.life;
+      const r = b.r * (0.3 + b.life * 0.7);
+      const bg = c.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+      bg.addColorStop(0, `rgba(${b.col[0]},${b.col[1]},${b.col[2]},${b.life})`);
+      bg.addColorStop(1, `rgba(${b.col[0]},${b.col[1]},${b.col[2]},0)`);
+      c.fillStyle = bg;
+      c.beginPath(); c.arc(b.x, b.y, r, 0, Math.PI * 2); c.fill();
+      c.globalAlpha = 1;
+    }
+
+    // ── 8. Shockwave ring on exit ──
+    if (p >= 0.56 && !exitTriggered) {
+      exitTriggered = true;
+      shakeOffset.x = (Math.random() - 0.5) * 12;
+      shakeOffset.y = (Math.random() - 0.5) * 8;
+      for (let i = 0; i < 3; i++) {
+        shockwaves.push({
+          x: vcx, y: vcy,
+          r: 20 + i * 15,
+          maxR: Math.max(W, H) * (0.5 + i * 0.15),
+          life: 1.0,
+          decay: 0.012 + i * 0.003,
+          col: i === 0 ? C1 : (i === 1 ? C2 : [255,255,255])
+        });
+      }
+    }
+    for (let i = shockwaves.length - 1; i >= 0; i--) {
+      const sw = shockwaves[i];
+      sw.life -= sw.decay;
+      sw.r += (sw.maxR - sw.r) * 0.06;
+      if (sw.life <= 0) { shockwaves.splice(i, 1); continue; }
+      c.save();
+      c.globalAlpha = sw.life * 0.5;
+      c.strokeStyle = `rgba(${sw.col[0]},${sw.col[1]},${sw.col[2]},${sw.life * 0.7})`;
+      c.lineWidth = 3 * sw.life + 1;
+      c.beginPath(); c.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2); c.stroke();
+      c.restore();
+    }
+
+    // ── 9. Police lights (red-blue rotating beacons on top of vehicle) ──
+    if (v.sc > 0.1) {
+      const lx = v.x, ly = v.y - 32 * v.sc;
+      const lightCycle = ms % 120;
+      const isRed = lightCycle < 60;
+      const lightCol = isRed ? C1 : C2;
+      const otherCol = isRed ? C2 : C1;
+
+      const beaconR = (8 + 4 * Math.sin(ms * 0.03)) * v.sc * pMul;
+      const lg1 = c.createRadialGradient(lx - 12 * v.sc, ly, 0, lx - 12 * v.sc, ly, beaconR * 2.5);
+      lg1.addColorStop(0, `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},0.9)`);
+      lg1.addColorStop(0.3, `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},0.4)`);
+      lg1.addColorStop(1, `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},0)`);
+      c.fillStyle = lg1;
+      c.beginPath(); c.arc(lx - 12 * v.sc, ly, beaconR * 2.5, 0, Math.PI * 2); c.fill();
+
+      const lg2 = c.createRadialGradient(lx + 12 * v.sc, ly, 0, lx + 12 * v.sc, ly, beaconR * 2.5);
+      lg2.addColorStop(0, `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},0.9)`);
+      lg2.addColorStop(0.3, `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},0.4)`);
+      lg2.addColorStop(1, `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},0)`);
+      c.fillStyle = lg2;
+      c.beginPath(); c.arc(lx + 12 * v.sc, ly, beaconR * 2.5, 0, Math.PI * 2); c.fill();
+
+      c.fillStyle = `rgba(${lightCol[0]},${lightCol[1]},${lightCol[2]},1)`;
+      c.beginPath(); c.arc(lx - 12 * v.sc, ly, beaconR * 0.5, 0, Math.PI * 2); c.fill();
+      c.fillStyle = `rgba(${otherCol[0]},${otherCol[1]},${otherCol[2]},1)`;
+      c.beginPath(); c.arc(lx + 12 * v.sc, ly, beaconR * 0.5, 0, Math.PI * 2); c.fill();
+
+      const isHold = p >= 0.26 && p < 0.56;
+      if (isHold) {
+        const coneAngle = isRed ? -0.4 : 0.4;
+        const coneLen = 100 * v.sc * pMul;
+        c.save();
+        c.globalAlpha = 0.12 * pMul;
+        c.fillStyle = `rgb(${lightCol[0]},${lightCol[1]},${lightCol[2]})`;
+        c.beginPath();
+        c.moveTo(lx - 12 * v.sc, ly);
+        c.lineTo(lx - 12 * v.sc + Math.cos(-Math.PI/2 + coneAngle - 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 + coneAngle - 0.4) * coneLen);
+        c.lineTo(lx - 12 * v.sc + Math.cos(-Math.PI/2 + coneAngle + 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 + coneAngle + 0.4) * coneLen);
+        c.closePath(); c.fill();
+
+        c.fillStyle = `rgb(${otherCol[0]},${otherCol[1]},${otherCol[2]})`;
+        c.beginPath();
+        c.moveTo(lx + 12 * v.sc, ly);
+        c.lineTo(lx + 12 * v.sc + Math.cos(-Math.PI/2 - coneAngle - 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 - coneAngle - 0.4) * coneLen);
+        c.lineTo(lx + 12 * v.sc + Math.cos(-Math.PI/2 - coneAngle + 0.4) * coneLen,
+                 ly + Math.sin(-Math.PI/2 - coneAngle + 0.4) * coneLen);
+        c.closePath(); c.fill();
+        c.restore();
+      }
+    }
+
+    // ── 10. Vehicle emoji with enhanced glow ──
+    if (v.sc > 0.05) {
+      c.save();
+      c.translate(v.x, v.y);
+      c.rotate(v.rot * Math.PI / 180);
+      c.scale(v.sc, v.sc);
+      c.shadowColor = glow;
+      c.shadowBlur = 50 * pMul;
+      c.font = `${72 + intensity * 4}px serif`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.fillText(vehicleEmoji, 0, 0);
+      c.shadowBlur = 25;
+      c.fillText(vehicleEmoji, 0, 0);
+      c.shadowBlur = 0;
+      c.restore();
+    }
+
+    // ── 11. Text with per-character bounce-in ──
+    const tIn = DUR * 0.36, tHold = DUR * 0.54, tOut = DUR * 0.78;
+    if (ms >= tIn && ms <= tOut) {
+      const chars = [...rushText];
+      const charDelay = 50;
+      const totalCharTime = chars.length * charDelay;
+      const textY = H * 0.62;
+
+      c.save();
+      c.font = `bold ${32 + intensity * 2}px "PingFang SC","Microsoft YaHei",sans-serif`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+
+      const metrics = chars.map(ch => c.measureText(ch).width);
+      const totalW = metrics.reduce((a, b) => a + b, 0);
+      let cx = W / 2 - totalW / 2;
+
+      for (let i = 0; i < chars.length; i++) {
+        const charStart = tIn + i * charDelay;
+        if (ms < charStart) { cx += metrics[i]; continue; }
+
+        let alpha, offy;
+        const charAge = ms - charStart;
+
+        if (ms < tHold) {
+          const tp = Math.min(charAge / 300, 1);
+          const bounce = tp < 0.6
+            ? easeOut(tp / 0.6)
+            : 1 + Math.sin((tp - 0.6) / 0.4 * Math.PI) * 0.15;
+          alpha = Math.min(tp * 2, 1);
+          offy = -20 * (1 - bounce);
+        } else {
+          alpha = 1 - easeIn((ms - tHold) / (tOut - tHold));
+          offy = 0;
+        }
+
+        c.globalAlpha = Math.max(0, Math.min(1, alpha));
+        c.shadowColor = glow;
+        c.shadowBlur = 25;
+        c.fillStyle = '#fff';
+        c.fillText(chars[i], cx + metrics[i] / 2, textY + offy);
+        c.shadowBlur = 12;
+        c.fillText(chars[i], cx + metrics[i] / 2, textY + offy);
+        c.shadowBlur = 0;
+        cx += metrics[i];
+      }
+
+      c.globalAlpha = 1;
+      c.restore();
+    }
+
+    c.restore();
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+}
+
+// ── 提交答案 ──
+function submitAnswer() {
+  if (currentAnswer === '') return;
+
+  const q       = questions[currentIdx];
+  const userAns = parseInt(currentAnswer, 10);
+  const card    = $('question-card');
+  const ansEl   = $('answer-display');
+  const bar     = $('progress-bar');
+
+  if (userAns === q.answer) {
+    score++;
+    correctStreak++;
+    const qTag = q.tag || 'general';
+    tagScores[qTag] = (tagScores[qTag] || 0) + 1;
+    const total = questions.length;
+
+    ansEl.animate([
+      { transform: 'scale(1)',    color: 'var(--blue)',  background: 'transparent' },
+      { transform: 'scale(1.7)', color: '#2e7d32', background: '#c8e6c9', offset: 0.4 },
+      { transform: 'scale(1.3)', color: '#1b5e20', background: '#e8f5e9', offset: 0.7 },
+      { transform: 'scale(1)',    color: 'var(--blue)',  background: 'transparent' }
+    ], { duration: 500, fill: 'forwards' });
+
+    card.animate([
+      { transform: 'scale(1) rotate(0deg)' },
+      { transform: 'scale(1.07) rotate(1.5deg)',  offset: 0.35 },
+      { transform: 'scale(0.96) rotate(-0.8deg)', offset: 0.65 },
+      { transform: 'scale(1) rotate(0deg)' }
+    ], { duration: 500, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
+    $('score-display').textContent = score;
+    const badge = $('score-badge');
+    badge.animate([
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.6) rotate(-8deg)' },
+      { transform: 'scale(1)' }
+    ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
+    bar.style.width = `${((currentIdx+1)/total)*100}%`;
+    bar.animate([
+      { transform: 'scaleY(1)' },
+      { transform: 'scaleY(2)' },
+      { transform: 'scaleY(1)' }
+    ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+
+    const isThemeMatch = currentPlayer && q.tag && PLAYERS[currentPlayer].preferTag === q.tag;
+
+    setTimeout(() => {
+      showCelebrate(() => {
+        const goNext = () => {
+          currentIdx++;
+          if (currentIdx >= questions.length) showResult();
+          else renderQuestion();
+        };
+
+        if (isThemeMatch && q.tag === 'fire') {
+          showVehicleRush('🚒', 'fire', correctStreak, goNext);
+        } else {
+          goNext();
+        }
+      });
+    }, 220);
+
+  } else {
+    wrongCount++;
+    correctStreak = 0;
+    playWrong();
+
+    $('red-flash').animate([
+      { background: 'rgba(244,67,54,0)' },
+      { background: 'rgba(244,67,54,0.42)' },
+      { background: 'rgba(244,67,54,0)' }
+    ], { duration: 500 });
+
+    card.animate([
+      { transform: 'translateX(0) rotate(0)' },
+      { transform: 'translateX(-22px) rotate(-2.5deg)' },
+      { transform: 'translateX(22px)  rotate(2.5deg)' },
+      { transform: 'translateX(-16px) rotate(-1.8deg)' },
+      { transform: 'translateX(16px)  rotate(1.8deg)' },
+      { transform: 'translateX(-8px)  rotate(-0.8deg)' },
+      { transform: 'translateX(8px)   rotate(0.8deg)' },
+      { transform: 'translateX(0) rotate(0)' }
+    ], { duration: 520, easing: 'ease-in-out' });
+
+    ansEl.animate([
+      { transform: 'translateX(0)',    color: 'var(--blue)',  background: 'transparent', borderColor: '#90caf9' },
+      { transform: 'translateX(-12px)', color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.2 },
+      { transform: 'translateX(12px)',  color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.4 },
+      { transform: 'translateX(-8px)',  color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.6 },
+      { transform: 'translateX(8px)',   color: '#f44336', background: '#ffebee',     borderColor: '#f44336', offset: 0.8 },
+      { transform: 'translateX(0)',    color: '#f44336', background: '#ffebee',     borderColor: '#f44336' }
+    ], { duration: 500, fill: 'forwards' });
+
+    currentAnswer = '';
+
+    const pName = currentPlayer ? PLAYERS[currentPlayer].vehicle : '🚒';
+    const fb = $('feedback-msg');
+    fb.classList.remove('hidden');
+    if (wrongCount === 1) {
+      fb.textContent = `${pName} 哎呀，再想想！加油！`;
+      speak('哎呀，再想想，加油！');
+    } else if (wrongCount === 2) {
+      fb.textContent = `${pName} 提示：答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`;
+      speak(`提示一下，答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`);
+    } else {
+      fb.textContent = `${pName} 正确答案是 ${q.answer}，下次一定行！`;
+      speak(`正确答案是 ${q.answer}，没关系，下次一定行！`);
+      $('btn-next-q').classList.remove('hidden');
+    }
+  }
+}
+
+// ── 检测新解锁勋章 ──
+function detectNewMedals(playerId) {
+  if (!playerId) return [];
+  const statsBefore = getPlayerStats(playerId);
+  const beforeSet = new Set(ALL_MEDALS.filter(m => m.check(statsBefore)).map(m => m.id));
+  return { beforeSet };
+}
+function findNewlyUnlocked(playerId, beforeSet) {
+  if (!playerId) return [];
+  const statsAfter = getPlayerStats(playerId);
+  return ALL_MEDALS.filter(m => !beforeSet.has(m.id) && m.check(statsAfter));
+}
+
+// ── 结果页 ──
+function showResult() {
+  const totalQ = questions.length;
+
+  let beforeSet = new Set();
+  if (currentPlayer) {
+    const pre = detectNewMedals(currentPlayer);
+    beforeSet = pre.beforeSet;
+    saveRecord(currentPlayer, score, totalQ, { ...tagScores });
+  }
+
+  const newMedals = currentPlayer ? findNewlyUnlocked(currentPlayer, beforeSet) : [];
+
+  showPage('result-page');
+  $('final-score').textContent = score;
+
+  if (currentPlayer) {
+    $('result-dino').innerHTML = comboAvatar(currentPlayer);
+    $('result-title').textContent = `${PLAYERS[currentPlayer].name}，冒险完成！`;
+  } else {
+    $('result-dino').textContent = '🚒';
+    $('result-title').textContent = '冒险完成！';
+  }
+
+  let starsStr, msg;
+  const starCount = scoreToStarCount(score, totalQ);
+  starsStr = '⭐'.repeat(starCount);
+
+  if      (score === totalQ) { msg = '满分！你是数学小天才！🏆'; }
+  else if (starCount >= 4)   { msg = '太厉害了！再练练就满分啦！🌟'; }
+  else if (starCount >= 3)   { msg = '做得不错！继续加油！💪'; }
+  else if (starCount >= 2)   { msg = '消防车为你点赞！再来一次吧！👏'; }
+  else                       { msg = '没关系，多练习就会变厉害！🚒'; }
+
+  const starsEl = $('result-stars');
+  starsEl.innerHTML = '';
+  [...starsStr].forEach((s, i) => {
+    const span = document.createElement('span');
+    span.className   = 'star-item';
+    span.textContent = s;
+    starsEl.appendChild(span);
+    setTimeout(() => {
+      span.animate([
+        { transform: 'scale(0) rotate(-40deg)', opacity: 0 },
+        { transform: 'scale(1.4) rotate(10deg)', opacity: 1, offset: 0.65 },
+        { transform: 'scale(1) rotate(0deg)',    opacity: 1 }
+      ], { duration: 500, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
+    }, i * 160);
+  });
+
+  $('result-msg').textContent = msg;
+  if (starCount >= 4) setTimeout(startFireworks, 400);
+
+  renderResultPK();
+
+  // 新勋章提示
+  const medalBox = $('new-medal-box');
+  const medalList = $('new-medal-list');
+  if (newMedals.length > 0) {
+    medalBox.style.display = '';
+    medalList.innerHTML = newMedals.map((m, i) =>
+      `<div class="new-medal-item" style="animation-delay:${i * 0.2}s">
+        <span class="nmi-icon">${m.icon}</span>
+        <span class="nmi-label">${m.label}</span>
+      </div>`
+    ).join('');
+  } else {
+    medalBox.style.display = 'none';
+  }
+
+  const nameStr = currentPlayer ? PLAYERS[currentPlayer].name : '';
+  let resultRead = score === totalQ
+    ? `哇！${nameStr}满分！你答对了全部${totalQ}道题！你真是数学小天才！`
+    : `${nameStr}冒险完成！你答对了 ${score} 道题！`;
+
+  if (newMedals.length > 0) {
+    const medalNames = newMedals.map(m => m.label).join('、');
+    resultRead += `恭喜解锁新勋章：${medalNames}！`;
+  }
+
+  setTimeout(() => speak(resultRead), 600);
+}
+
+// ── 结果页（单人模式无 PK）──
+function renderResultPK() {}
+
+// ── 勋章定义 ──
+const ALL_MEDALS = [
+  { id: 'first_game',   icon: '🎯', label: '初次冒险',    check: st => st.games >= 1 },
+  { id: 'perfect',      icon: '💯', label: '满分达人',    check: st => st.perfectGames >= 1 },
+  { id: 'five_games',   icon: '✋', label: '五次挑战',    check: st => st.games >= 5 },
+  { id: 'ten_games',    icon: '🏃', label: '勤奋小将',    check: st => st.games >= 10 },
+  { id: 'twenty_games', icon: '💪', label: '超级勤奋',    check: st => st.games >= 20 },
+  { id: 'stars_10',     icon: '⭐', label: '10颗星星',    check: st => st.totalStars >= 10 },
+  { id: 'stars_30',     icon: '🌟', label: '30颗星星',    check: st => st.totalStars >= 30 },
+  { id: 'stars_60',     icon: '✨', label: '60颗星星',    check: st => st.totalStars >= 60 },
+  { id: 'stars_100',    icon: '🌠', label: '100颗星星',   check: st => st.totalStars >= 100 },
+  { id: 'streak3',      icon: '🔥', label: '三连满分',    check: st => st.streak >= 3 },
+  { id: 'streak5',      icon: '🔥', label: '五连满分',    check: st => st.streak >= 5 },
+  { id: 'perfect5',     icon: '🏆', label: '满分5次',     check: st => st.perfectGames >= 5 },
+  { id: 'fire_10',    icon: '🚒', label: '小小消防员',    check: st => st.totalTagScores && st.totalTagScores.fire >= 10 },
+  { id: 'fire_30',    icon: '🔥', label: '灭火能手',    check: st => st.totalTagScores && st.totalTagScores.fire >= 30 },
+];
+
+// ── 排行榜 ──
+function renderLeaderboard() {
+  const heroStats = getPlayerStats('hero');
+  const maxStars = Math.max(heroStats.totalStars, 1);
+
+  // ── 星星塔（单人）──
+  const towerMax = 190;
+  const barH = Math.max(12, (heroStats.totalStars / maxStars) * towerMax);
+
+  function buildStarIcons(count) {
+    const show = Math.min(count, 20);
+    return Array.from({length: show}, (_, i) =>
+      `<span class="tower-star" style="animation-delay:${i*0.07}s">⭐</span>`
+    ).join('');
+  }
+
+  const p = PLAYERS.hero;
+  $('star-tower-arena').innerHTML = `
+      <div class="star-tower-player">
+        ${heroStats.streak >= 3 ? '<span class="tower-crown">👑</span>' : '<span style="height:2rem;display:block"></span>'}
+        <span class="tower-dino ${heroStats.streak >= 3 ? 'has-flame' : ''}">${comboAvatar('hero')}</span>
+        <div class="tower-bar-wrap">
+          <div class="tower-bar hero-bar" id="tower-bar-hero" style="height:0px;">
+            ${buildStarIcons(heroStats.totalStars)}
+          </div>
+        </div>
+        <span class="tower-count">⭐ ${heroStats.totalStars}</span>
+        <span class="tower-name hero-color">${p.name}</span>
+        <span class="tower-title-badge hero-title">${getTitle(heroStats, 'hero')}</span>
+      </div>`;
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const hb = $('tower-bar-hero');
+      if (hb) hb.style.height = barH + 'px';
+    }, 80);
+  });
+
+  // ── 勋章展示柜 ──
+  let unlockedCount = 0;
+  const medalItems = ALL_MEDALS.map(m => {
+    const unlocked = m.check(heroStats);
+    if (unlocked) unlockedCount++;
+
+    return `<div class="medal-item ${unlocked ? 'unlocked' : 'locked'}">
+      ${unlocked ? '' : '<span class="medal-lock">🔒</span>'}
+      <span class="medal-icon">${m.icon}</span>
+      <span class="medal-label">${m.label}</span>
+      <span class="medal-who">${unlocked ? p.name : '未解锁'}</span>
+    </div>`;
+  }).join('');
+
+  $('medal-grid').innerHTML = medalItems;
+
+  const progressEl = document.querySelector('.medal-progress');
+  if (progressEl) {
+    progressEl.textContent = `已解锁 ${unlockedCount} / ${ALL_MEDALS.length} 枚勋章`;
+  }
+
+  // ── 详细数据 ──
+  $('lb-players').innerHTML = `
+    <div class="lb-player-block hero-block">
+      <span class="lb-avatar">${comboAvatar('hero')}</span>
+      <div class="lb-name">${p.name}</div>
+      <div class="lb-total-stars">⭐ ${heroStats.totalStars} 颗星星</div>
+      <div class="lb-total-score">总分 ${heroStats.totalScore} 分</div>
+      <div class="lb-games">答题 ${heroStats.games} 次 · 满分 ${heroStats.perfectGames} 次</div>
+      <div class="lb-rank-title">${getTitle(heroStats, 'hero')}</div>
+    </div>
+  `;
+
+  // ── 最近记录 ──
+  const allRecords = loadRecords().slice(-10).reverse();
+  const histList = $('lb-history-list');
+  if (allRecords.length === 0) {
+    histList.innerHTML = '<span style="color:#bdbdbd;font-size:0.9rem;">还没有记录哦，快去答题吧！</span>';
+  } else {
+    histList.innerHTML = allRecords.map(r => {
+      const pr = PLAYERS[r.player] || { vehicle: '🚒', name: '?' };
+      const d = new Date(r.date);
+      const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+      return `<div class="lb-history-item">
+        <span class="hi-player">${comboAvatar(r.player)} ${pr.name}</span>
+        <span class="hi-score">${r.score}/${r.total}</span>
+        <span class="hi-stars">${'⭐'.repeat(r.stars)}</span>
+        <span class="hi-date">${dateStr}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── 准备页预览 ──
+function updatePlayerPreview() {
+  const stats = getPlayerStats('hero');
+  $('hero-name').textContent = PLAYERS.hero.name;
+  $('hero-preview-stars').textContent = `⭐ ${stats.totalStars}`;
+  $('hero-preview-title').textContent = getTitle(stats, 'hero');
+}
+
+// ── 编辑名字 ──
+function editPlayerName(playerId) {
+  const current = PLAYERS[playerId].name;
+  const nameEl = $(`${playerId}-name`);
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = current;
+  input.maxLength = 6;
+  input.className = 'name-input';
+  input.style.cssText = 'width:80px;font-size:1.4rem;font-weight:900;text-align:center;border:2px solid ' +
+    PLAYERS[playerId].color + ';border-radius:10px;padding:2px 6px;outline:none;';
+
+  nameEl.replaceWith(input);
+  input.addEventListener('click', e => e.stopPropagation());
+  input.focus();
+  input.select();
+
+  function finish() {
+    const val = input.value.trim();
+    const newName = val.length > 0 ? val : current;
+    savePlayerName(newName);
+    const span = document.createElement('span');
+    span.className = 'player-name';
+    span.id = `${playerId}-name`;
+    span.textContent = newName;
+    input.replaceWith(span);
+  }
+
+  input.addEventListener('blur', finish);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = current; input.blur(); }
+  });
+}
+
+// ── 页面切换 ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+function openSettings() {
+  $('chk-show-equation').checked = loadShowEquation();
+  $('chk-speak-equation').checked = loadSpeakEquation();
+  showPage('settings-page');
+}
+
+// ── 游戏启动 ──
+function startGame() {
+  questions     = generateQuestions(5);
+  currentIdx    = 0;
+  score         = 0;
+  correctStreak = 0;
+  tagScores     = { fire: 0, general: 0 };
+  buildNumpad();
+  updatePlayerIndicator();
+  showPage('quiz-page');
+  $('progress-bar').style.width = '0%';
+  renderQuestion(false);
+}
+
+// ── 事件绑定 ──
+$('btn-start').addEventListener('click', () => {
+  playStart();
+  updatePlayerPreview();
+  showPage('player-page');
+  speak('准备好了吗？点击消防车出发吧！');
+});
+
+$('pick-hero').addEventListener('click', () => {
+  currentPlayer = 'hero';
+  playStart();
+  speak(`${PLAYERS.hero.name}出发！`);
+  startGame();
+});
+
+$('edit-hero').addEventListener('click', e => {
+  e.stopPropagation();
+  editPlayerName('hero');
+});
+
+$('btn-next-q').addEventListener('click', () => {
+  $('btn-next-q').classList.add('hidden');
+  currentIdx++;
+  if (currentIdx >= questions.length) showResult();
+  else renderQuestion();
+});
+
+$('btn-restart').addEventListener('click', () => {
+  playStart();
+  startGame();
+});
+
+$('btn-back-result').addEventListener('click', () => {
+  updatePlayerPreview();
+  showPage('player-page');
+});
+
+function openLeaderboard() {
+  renderLeaderboard();
+  showPage('leaderboard-page');
+  const st = getPlayerStats('hero');
+  if (st.games === 0) {
+    speak('还没有记录哦，快去答题吧！');
+    return;
+  }
+  const n = PLAYERS.hero.name;
+  setTimeout(() => speak(`${n}已经累计 ${st.totalStars} 颗星星，继续加油！`, 0.9), 400);
+}
+
+$('btn-settings-home').addEventListener('click', () => {
+  playClick();
+  openSettings();
+});
+$('btn-back-settings').addEventListener('click', () => {
+  playClick();
+  showPage('start-page');
+});
+$('chk-show-equation').addEventListener('change', () => {
+  saveShowEquation($('chk-show-equation').checked);
+});
+$('chk-speak-equation').addEventListener('change', () => {
+  saveSpeakEquation($('chk-speak-equation').checked);
+});
+
+$('btn-reread').addEventListener('click', () => {
+  playClick();
+  rereadCurrentQuestion();
+});
+
+$('btn-lb-home').addEventListener('click', openLeaderboard);
+$('btn-lb-player').addEventListener('click', openLeaderboard);
+$('btn-lb-result').addEventListener('click', openLeaderboard);
+$('btn-back-lb').addEventListener('click', () => {
+  updatePlayerPreview();
+  showPage('player-page');
+});
+
+$('btn-clear-data').addEventListener('click', () => {
+  if (confirm('确定要清除所有记录吗？这个操作不能撤回哦！')) {
+    clearRecords();
+    localStorage.removeItem(PLAYER_NAME_KEY);
+    PLAYERS.hero.name = DEFAULT_PLAYER_NAME;
+    renderLeaderboard();
+    updatePlayerPreview();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if ($('quiz-page').classList.contains('active')) {
+    if (e.key>='0' && e.key<='9') inputDigit(e.key);
+    else if (e.key==='Backspace')  deleteDigit();
+    else if (e.key==='Enter')      submitAnswer();
+  }
+});
+</script>
+</body>
+</html>
