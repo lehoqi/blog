@@ -2054,12 +2054,13 @@ function playAdventureWhoosh() {
   o.frequency.exponentialRampToValueAtTime(1200, now + dur * 0.8);
   o.start(now); o.stop(now + dur);
   const g2 = ctx.createGain(); g2.connect(ctx.destination);
-  g2.gain.setValueAtTime(0.25, now);
+  g2.gain.setValueAtTime(0.001, now);
+  g2.gain.linearRampToValueAtTime(0.25, now + 0.02);
   g2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
   const o2 = ctx.createOscillator(); o2.type = 'square'; o2.connect(g2);
   o2.frequency.setValueAtTime(90, now);
   o2.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-  o2.start(now); o2.stop(now + 0.36);
+  o2.start(now); o2.stop(now + 0.37);
 }
 function playAmbulanceSiren() {
   const ctx = getAudioCtx();
