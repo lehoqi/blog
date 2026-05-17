@@ -1094,6 +1094,7 @@ var _hmt = _hmt || [];
     }
     @keyframes gcPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
     @media (max-width:420px){ .garage-grid{grid-template-columns:repeat(3,1fr);} }
+    .result-coins { font-size:1.4rem; font-weight:900; color:#c2410c; margin-top:8px; }
   </style>
 </head>
 <body>
@@ -1220,6 +1221,7 @@ var _hmt = _hmt || [];
       <div class="result-score"><span id="final-score">0</span> / 5</div>
       <div class="result-stars" id="result-stars"></div>
       <div class="result-msg" id="result-msg"></div>
+      <div class="result-coins" id="result-coins">本局 +<span id="result-coins-n">0</span> 🪙</div>
       <div class="result-pk-box" id="result-pk-box">
         <div class="result-pk-title">🏆 今日总分 PK</div>
         <div class="result-pk-row" id="result-pk-row"></div>
@@ -1232,6 +1234,7 @@ var _hmt = _hmt || [];
     <div class="result-btns">
       <button class="btn-restart" id="btn-restart">再来一次！🦕</button>
       <button class="btn-leaderboard" id="btn-lb-result">🏆 排行榜</button>
+      <button class="btn-garage" id="btn-garage-result" type="button">🔧 去车库</button>
       <button class="btn-back-home" id="btn-back-result">🏠 回首页</button>
     </div>
   </div>
@@ -2520,6 +2523,8 @@ function submitAnswer() {
     correctStreak++;
     const qTag = q.tag || 'general';
     tagScores[qTag] = (tagScores[qTag] || 0) + 1;
+    window.__roundCoins = (window.__roundCoins || 0) + Garage.COIN_PER_CORRECT;
+    flyCoins($('question-card'), $('score-badge'), Garage.COIN_PER_CORRECT);
     const total = questions.length;
 
     ansEl.animate([
@@ -2621,6 +2626,39 @@ function submitAnswer() {
   }
 }
 
+// B1 飞币：题卡 → 角标，二次贝塞尔 + 拖尾，落点弹跳 + 金色 star 粒子
+function flyCoins(fromEl, toEl, n) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const f = fromEl.getBoundingClientRect(), t = toEl.getBoundingClientRect();
+  const sx = f.left + f.width / 2, sy = f.top + f.height / 2;
+  const ex = t.left + t.width / 2, ey = t.top + t.height / 2;
+  const cx = (sx + ex) / 2 + (Math.random() - 0.5) * 160, cy = Math.min(sy, ey) - 120;
+  const count = Math.max(5, Math.min(8, n * 3));
+  for (let k = 0; k < count; k++) {
+    const s = document.createElement('div');
+    s.textContent = '🪙';
+    s.style.cssText = 'position:fixed;left:0;top:0;font-size:26px;z-index:9998;pointer-events:none;will-change:transform;';
+    document.body.appendChild(s);
+    const dur = 620 + Math.random() * 220, delay = k * 55;
+    const frames = [];
+    for (let p = 0; p <= 1.0001; p += 0.1) {
+      const x = (1-p)*(1-p)*sx + 2*(1-p)*p*cx + p*p*ex;
+      const y = (1-p)*(1-p)*sy + 2*(1-p)*p*cy + p*p*ey;
+      frames.push({ transform:`translate(${x}px,${y}px) rotate(${p*540}deg) scale(${1.1-0.4*p})`,
+                    opacity: p > 0.85 ? 0 : 1 });
+    }
+    s.animate(frames, { duration:dur, delay, easing:'cubic-bezier(.4,0,.5,1)', fill:'forwards' })
+      .finished.then(() => s.remove()).catch(() => s.remove());
+  }
+  setTimeout(() => {
+    toEl.animate([{transform:'scale(1)'},{transform:'scale(1.5)'},{transform:'scale(1)'}],
+      { duration:360, easing:'cubic-bezier(.34,1.56,.64,1)' });
+    const r = toEl.getBoundingClientRect();
+    for (let j=0;j<10;j++) particles.push(new Particle(r.left+r.width/2, r.top+r.height/2, '#ffd600', 'star'));
+    if (!fwAnimId) fwLoop();
+  }, 620);
+}
+
 // ── 检测新解锁勋章 ──
 function detectNewMedals(playerId) {
   if (!playerId) return [];
@@ -2643,6 +2681,12 @@ function showResult() {
     const pre = detectNewMedals(currentPlayer);
     beforeSet = pre.beforeSet;
     saveRecord(currentPlayer, score, totalQ, { ...tagScores });
+    if (!window.__roundFinalized) {
+      window.__roundFinalized = true;
+      window.__roundCoins = Garage.roundCoins(score, totalQ); // authoritative (incl. perfect bonus)
+      const g = getPlayerGarage(currentPlayer);
+      setPlayerGarage(currentPlayer, { ...g, coins: g.coins + window.__roundCoins });
+    }
   }
 
   const newMedals = currentPlayer ? findNewlyUnlocked(currentPlayer, beforeSet) : [];
@@ -2685,6 +2729,25 @@ function showResult() {
   });
 
   $('result-msg').textContent = msg;
+  const earned = window.__roundCoins || 0;
+  const cn = $('result-coins-n'); let cv = 0;
+  cn.textContent = '0';
+  const tick = setInterval(() => {
+    cv = Math.min(earned, cv + Math.max(1, Math.ceil(earned / 18)));
+    cn.textContent = cv;
+    if (cv >= earned) clearInterval(tick);
+  }, 45);
+  if (earned > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    for (let j = 0; j < 18; j++) {
+      const c = document.createElement('div');
+      c.textContent = '🪙';
+      c.style.cssText = `position:fixed;top:-40px;left:${5+Math.random()*90}vw;font-size:${20+Math.random()*16}px;z-index:90;pointer-events:none;`;
+      document.body.appendChild(c);
+      c.animate([{transform:'translateY(0) rotate(0)'},{transform:`translateY(${window.innerHeight+80}px) rotate(${360+Math.random()*360}deg)`}],
+        { duration:1600+Math.random()*1200, delay:j*60, easing:'cubic-bezier(.3,.1,.5,1)', fill:'forwards' })
+        .finished.then(()=>c.remove()).catch(()=>c.remove());
+    }
+  }
   if (starCount >= 4) setTimeout(startFireworks, 400);
 
   renderResultPK();
@@ -2958,6 +3021,8 @@ function startGame() {
   score         = 0;
   correctStreak = 0;
   tagScores     = { police: 0, ambulance: 0, general: 0 };
+  window.__roundCoins = 0;
+  window.__roundFinalized = false;
   buildNumpad();
   updatePlayerIndicator();
   showPage('quiz-page');
@@ -3155,6 +3220,10 @@ $('btn-reread').addEventListener('click', () => {
 $('btn-lb-home').addEventListener('click', openLeaderboard);
 $('btn-lb-player').addEventListener('click', openLeaderboard);
 $('btn-lb-result').addEventListener('click', openLeaderboard);
+$('btn-garage-result').addEventListener('click', () => {
+  playClick();
+  if (currentPlayer) openGarage(currentPlayer);
+});
 $('btn-back-lb').addEventListener('click', () => {
   updatePlayerPreview();
   showPage('player-page');
