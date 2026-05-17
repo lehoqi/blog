@@ -186,6 +186,7 @@ test('ownsAll true only when every catalog item of kind is owned', () => {
   const allV = G.byKind('vehicle').map(it => it.id);
   assert.equal(G.ownsAll(allV, 'vehicle'), true);
   assert.equal(G.ownsAll(allV.slice(1), 'vehicle'), false);
+  assert.equal(G.ownsAll(allV.concat(['bogus']), 'vehicle'), true); // unknown ids in owned[] are harmless
   assert.equal(G.ownsAll(['brontosaurus','trex','dragon'], 'dino'), true);
   assert.equal(G.ownsAll(['brontosaurus','trex'], 'dino'), false);
   assert.equal(G.ownsAll([], 'vehicle'), false);

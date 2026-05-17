@@ -132,6 +132,7 @@ function lifetimeCoins(records) {
   }
   return sum;
 }
+
 function ownedCount(owned, kind) {
   if (!Array.isArray(owned)) return 0;
   var n = 0;
@@ -141,6 +142,7 @@ function ownedCount(owned, kind) {
   }
   return n;
 }
+
 function ownsAll(owned, kind) {
   if (!Array.isArray(owned) || owned.length === 0) return false;
   var items = byKind(kind);
