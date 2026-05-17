@@ -1271,7 +1271,7 @@ function equippedEmojis(playerId) {
     const g = getPlayerGarage(playerId);
     const v = Garage.getItem(g.equippedVehicle), d = Garage.getItem(g.equippedDino);
     return { vehicle: v ? v.emoji : fb.vehicle, dino: d ? d.emoji : fb.dino };
-  } catch (e) { return fb; }
+  } catch (e) { if (typeof console !== 'undefined') console.warn('[equippedEmojis] fallback:', e); return fb; }
 }
 function comboAvatar(playerId) {
   if (!PLAYERS[playerId]) return '🚗';
@@ -1790,7 +1790,6 @@ function renderQuestion(slideIn = true) {
   $('score-display').textContent  = score;
 
   if (currentPlayer) {
-    const p = PLAYERS[currentPlayer];
     $('quiz-dino').innerHTML = comboAvatar(currentPlayer);
     $('progress-dino').textContent = equippedEmojis(currentPlayer).vehicle;
   } else {
