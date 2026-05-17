@@ -79,7 +79,7 @@ test('CATALOG contents match spec §7', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: FAIL — `Cannot find module '../garage.js'`.
 
 - [ ] **Step 3: Write minimal implementation**
@@ -124,7 +124,7 @@ if (typeof window !== 'undefined') window.Garage = GarageAPI;
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: PASS (2 tests).
 
 - [ ] **Step 5: Commit**
@@ -190,7 +190,7 @@ test('normalize: repairs bad fields, keeps defaults owned, clamps coins', () => 
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: FAIL — `G.DEFAULTS` / `G.migrationCoins` undefined.
 
 - [ ] **Step 3: Write minimal implementation**
@@ -255,7 +255,7 @@ Then extend the `GarageAPI` object literal to include:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: PASS (all tests, incl. Task 1).
 
 - [ ] **Step 5: Commit**
@@ -294,7 +294,7 @@ test('roundCoins: per-correct + perfect bonus only when all correct', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: FAIL — `G.COIN_PER_CORRECT` undefined.
 
 - [ ] **Step 3: Write minimal implementation**
@@ -324,7 +324,7 @@ Extend `GarageAPI`:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -396,7 +396,7 @@ test('equip: sets slot by kind, requires owned, returns NEW entry; null otherwis
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: FAIL — `G.owns` undefined.
 
 - [ ] **Step 3: Write minimal implementation**
@@ -445,7 +445,7 @@ Extend `GarageAPI`:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: PASS.
 
 - [ ] **Step 5: Commit**
@@ -486,7 +486,7 @@ test('voice-line builders produce exact spec §10.2 strings', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: FAIL — `G.vEnterPlayer` undefined.
 
 - [ ] **Step 3: Write minimal implementation**
@@ -519,7 +519,7 @@ Extend `GarageAPI`:
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: PASS — full `garage.js` logic now covered.
 
 - [ ] **Step 5: Commit**
@@ -1705,7 +1705,7 @@ git commit -m "feat(garage): clear-data resets garage"
 
 - [ ] **Step 1: Run unit suite**
 
-Run: `node --test tests/`
+Run: `node --test tests/garage.test.js`
 Expected: ALL PASS (Tasks 1–5 logic).
 
 - [ ] **Step 2: Walk spec §13 acceptance criteria**
