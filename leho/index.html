@@ -1219,6 +1219,7 @@ var _hmt = _hmt || [];
 
 </div>
 
+<script src="garage.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -1318,6 +1319,29 @@ function getPlayerStats(playerId) {
 
   return { totalStars, totalScore, games, perfectGames, streak, records, totalTagScores };
 }
+// ── 车库数据（localStorage 适配，纯逻辑在 Garage） ──
+const GARAGE_KEY = 'dino_math_garage';
+function _loadGarageRaw() {
+  try { return JSON.parse(localStorage.getItem(GARAGE_KEY)) || {}; } catch { return {}; }
+}
+function _saveGarageRaw(obj) { localStorage.setItem(GARAGE_KEY, JSON.stringify(obj)); }
+// Single source of truth: every read goes through this. Guarantees a
+// normalized, migrated entry and persists it back if it changed/initialized.
+function getPlayerGarage(playerId) {
+  const all = _loadGarageRaw();
+  const prior = getPlayerStats(playerId).totalScore;
+  const norm = Garage.normalize(all[playerId], playerId, prior);
+  all[playerId] = norm;
+  _saveGarageRaw(all);
+  return norm;
+}
+function setPlayerGarage(playerId, entry) {
+  const all = _loadGarageRaw();
+  all[playerId] = entry;
+  _saveGarageRaw(all);
+}
+function clearGarage() { localStorage.removeItem(GARAGE_KEY); }
+window.getPlayerGarage = getPlayerGarage; // test/debug hook
 function scoreToStarCount(score, total) {
   const ratio = score / total;
   if (ratio >= 1) return 5;
