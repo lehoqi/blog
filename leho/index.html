@@ -1285,7 +1285,7 @@ var _hmt = _hmt || [];
       <!-- 勋章展示柜 -->
       <div class="medal-cabinet">
         <div class="medal-cabinet-title">🎖️ 勋章展示柜</div>
-        <div class="medal-progress">已解锁 0 / 28 枚勋章</div>
+        <div class="medal-progress">已解锁 0 / 34 枚勋章</div>
         <div class="medal-grid" id="medal-grid"></div>
       </div>
 
@@ -3023,6 +3023,12 @@ const ALL_MEDALS = [
   { id: 'dragon_rider', icon: '🐲', label: '驯龙高手',    check: st => st.ownsDragon === true },
   { id: 'coin_saver_50',icon: '🪙', label: '小财主',      check: st => st.lifetimeCoins >= 50 },
   { id: 'coin_saver_150', icon: '💰', label: '大富翁',     check: st => st.lifetimeCoins >= 150 },
+  { id: 'fire_10',      icon: '🚒', label: '消防小英雄',  check: st => st.totalTagScores && st.totalTagScores.fire >= 10 },
+  { id: 'fire_30',      icon: '🧯', label: '烈焰克星',    check: st => st.totalTagScores && st.totalTagScores.fire >= 30 },
+  { id: 'everyday_10',  icon: '🚌', label: '出行小达人',  check: st => st.totalTagScores && st.totalTagScores.everyday >= 10 },
+  { id: 'everyday_30',  icon: '🎫', label: '金牌司机',    check: st => st.totalTagScores && st.totalTagScores.everyday >= 30 },
+  { id: 'adventure_10', icon: '🏁', label: '勇敢探险家',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 10 },
+  { id: 'adventure_30', icon: '🛰️', label: '太空英雄',    check: st => st.totalTagScores && st.totalTagScores.adventure >= 30 },
 ];
 
 // ── 排行榜 ──
