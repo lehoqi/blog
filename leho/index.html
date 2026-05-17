@@ -2682,11 +2682,11 @@ function flyCoins(fromEl, toEl, n) {
 function medalStats(playerId) {
   const s = getPlayerStats(playerId);
   let g;
-  try { g = getPlayerGarage(playerId); } catch (e) { g = { coins: 0, owned: [] }; }
+  try { g = getPlayerGarage(playerId); } catch (e) { if (typeof console !== 'undefined') console.warn('[medalStats] garage fallback:', e); g = { coins: 0, owned: [] }; }
   const owned = Array.isArray(g.owned) ? g.owned : [];
   return {
     ...s,
-    coinsNow: g.coins || 0,
+    coinsNow: g.coins || 0, // 仅调试用，勋章 check 一律禁用（spec §4 单调性：用 lifetimeCoins）
     lifetimeCoins: Garage.lifetimeCoins(s.records),
     ownedVehicleCount: Garage.ownedCount(owned, 'vehicle'),
     ownedDinoCount: Garage.ownedCount(owned, 'dino'),
