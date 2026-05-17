@@ -57,7 +57,7 @@
 | perfect_10 | 👑 | 满分十次 | st.perfectGames >= 10 |
 | streak7 | ☄️ | 七连满分 | st.streak >= 7 |
 | police_50 | 🎖️ | 警界传奇 | st.totalTagScores && st.totalTagScores.police >= 50 |
-| ambulance_50 | 🏆 | 急救传奇 | st.totalTagScores && st.totalTagScores.ambulance >= 50 |
+| ambulance_50 | 🦸 | 急救传奇 | st.totalTagScores && st.totalTagScores.ambulance >= 50 |（评审期定为 🦸，避免与 perfect5 的 🏆 撞图标，§9 允许）
 
 **车库/收集主题（用新字段）：**
 
