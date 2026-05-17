@@ -26,3 +26,42 @@ test('CATALOG contents match spec §7', () => {
   assert.equal(G.getItem('dragon').price, 35);
   assert.equal(G.getItem('nope'), undefined);
 });
+
+test('DEFAULTS per player', () => {
+  assert.deepEqual(G.DEFAULTS.lele,   { vehicle:'police',    dino:'brontosaurus' });
+  assert.deepEqual(G.DEFAULTS.haohao, { vehicle:'ambulance', dino:'trex' });
+});
+
+test('migrationCoins caps at 60, floors, never negative', () => {
+  assert.equal(G.migrationCoins(0), 0);
+  assert.equal(G.migrationCoins(12.9), 12);
+  assert.equal(G.migrationCoins(100), 60);
+  assert.equal(G.migrationCoins(undefined), 0);
+  assert.equal(G.migrationCoins(-5), 0);
+});
+
+test('initEntry seeds defaults + migration coins + migrated flag', () => {
+  const e = G.initEntry('lele', 30);
+  assert.equal(e.coins, 30);
+  assert.deepEqual(e.owned.sort(), ['brontosaurus', 'police']);
+  assert.equal(e.equippedVehicle, 'police');
+  assert.equal(e.equippedDino, 'brontosaurus');
+  assert.equal(e.migrated, true);
+});
+
+test('normalize: missing/!migrated -> fresh init (migration once)', () => {
+  assert.equal(G.normalize(null, 'haohao', 7).coins, 7);
+  assert.equal(G.normalize(undefined, 'haohao', 7).equippedVehicle, 'ambulance');
+  const kept = G.normalize({ coins:3, owned:['ambulance','trex'], equippedVehicle:'ambulance', equippedDino:'trex', migrated:true }, 'haohao', 999);
+  assert.equal(kept.coins, 3);
+});
+
+test('normalize: repairs bad fields, keeps defaults owned, clamps coins', () => {
+  const n = G.normalize({ coins:-9, owned:['rocket','bogus'], equippedVehicle:'rocket', equippedDino:'zzz', migrated:true }, 'lele', 0);
+  assert.equal(n.coins, 0);
+  assert.ok(n.owned.includes('police'));
+  assert.ok(n.owned.includes('brontosaurus'));
+  assert.ok(!n.owned.includes('bogus'));
+  assert.equal(n.equippedVehicle, 'rocket');
+  assert.equal(n.equippedDino, 'brontosaurus');
+});

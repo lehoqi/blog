@@ -23,10 +23,59 @@ CATALOG.forEach(function (it) { _byId[it.id] = it; });
 function getItem(id) { return _byId[id]; }
 function byKind(kind) { return CATALOG.filter(function (it) { return it.kind === kind; }); }
 
+var DEFAULTS = {
+  lele:   { vehicle:'police',    dino:'brontosaurus' },
+  haohao: { vehicle:'ambulance', dino:'trex' }
+};
+var MIGRATION_CAP = 60;
+
+function migrationCoins(priorTotalScore) {
+  var n = Math.floor(Number(priorTotalScore) || 0);
+  if (n < 0) n = 0;
+  return Math.min(MIGRATION_CAP, n);
+}
+
+function initEntry(playerId, priorTotalScore) {
+  var d = DEFAULTS[playerId] || DEFAULTS.lele;
+  return {
+    coins: migrationCoins(priorTotalScore),
+    owned: [d.vehicle, d.dino],
+    equippedVehicle: d.vehicle,
+    equippedDino: d.dino,
+    migrated: true
+  };
+}
+
+function normalize(raw, playerId, priorTotalScore) {
+  if (!raw || raw.migrated !== true) return initEntry(playerId, priorTotalScore);
+  var d = DEFAULTS[playerId] || DEFAULTS.lele;
+  var coins = Math.floor(Number(raw.coins) || 0);
+  if (coins < 0) coins = 0;
+  var owned = Array.isArray(raw.owned) ? raw.owned.filter(function (id) { return !!_byId[id]; }) : [];
+  if (owned.indexOf(d.vehicle) === -1) owned.push(d.vehicle);
+  if (owned.indexOf(d.dino) === -1) owned.push(d.dino);
+  function pick(id, fallback, kind) {
+    var it = _byId[id];
+    return (it && it.kind === kind && owned.indexOf(id) !== -1) ? id : fallback;
+  }
+  return {
+    coins: coins,
+    owned: owned,
+    equippedVehicle: pick(raw.equippedVehicle, d.vehicle, 'vehicle'),
+    equippedDino: pick(raw.equippedDino, d.dino, 'dino'),
+    migrated: true
+  };
+}
+
 var GarageAPI = {
   CATALOG: CATALOG,
   getItem: getItem,
-  byKind: byKind
+  byKind: byKind,
+  DEFAULTS: DEFAULTS,
+  MIGRATION_CAP: MIGRATION_CAP,
+  migrationCoins: migrationCoins,
+  initEntry: initEntry,
+  normalize: normalize,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;
