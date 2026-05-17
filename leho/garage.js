@@ -74,9 +74,10 @@ var PERFECT_BONUS = 5;
 function roundCoins(correct, total) {
   correct = Math.max(0, Math.floor(Number(correct) || 0));
   total = Math.max(0, Math.floor(Number(total) || 0));
+  correct = Math.min(correct, total); // can't answer more correct than total
   if (total === 0) return 0;
   var c = correct * COIN_PER_CORRECT;
-  if (correct >= total) c += PERFECT_BONUS;
+  if (correct === total) c += PERFECT_BONUS;
   return c;
 }
 

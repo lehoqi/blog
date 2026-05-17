@@ -94,3 +94,8 @@ test('roundCoins: per-correct + perfect bonus only when all correct', () => {
   assert.equal(G.roundCoins(5, 0), 0);
   assert.equal(G.roundCoins(2, 2), 4 + 5);
 });
+
+test('roundCoins: impossible correct>total does not grant perfect bonus', () => {
+  assert.equal(G.roundCoins(6, 5), 15);   // clamped to 5/5 -> 10 + 5
+  assert.equal(G.roundCoins(9, 0), 0);    // zero-total still 0
+});
