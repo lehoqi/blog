@@ -1264,11 +1264,21 @@ const PLAYERS = {
   haohao: { name: savedNames.haohao, avatar: '🦖', vehicle: '🚑', vehicleName: '急救恐龙', preferTag: 'ambulance', color: '#1e88e5', colorLight: '#e3f2fd' }
 };
 
-function comboAvatar(playerId) {
+function equippedEmojis(playerId) {
   const p = PLAYERS[playerId];
-  if (!p) return '🚗';
-  return `<span class="combo-avatar"><span>${p.vehicle}</span><span class="dino-badge">${p.avatar}</span></span>`;
+  const fb = { vehicle: p ? p.vehicle : '🚗', dino: p ? p.avatar : '🦕' };
+  try {
+    const g = getPlayerGarage(playerId);
+    const v = Garage.getItem(g.equippedVehicle), d = Garage.getItem(g.equippedDino);
+    return { vehicle: v ? v.emoji : fb.vehicle, dino: d ? d.emoji : fb.dino };
+  } catch (e) { return fb; }
 }
+function comboAvatar(playerId) {
+  if (!PLAYERS[playerId]) return '🚗';
+  const e = equippedEmojis(playerId);
+  return `<span class="combo-avatar"><span>${e.vehicle}</span><span class="dino-badge">${e.dino}</span></span>`;
+}
+window.comboAvatar = comboAvatar; // test/debug hook
 
 let currentPlayer = null;
 
@@ -1782,7 +1792,7 @@ function renderQuestion(slideIn = true) {
   if (currentPlayer) {
     const p = PLAYERS[currentPlayer];
     $('quiz-dino').innerHTML = comboAvatar(currentPlayer);
-    $('progress-dino').textContent = p.vehicle;
+    $('progress-dino').textContent = equippedEmojis(currentPlayer).vehicle;
   } else {
     $('quiz-dino').textContent = DINO_EMOJIS[randInt(0,4)];
     $('progress-dino').textContent = '🦕';
@@ -1929,13 +1939,15 @@ function playAmbulanceSiren() {
 }
 
 // ── 全屏飞车动效（Canvas 粒子系统，三段式：冲入→亮相→冲出） ──
-function showVehicleRush(vehicleEmoji, type, combo, onDone) {
+function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
+  opts = opts || {};
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     if (onDone) onDone();
     return;
   }
 
-  if (type === 'police') playPoliceSiren();
+  if (typeof opts.sound === 'function') opts.sound();
+  else if (type === 'police') playPoliceSiren();
   else playAmbulanceSiren();
 
   const W = window.innerWidth, H = window.innerHeight;
@@ -1955,7 +1967,7 @@ function showVehicleRush(vehicleEmoji, type, combo, onDone) {
   const C1 = type === 'police' ? [244,67,54] : [244,67,54];
   const C2 = type === 'police' ? [21,101,192] : [255,255,255];
   const GOLD = [255,235,59];
-  const rushText = type === 'police' ? '🚓 破案成功！' : '🚑 急救成功！';
+  const rushText = opts.text || (type === 'police' ? '🚓 破案成功！' : '🚑 急救成功！');
   const glow = type === 'police' ? 'rgba(21,101,192,0.9)' : 'rgba(244,67,54,0.9)';
 
   const DUR = 3800;
@@ -2460,7 +2472,7 @@ function submitAnswer() {
 
         if (isThemeMatch) {
           const vType = q.tag;
-          const vEmoji = vType === 'police' ? '🚓' : '🚑';
+          const vEmoji = equippedEmojis(currentPlayer).vehicle;
           showVehicleRush(vEmoji, vType, correctStreak, goNext);
         } else {
           goNext();
@@ -2501,7 +2513,7 @@ function submitAnswer() {
 
     currentAnswer = '';
 
-    const pName = currentPlayer ? PLAYERS[currentPlayer].avatar : '🦕';
+    const pName = currentPlayer ? equippedEmojis(currentPlayer).dino : '🦕';
     const fb = $('feedback-msg');
     fb.classList.remove('hidden');
     if (wrongCount === 1) {
