@@ -166,7 +166,7 @@
 - **A6** 解锁状态在「第二次点确认」瞬间即提交存盘；动画失败/被 reduced-motion 跳过不影响已解锁事实；动画期禁点 + 超时兜底恢复交互。
 - **C4** `speechSynthesis` 不可用/静音/缺音：界面凭 emoji+数字+颜色（绿够/红不够）+锁/勾图标仍可完整操作。
 - garage 数据损坏/缺字段：`getPlayerGarage` 按默认结构容错回填；迁移补偿严格一次（`migrated`）。
-- 清除记录后：金币 0、仅默认组合、`migrated` 重置（此时 records 已清，重算 totalScore=0 自然为 0）。
+- 清除记录后：`clearGarage()` 直接移除整个 garage 键；随后任一次 `getPlayerGarage` 经 `normalize(undefined,…)` → `initEntry` 重建为 **金币 0、仅默认组合、`migrated:true`**。此时 records 也已清，`totalScore=0`，迁移补偿自然为 0 —— 观测结果即「干净起点」，与逐字段重置等价（`migrated` 标志值无可观测影响）。
 - **A1** 语音队列超时兜底：`onend` 未触发时按估算时长跳下一句，防卡队列。
 
 ## 13. 验收标准
