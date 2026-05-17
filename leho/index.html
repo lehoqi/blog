@@ -2679,7 +2679,7 @@ function submitAnswer() {
       { transform: 'scaleY(1)' }
     ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
 
-    const isThemeMatch = !!(q.tag && q.tag === currentFamily());
+    const isThemeMatch = !!(currentPlayer && q.tag && q.tag === currentFamily());
 
     setTimeout(() => {
       showCelebrate(() => {
