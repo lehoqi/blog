@@ -123,6 +123,33 @@ function vUnlocked(vn)  { return '太棒了！' + vn + '是你的啦！'; }
 function vEquipped(vn)  { return '换好啦！现在开' + vn + '！呜——'; }
 function vResultCoins(n) { return '这一局你赚了 ' + n + ' 个金币！'; }
 
+function lifetimeCoins(records) {
+  if (!Array.isArray(records)) return 0;
+  var sum = 0;
+  for (var i = 0; i < records.length; i++) {
+    var r = records[i] || {};
+    sum += roundCoins(r.score, r.total);
+  }
+  return sum;
+}
+function ownedCount(owned, kind) {
+  if (!Array.isArray(owned)) return 0;
+  var n = 0;
+  for (var i = 0; i < owned.length; i++) {
+    var it = _byId[owned[i]];
+    if (it && it.kind === kind) n++;
+  }
+  return n;
+}
+function ownsAll(owned, kind) {
+  if (!Array.isArray(owned) || owned.length === 0) return false;
+  var items = byKind(kind);
+  for (var i = 0; i < items.length; i++) {
+    if (owned.indexOf(items[i].id) === -1) return false;
+  }
+  return true;
+}
+
 var GarageAPI = {
   CATALOG: CATALOG,
   getItem: getItem,
@@ -149,6 +176,9 @@ var GarageAPI = {
   vUnlocked: vUnlocked,
   vEquipped: vEquipped,
   vResultCoins: vResultCoins,
+  lifetimeCoins: lifetimeCoins,
+  ownedCount: ownedCount,
+  ownsAll: ownsAll,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;

@@ -166,3 +166,28 @@ test('voice-line builders produce exact spec §10.2 strings', () => {
   assert.equal(G.vEquipped('火箭'), '换好啦！现在开火箭！呜——');
   assert.equal(G.vResultCoins(8), '这一局你赚了 8 个金币！');
 });
+
+test('lifetimeCoins sums roundCoins over records (monotonic, ignores garbage)', () => {
+  assert.equal(G.lifetimeCoins([]), 0);
+  assert.equal(G.lifetimeCoins(undefined), 0);
+  assert.equal(G.lifetimeCoins([{score:5,total:5},{score:3,total:5}]), 21);
+  assert.equal(G.lifetimeCoins([{score:5,total:5},{},{score:'x',total:'y'}]), 15);
+});
+
+test('ownedCount counts owned ids by catalog kind', () => {
+  assert.equal(G.ownedCount(['police','brontosaurus'], 'vehicle'), 1);
+  assert.equal(G.ownedCount(['police','brontosaurus'], 'dino'), 1);
+  assert.equal(G.ownedCount(['police','rocket','ufo','brontosaurus','dragon'], 'vehicle'), 3);
+  assert.equal(G.ownedCount(['police','bogus'], 'vehicle'), 1);
+  assert.equal(G.ownedCount(null, 'vehicle'), 0);
+});
+
+test('ownsAll true only when every catalog item of kind is owned', () => {
+  const allV = G.byKind('vehicle').map(it => it.id);
+  assert.equal(G.ownsAll(allV, 'vehicle'), true);
+  assert.equal(G.ownsAll(allV.slice(1), 'vehicle'), false);
+  assert.equal(G.ownsAll(['brontosaurus','trex','dragon'], 'dino'), true);
+  assert.equal(G.ownsAll(['brontosaurus','trex'], 'dino'), false);
+  assert.equal(G.ownsAll([], 'vehicle'), false);
+  assert.equal(G.ownsAll(null, 'dino'), false);
+});
