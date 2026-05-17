@@ -1055,6 +1055,44 @@ var _hmt = _hmt || [];
       transition: transform 0.12s;
     }
     .btn-garage:active { transform: translateY(3px); box-shadow: 0 1px 0 #e65100; }
+    #garage-page { gap: 14px; width: 100%; }
+    .garage-head {
+      width:100%; background:var(--card); border-radius:24px; padding:16px;
+      box-shadow:var(--shadow); text-align:center;
+    }
+    .garage-avatar { font-size:48px; display:block; }
+    .garage-title { font-size:1.4rem; font-weight:900; color:var(--text); margin-top:4px; }
+    .garage-coins { font-size:1.3rem; font-weight:900; color:#c2410c; margin-top:2px; }
+    .garage-section-title {
+      align-self:flex-start; font-size:1.1rem; font-weight:900; color:#558b2f; margin-left:4px;
+    }
+    .garage-grid {
+      width:100%; display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+    }
+    .garage-cell {
+      background:var(--card); border-radius:18px; padding:12px 4px 8px;
+      text-align:center; border:3px solid #eee; cursor:pointer; position:relative;
+      transition:transform 0.12s;
+    }
+    .garage-cell:active { transform:scale(0.95); }
+    .garage-cell .gc-emoji { font-size:34px; display:block; line-height:1; }
+    .garage-cell .gc-state { font-size:0.7rem; font-weight:800; margin-top:4px; }
+    .garage-cell.owned { border-color:#a5d6a7; }
+    .garage-cell.equipped {
+      border-color:#43a047;
+      box-shadow:0 0 0 3px #66bb6a, 0 0 18px rgba(76,175,80,0.55);
+    }
+    .garage-cell.locked .gc-emoji { filter:grayscale(100%); opacity:0.45; }
+    .garage-cell .gc-lock { position:absolute; top:6px; right:8px; font-size:0.8rem; }
+    .garage-cell .gc-price-afford   { color:#2e7d32; font-weight:900; }
+    .garage-cell .gc-price-noafford { color:#e53935; font-weight:900; }
+    .garage-cell.confirm {
+      border-color:#fb8c00;
+      box-shadow:0 0 0 3px #ffb74d, 0 0 18px rgba(255,152,0,0.6);
+      animation:gcPulse 0.7s ease-in-out infinite;
+    }
+    @keyframes gcPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+    @media (max-width:420px){ .garage-grid{grid-template-columns:repeat(3,1fr);} }
   </style>
 </head>
 <body>
@@ -1195,6 +1233,20 @@ var _hmt = _hmt || [];
       <button class="btn-leaderboard" id="btn-lb-result">🏆 排行榜</button>
       <button class="btn-back-home" id="btn-back-result">🏠 回首页</button>
     </div>
+  </div>
+
+  <!-- 车库页 -->
+  <div class="page" id="garage-page">
+    <div class="garage-head">
+      <span class="garage-avatar" id="garage-avatar">🦕🚓</span>
+      <div class="garage-title"><span id="garage-name">乐乐</span>的车库</div>
+      <div class="garage-coins">🪙 <span id="garage-coins">0</span></div>
+    </div>
+    <div class="garage-section-title">🚗 座驾</div>
+    <div class="garage-grid" id="garage-grid-vehicle"></div>
+    <div class="garage-section-title">🦕 恐龙</div>
+    <div class="garage-grid" id="garage-grid-dino"></div>
+    <button class="btn-back-home" id="btn-back-garage" style="margin-top:14px;">🏠 返回</button>
   </div>
 
   <!-- 排行榜页 -->
@@ -2963,6 +3015,56 @@ $('btn-back-result').addEventListener('click', () => {
   showPage('player-page');
 });
 
+let currentGaragePlayer = null;
+let garageConfirmId = null; // id awaiting 2nd-tap unlock confirm
+
+function renderGarage() {
+  const pid = currentGaragePlayer;
+  const g = getPlayerGarage(pid);
+  $('garage-avatar').innerHTML = comboAvatar(pid);
+  $('garage-name').textContent = PLAYERS[pid].name;
+  $('garage-coins').textContent = g.coins;
+
+  function cell(it) {
+    const owned = Garage.owns(g, it.id);
+    const equipped = Garage.isEquipped(g, it.id);
+    const afford = Garage.canAfford(g, it.id);
+    let cls = 'garage-cell', state, lock = '';
+    if (equipped) { cls += ' owned equipped'; state = '✓ 正在开'; }
+    else if (owned) { cls += ' owned'; state = '点我换上'; }
+    else {
+      cls += ' locked';
+      lock = '<span class="gc-lock">🔒</span>';
+      const c = afford ? 'gc-price-afford' : 'gc-price-noafford';
+      state = `<span class="${c}">🪙 ${it.price}</span>`;
+    }
+    if (!owned && afford) cls += ' afford';
+    if (it.id === garageConfirmId) cls += ' confirm';
+    return `<div class="${cls}" data-id="${it.id}">${lock}
+      <span class="gc-emoji">${it.emoji}</span>
+      <span class="gc-state">${state}</span></div>`;
+  }
+  $('garage-grid-vehicle').innerHTML = Garage.byKind('vehicle').map(cell).join('');
+  $('garage-grid-dino').innerHTML = Garage.byKind('dino').map(cell).join('');
+  [$('garage-grid-vehicle'), $('garage-grid-dino')].forEach(grid => {
+    grid.onclick = ev => {
+      const c = ev.target.closest('.garage-cell');
+      if (c) handleGarageCellTap(c.dataset.id);
+    };
+  });
+}
+
+function openGarage(pid) {
+  currentGaragePlayer = pid;
+  garageConfirmId = null;
+  renderGarage();
+  showPage('garage-page');
+  const g = getPlayerGarage(pid);
+  speak(Garage.vOpenGarage(PLAYERS[pid].name, g.coins));
+}
+
+function handleGarageCellTap(id) { /* implemented in Task 11 */ }
+
 function openLeaderboard() {
   renderLeaderboard();
   showPage('leaderboard-page');
@@ -3009,6 +3111,11 @@ $('btn-lb-home').addEventListener('click', openLeaderboard);
 $('btn-lb-player').addEventListener('click', openLeaderboard);
 $('btn-lb-result').addEventListener('click', openLeaderboard);
 $('btn-back-lb').addEventListener('click', () => {
+  updatePlayerPreview();
+  showPage('player-page');
+});
+$('btn-back-garage').addEventListener('click', () => {
+  playClick(); garageConfirmId = null;
   updatePlayerPreview();
   showPage('player-page');
 });
