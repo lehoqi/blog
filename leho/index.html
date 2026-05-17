@@ -1385,6 +1385,7 @@ let speakTimer = null;
 
 function speak(text, rate = 0.82) {
   if (voiceMuted || !window.speechSynthesis) return;
+  if (typeof _spkSeq === 'number') _spkSeq++;   // supersede any running speakQueue
   clearTimeout(speakTimer);
   window.speechSynthesis.cancel();
   speakTimer = setTimeout(() => {
@@ -1397,6 +1398,7 @@ function speak(text, rate = 0.82) {
 }
 
 function stopSpeech() {
+  if (typeof _spkSeq === 'number') _spkSeq++;   // kill any running speakQueue
   clearTimeout(speakTimer);
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
@@ -1410,7 +1412,7 @@ function speakQueue(lines, rate = 0.9) {
   window.speechSynthesis.cancel();
   let i = 0;
   const next = () => {
-    if (seq !== _spkSeq || i >= lines.length) return;
+    if (seq !== _spkSeq || i >= lines.length || voiceMuted) return;
     const txt = String(lines[i++]);
     const u = new SpeechSynthesisUtterance(txt);
     u.lang = 'zh-CN'; u.rate = rate; u.pitch = 1.1;
