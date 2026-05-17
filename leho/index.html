@@ -3070,7 +3070,7 @@ function handleGarageCellTap(id) {
   const pid = currentGaragePlayer;
   const it = Garage.getItem(id);
   if (!it) return;
-  let g = getPlayerGarage(pid);
+  const g = getPlayerGarage(pid);
 
   if (Garage.isEquipped(g, id)) {            // tapping the in-use one
     garageConfirmId = null;
@@ -3103,7 +3103,7 @@ function handleGarageCellTap(id) {
   // 2nd tap on same locked-affordable cell: COMMIT immediately (spec A6)
   const ng = Garage.unlock(g, id);
   garageConfirmId = null;
-  if (!ng) { renderGarage(); return; }
+  if (!ng) { speak(Garage.vNotAfford(it.voiceName, it.price, it.price - g.coins)); renderGarage(); return; }
   setPlayerGarage(pid, ng);                  // state persisted before animation
   renderGarage();                            // reflects new coins/owned now
   speak(Garage.vUnlocked(it.voiceName));
