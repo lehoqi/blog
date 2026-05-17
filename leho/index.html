@@ -1285,7 +1285,7 @@ var _hmt = _hmt || [];
       <!-- 勋章展示柜 -->
       <div class="medal-cabinet">
         <div class="medal-cabinet-title">🎖️ 勋章展示柜</div>
-        <div class="medal-progress">已解锁 0 / 12 枚勋章</div>
+        <div class="medal-progress">已解锁 0 / 28 枚勋章</div>
         <div class="medal-grid" id="medal-grid"></div>
       </div>
 
@@ -2874,6 +2874,18 @@ const ALL_MEDALS = [
   { id: 'police_30',    icon: '🚔', label: '金牌警探',    check: st => st.totalTagScores && st.totalTagScores.police >= 30 },
   { id: 'ambulance_10', icon: '🚑', label: '急救先锋',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 10 },
   { id: 'ambulance_30', icon: '🏥', label: '金牌医生',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 30 },
+  { id: 'fifty_games',  icon: '🏅', label: '五十次挑战',  check: st => st.games >= 50 },
+  { id: 'stars_200',    icon: '💫', label: '200颗星星',   check: st => st.totalStars >= 200 },
+  { id: 'perfect_10',   icon: '👑', label: '满分十次',    check: st => st.perfectGames >= 10 },
+  { id: 'streak7',      icon: '☄️', label: '七连满分',    check: st => st.streak >= 7 },
+  { id: 'police_50',    icon: '🎖️', label: '警界传奇',    check: st => st.totalTagScores && st.totalTagScores.police >= 50 },
+  { id: 'ambulance_50', icon: '🏆', label: '急救传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
+  { id: 'first_unlock', icon: '🔓', label: '第一次解锁',  check: st => st.ownedTotal > 2 },
+  { id: 'collector_5',  icon: '🚙', label: '小小收藏家',  check: st => st.ownedVehicleCount >= 5 },
+  { id: 'garage_master',icon: '🏰', label: '车库大师',    check: st => st.ownsAllVehicles === true },
+  { id: 'dragon_rider', icon: '🐲', label: '驯龙高手',    check: st => st.ownsDragon === true },
+  { id: 'coin_saver_50',icon: '🪙', label: '小财主',      check: st => st.lifetimeCoins >= 50 },
+  { id: 'coin_saver_150',icon:'💰', label: '大富翁',      check: st => st.lifetimeCoins >= 150 },
 ];
 
 // ── 排行榜 ──
