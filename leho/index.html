@@ -1404,7 +1404,7 @@ function getPlayerStats(playerId) {
     else break;
   }
 
-  const totalTagScores = { police: 0, ambulance: 0, general: 0 };
+  const totalTagScores = { police: 0, ambulance: 0, general: 0, fire: 0, everyday: 0, adventure: 0 };
   records.forEach(r => {
     if (r.tagScores) {
       for (const [k, v] of Object.entries(r.tagScores)) {
@@ -1458,7 +1458,11 @@ const TITLES = {
 };
 function getTitle(stats, playerId) {
   const s = stats.totalStars;
-  const key = playerId && PLAYERS[playerId] ? PLAYERS[playerId].preferTag : 'default';
+  let key = 'default';
+  if (playerId && PLAYERS[playerId]) {
+    try { key = Garage.vehicleFamily(getPlayerGarage(playerId).equippedVehicle); }
+    catch (e) { key = 'default'; }
+  }
   const t = TITLES[key] || TITLES.default;
   if (s >= 100) return t[5];
   if (s >= 60)  return t[4];
@@ -1644,8 +1648,13 @@ function pickStory(pool, preferTag) {
   return pool[randInt(0, pool.length - 1)];
 }
 
+function currentFamily() {
+  if (!currentPlayer) return null;
+  try { return Garage.vehicleFamily(getPlayerGarage(currentPlayer).equippedVehicle); }
+  catch (e) { if (typeof console !== 'undefined') console.warn('[currentFamily] fallback:', e); return 'general'; }
+}
 function generateQuestion() {
-  const preferTag = currentPlayer ? PLAYERS[currentPlayer].preferTag : null;
+  const preferTag = currentFamily();
   const isAdd = Math.random() < 0.55;
   if (isAdd) {
     const a = randInt(1,15), b = randInt(1,20-a);
@@ -1866,7 +1875,7 @@ let score         = 0;
 let currentAnswer = '';
 let wrongCount    = 0;
 let correctStreak = 0;
-let tagScores     = { police: 0, ambulance: 0, general: 0 };
+let tagScores     = { police: 0, ambulance: 0, general: 0, fire: 0, everyday: 0, adventure: 0 };
 
 // ── 数字键盘 ──
 function buildNumpad() {
@@ -3200,7 +3209,7 @@ function startGame() {
   currentIdx    = 0;
   score         = 0;
   correctStreak = 0;
-  tagScores     = { police: 0, ambulance: 0, general: 0 };
+  tagScores     = { police: 0, ambulance: 0, general: 0, fire: 0, everyday: 0, adventure: 0 };
   window.__roundCoins = 0;
   window.__roundFinalized = false;
   buildNumpad();
