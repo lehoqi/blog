@@ -1451,7 +1451,10 @@ function scoreToStarCount(score, total) {
 const TITLES = {
   police:    ['🚓 警车新手', '🚓 巡逻小兵', '🚓 巡逻小队长', '🚓 破案能手', '🚓 超级警长', '🚓 传奇警探'],
   ambulance: ['🚑 急救新手', '🚑 急救小兵', '🚑 急救小队长', '🚑 救护达人', '🚑 急救英雄', '🚑 传奇医生'],
-  default:   ['🌱 数学新手', '🦕 勇敢冒险家', '⭐ 进步之星', '💡 聪明小将', '🔥 算数达人', '👑 数学大王']
+  default:   ['🌱 数学新手', '🦕 勇敢冒险家', '⭐ 进步之星', '💡 聪明小将', '🔥 算数达人', '👑 数学大王'],
+  fire:      ['🚒 消防新兵', '🚒 灭火小将', '🚒 救火小队长', '🚒 灭火能手', '🚒 救援英雄', '🚒 传奇消防员'],
+  everyday:  ['🚌 出行新手', '🚌 小小司机', '🚌 熟练司机', '🚌 安全模范', '🚌 金牌司机', '🚌 出行大师'],
+  adventure: ['🚀 探险新手', '🚀 见习宇航员', '🚀 勇敢探险家', '🚀 星际旅行家', '🚀 太空英雄', '🚀 传奇探险家']
 };
 function getTitle(stats, playerId) {
   const s = stats.totalStars;
@@ -1773,6 +1776,15 @@ function startFireworks(duration = 2200) {
 const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🦕'];
 const CELEBRATE_POLICE    = ['🚓 警笛响起！嘀嘟嘀嘟～','🚓 破案成功！太厉害了！','🚓 警长出击！答对啦！'];
 const CELEBRATE_AMBULANCE = ['🚑 急救成功！你是小英雄！','🚑 嘀嘟嘀嘟～救到啦！','🚑 急救达人！太棒了！'];
+const CELEBRATE_FIRE      = ['🚒 火灭啦！你是消防小英雄！','🚒 救援成功！太勇敢了！','🚒 呜哇——救到啦！太棒了！'];
+const CELEBRATE_EVERYDAY  = ['🚌 安全到站！棒极了！','🚕 一路顺风！真厉害！','🚂 呜——准点出发！太棒了！'];
+const CELEBRATE_ADVENTURE = ['🚀 发射成功！冲出大气层！','🏎️ 冲线第一！太快啦！','🛸 探索成功！你是小宇航员！'];
+const CELEBRATE_BY_FAMILY = {
+  police: CELEBRATE_POLICE, ambulance: CELEBRATE_AMBULANCE,
+  fire: CELEBRATE_FIRE, everyday: CELEBRATE_EVERYDAY, adventure: CELEBRATE_ADVENTURE
+};
+const RUSH_TEXT = { fire: '🚒 火灭啦！救援成功！', everyday: '🚌 安全到站！', adventure: '🚀 抵达终点！超厉害！' };
+const SFX_BY_FAMILY = { fire: playFireBell, everyday: playEverydayHorn, adventure: playAdventureWhoosh };
 
 function showCelebrate(cb) {
   const overlay  = $('celebrate-overlay');
