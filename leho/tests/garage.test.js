@@ -192,3 +192,23 @@ test('ownsAll true only when every catalog item of kind is owned', () => {
   assert.equal(G.ownsAll([], 'vehicle'), false);
   assert.equal(G.ownsAll(null, 'dino'), false);
 });
+
+test('vehicleFamily maps all 11 vehicles to a family; unknown/garbage -> general', () => {
+  assert.equal(G.vehicleFamily('police'), 'police');
+  assert.equal(G.vehicleFamily('ambulance'), 'ambulance');
+  assert.equal(G.vehicleFamily('fire'), 'fire');
+  assert.equal(G.vehicleFamily('schoolbus'), 'everyday');
+  assert.equal(G.vehicleFamily('taxi'), 'everyday');
+  assert.equal(G.vehicleFamily('train'), 'everyday');
+  assert.equal(G.vehicleFamily('tractor'), 'everyday');
+  assert.equal(G.vehicleFamily('race'), 'adventure');
+  assert.equal(G.vehicleFamily('heli'), 'adventure');
+  assert.equal(G.vehicleFamily('rocket'), 'adventure');
+  assert.equal(G.vehicleFamily('ufo'), 'adventure');
+  assert.equal(G.vehicleFamily('bogus'), 'general');
+  assert.equal(G.vehicleFamily(undefined), 'general');
+  assert.equal(G.vehicleFamily(42), 'general');
+  G.byKind('vehicle').forEach(it => {
+    assert.notEqual(G.vehicleFamily(it.id), 'general', 'vehicle ' + it.id + ' must map to a real family');
+  });
+});

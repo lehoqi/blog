@@ -152,6 +152,17 @@ function ownsAll(owned, kind) {
   return true;
 }
 
+var VEHICLE_FAMILY = {
+  police: 'police',
+  ambulance: 'ambulance',
+  fire: 'fire',
+  schoolbus: 'everyday', taxi: 'everyday', train: 'everyday', tractor: 'everyday',
+  race: 'adventure', heli: 'adventure', rocket: 'adventure', ufo: 'adventure'
+};
+function vehicleFamily(vehicleId) {
+  return VEHICLE_FAMILY[vehicleId] || 'general';
+}
+
 var GarageAPI = {
   CATALOG: CATALOG,
   getItem: getItem,
@@ -181,6 +192,7 @@ var GarageAPI = {
   lifetimeCoins: lifetimeCoins,
   ownedCount: ownedCount,
   ownsAll: ownsAll,
+  vehicleFamily: vehicleFamily,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;
