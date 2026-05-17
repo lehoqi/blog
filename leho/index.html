@@ -1046,6 +1046,15 @@ var _hmt = _hmt || [];
       .numpad { width: 190px; gap: 4px; }
       .numpad-btn { font-size: 1rem; padding: 5px 0; }
     }
+    .player-coins { font-size: 1rem; color: #c2410c; font-weight: 800; margin-top: 2px; }
+    .btn-garage {
+      margin-top: 10px; border: none; border-radius: 18px;
+      background: linear-gradient(135deg, #ffb74d, #fb8c00);
+      color: #fff; font-weight: 900; font-size: 0.95rem;
+      padding: 8px 16px; cursor: pointer; box-shadow: 0 4px 0 #e65100;
+      transition: transform 0.12s;
+    }
+    .btn-garage:active { transform: translateY(3px); box-shadow: 0 1px 0 #e65100; }
   </style>
 </head>
 <body>
@@ -1114,7 +1123,9 @@ var _hmt = _hmt || [];
           <button class="name-edit-btn" id="edit-lele" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
+        <div class="player-coins" id="lele-preview-coins">🪙 0</div>
         <div class="player-rank-badge" id="lele-preview-title">警车新手</div>
+        <button class="btn-garage" id="btn-garage-lele" type="button">🔧 我的车库</button>
       </div>
       <div class="player-card haohao" id="pick-haohao">
         <span class="player-avatar"><span class="combo-avatar"><span>🚑</span><span class="dino-badge">🦖</span></span></span>
@@ -1124,7 +1135,9 @@ var _hmt = _hmt || [];
           <button class="name-edit-btn" id="edit-haohao" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="haohao-preview-stars">⭐ 0</div>
+        <div class="player-coins" id="haohao-preview-coins">🪙 0</div>
         <div class="player-rank-badge" id="haohao-preview-title">急救新手</div>
+        <button class="btn-garage" id="btn-garage-haohao" type="button">🔧 我的车库</button>
       </div>
     </div>
     <button class="btn-leaderboard" id="btn-lb-player" style="margin-top:8px;">🏆 排行榜</button>
@@ -2830,8 +2843,10 @@ function renderLeaderboard() {
 function updatePlayerPreview() {
   for (const pid of ['lele', 'haohao']) {
     const stats = getPlayerStats(pid);
+    const g = getPlayerGarage(pid);
     $(`${pid}-name`).textContent = PLAYERS[pid].name;
     $(`${pid}-preview-stars`).textContent = `⭐ ${stats.totalStars}`;
+    $(`${pid}-preview-coins`).textContent = `🪙 ${g.coins}`;
     $(`${pid}-preview-title`).textContent = getTitle(stats, pid);
   }
 }
@@ -2920,6 +2935,8 @@ $('pick-haohao').addEventListener('click', () => {
   startGame();
 });
 
+$('btn-garage-lele').addEventListener('click', e => { e.stopPropagation(); playClick(); openGarage('lele'); });
+$('btn-garage-haohao').addEventListener('click', e => { e.stopPropagation(); playClick(); openGarage('haohao'); });
 $('edit-lele').addEventListener('click', e => {
   e.stopPropagation();
   editPlayerName('lele');
