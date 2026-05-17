@@ -145,3 +145,9 @@ test('equip: sets slot by kind, requires owned, returns NEW entry; null otherwis
   assert.equal(ed.equippedDino, 'brontosaurus');
   assert.equal(G.equip(freshLele(0), 'bogus'), null);
 });
+
+test('isEquipped / canAfford return false for unknown id', () => {
+  const e = G.initEntry('lele', 99);
+  assert.equal(G.isEquipped(e, 'bogus'), false);
+  assert.equal(G.canAfford(e, 'bogus'), false);
+});
