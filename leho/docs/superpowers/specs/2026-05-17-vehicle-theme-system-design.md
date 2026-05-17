@@ -46,6 +46,8 @@
 
 **映射归属**：族映射是纯逻辑 → 放 `garage.js` 暴露 `Garage.vehicleFamily(vehicleId)`（返回族 id；未知/缺省 → `'general'`），可 `node --test`。index.html 的 `currentFamily()` 仅做包装：`if(!currentPlayer) return null; try { return Garage.vehicleFamily(getPlayerGarage(currentPlayer).equippedVehicle); } catch(e){ if(typeof console!=='undefined') console.warn('[currentFamily] fallback:',e); return 'general'; }`（`currentPlayer` 为空 → `null`，与现在 `preferTag=null` 等价 → 全随机）。
 
+**B2 音效行为**：新增 `playFireBell/playEverydayHorn/playAdventureWhoosh` 与现有 `playPoliceSiren/playAmbulanceSiren` 同行为——Web Audio 合成，**不受语音静音按钮（`voiceMuted`）控制**（现有警笛即如此；静音只管 `speak`）。这是有意保持一致，非疏漏。
+
 ## 5. 内容规格（3 个新族各一套）
 
 每新族需作者撰写：
@@ -61,6 +63,11 @@
 - everyday 加：`🚌 校车接了 ${a} 位小朋友，又上来 ${b} 位，` q:`车上一共多少位小朋友？`；everyday 减：`🚕 出租车上有 ${a} 位乘客，到站下了 ${b} 位，` q:`车上还剩多少位？`
 - adventure 加：`🚀 火箭收集了 ${a} 颗星星，又收集了 ${b} 颗，` q:`一共收集多少颗星星？`；adventure 减：`🛸 飞碟带了 ${a} 个外星朋友，送回家 ${b} 个，` q:`还剩多少个外星朋友？`
 
+**作者规则（强制，B5）**：
+- 每条**减法**故事在 `b∈[1,a]` 全程都必须语义通顺，含两个极端：`b===a`（结果 0，如"全下车了 → 还剩 0"）与 `b===1`；措辞**不得隐含 b<a**（如不能写"下车的比车上少"这类前提）。
+- 每条**加法**故事在 `a∈[1,15]、b∈[1,20-a]` 全程通顺（含 a 或 b =1）。
+- `text` 必须同时出现 `${a}` 与 `${b}` 两个数；`q` 非空且以「？」结尾、量词与 `text` 一致；新族条目必须带 `tag:'<族id>'`。
+
 （完整 36 条加减 + 9 庆祝 + 3 飞车 + 3×6 称号在实现计划里逐条给出，spec 只锁规格与语气。）
 
 ## 6. 引擎改动（最小接线，保 C3）
@@ -71,8 +78,10 @@
 4. `submitAnswer`：`isThemeMatch = !!q.tag && q.tag===currentFamily()`。`showVehicleRush` 调用：
    - family ∈ {police,ambulance}：**保持现状调用**（vType=q.tag，**不传 opts** → 默认警笛+原文案，零回归）。
    - family ∈ {fire,everyday,adventure}：`showVehicleRush(equippedEmoji, q.tag, streak, goNext, { text: RUSH_TEXT[q.tag], sound: SFX_BY_FAMILY[q.tag] })`。
-5. `tagScores`：初始化对象与 `getPlayerStats.totalTagScores` 增加 `fire/everyday/adventure` 三键（值 0）；计分 `tagScores[q.tag||'general']++` 逻辑不变（多了几个 key）。
-6. `getTitle`：`TITLES` 增 `fire/everyday/adventure` 三套六档；键选择改为 `VEHICLE_FAMILY[getPlayerGarage(playerId).equippedVehicle] || 'default'`（容错回退 `default`）。称号跟装备族走。
+   - **A1 已接受限定**：`showVehicleRush` 的背景频闪配色 `C1/C2/glow` 由内部 `type==='police'` 二分决定，新族传 `type=q.tag` 落"非 police"分支 → 复用现有红白配色。本期**只**让飞车的**文案+音效+车辆 emoji** 按族走；**背景频闪按族换色不在本期范围**（与 garage Task 13 同类已接受取舍）。这是有意决定，非缺陷，实现/评审不得据此判 fail。
+5. `tagScores`：初始化对象与 `getPlayerStats.totalTagScores` 增加 `fire/everyday/adventure` 三键（值 0）；计分 `tagScores[q.tag||'general']++` 逻辑不变（多了几个 key）。旧存档记录无新键 → 汇总时贡献 0（`(total[k]||0)+v` 已容错），无回归。
+6. `getTitle`：`TITLES` 增 `fire/everyday/adventure` 三套六档；键选择改为 **`(playerId && PLAYERS[playerId]) ? (function(){ try { return Garage.vehicleFamily(getPlayerGarage(playerId).equippedVehicle); } catch(e){ return 'default'; } })() : 'default'`**，并保留现有 `const t = TITLES[key] || TITLES.default;` 回退。**A2**：务必保留 `!playerId`/`!PLAYERS[playerId]` 守卫 + getPlayerGarage 的 try/catch 回退 `default`（否则访客/未初始化抛错或给错称号）。称号跟装备族走。
+7. **A3 `preferTag` 失活声明**：本改动后 `PLAYERS[].preferTag` 在**任何运行路径都不再被读取**（generateQuestion/showCelebrate/submitAnswer/getTitle 全部改走 `currentFamily()`/`Garage.vehicleFamily`）。字段**保留**在 `PLAYERS` 对象（无害，避免扩大改动面），但属 vestigial。验收须 grep 确认无残留 `preferTag` 的主题/称号/庆祝/飞车读取（见 §9）。
 
 ## 7. 勋章联动（+6 枚 → 28 → 34）
 
@@ -91,17 +100,24 @@
 
 ## 8. 零回归保证（C3 细化）
 
-默认装备 🚓 的乐乐 / 🚑 的昊昊：`currentFamily()` 返回 `police`/`ambulance`（= 旧 `preferTag`，因 garage DEFAULTS 与 preferTag 一致）→ 故事权重、`CELEBRATE_BY_FAMILY[police]`=原数组、`showVehicleRush` 走无 opts 默认分支（原警笛+原文案）、`tagScores.police`、`TITLES.police`、police/ambulance 勋章 —— 全部与改动前逐位一致。新行为仅在玩家主动换非默认车后出现。无玩家/异常 → `general`/`default` 回退（与现状等价）。
+默认装备 🚓 的乐乐 / 🚑 的昊昊：`currentFamily()` 返回 `police`/`ambulance`（= 旧 `preferTag`，因 garage DEFAULTS 与 preferTag 一致）→ 故事权重、`CELEBRATE_BY_FAMILY[police]`=原数组、`showVehicleRush` 走无 opts 默认分支（原警笛+原文案）、`tagScores.police`、`TITLES.police`、police/ambulance 勋章 —— 全部与改动前逐位一致。新行为仅在玩家主动换非默认车后出现。
+
+**B3 硬依赖**：零回归严格依赖 garage `DEFAULTS`（lele→`police`、haohao→`ambulance`）与旧 `preferTag` 一致。一旦 garage 默认装备改动，本保证失效——故 §9 加专项断言。
+
+**B4 兜底降级（已接受）**：`currentFamily()` 在无玩家→`null`、异常→`'general'`。两者经 `pickStory` 都等价于"全随机题"（general 不是任何故事的 tag → 偏好子集为空 → 回退全随机），且 `isThemeMatch` 恒 false（无飞车特效）、庆祝走通用 `CELEBRATE_TEXTS`、`getTitle` 回退 `default`。这是**安全降级**（与改动前无 preferTag 行为等价），非缺陷。
 
 ## 9. 测试与验收
 
-- **纯逻辑单测**（`garage.js` 加纯函数 `Garage.vehicleFamily(vehicleId)`，`tests/garage.test.js` 覆盖映射全表 + 未知 id→'general'）。
+- **纯逻辑单测**（`garage.js` 加纯函数 `Garage.vehicleFamily(vehicleId)`，`tests/garage.test.js` 覆盖映射全表 11 车 + 未知 id→'general' + 缺省/非字符串→'general'）。
+- **A4 故事结构不变量校验（确定性，必做）**：对 `STORIES_ADD` 与 `STORIES_SUB` 的**每一条**（含旧条目），用边界输入 `(a,b)∈{(1,1),(15,5),(2,1),(20,1),(20,20)}` 各跑一次，断言：返回对象有 `text`/`q`；`text` 同时包含被代入的 `String(a)` 与 `String(b)`；`q` 为非空字符串且以「？」结尾；`tag` 为 `undefined` 或 ∈ `{police,ambulance,fire,everyday,adventure}`；新族条目 `tag` 必属新三族。不判中文语义，只抓"漏 `${b}`/tag 写错/q 空/q 不带问号"这类作者笔误。可作为 chrome-devtools MCP 里对页面内 `STORIES_*` 的 evaluate_script 断言，或把数组结构暴露后断言。
 - **验收标准**：
-  1. **零回归**：清数据默认开局（乐乐/昊昊各一局），故事/庆祝/飞车+警笛/称号/tagScore/既有勋章与改动前一致；现有 garage tests 全绿。
-  2. 乐乐装备 fire/everyday/adventure 任一车 → 该局故事明显出对应族（≥60% 命中，与现机制一致）、庆祝语/飞车文案/音效为该族、称号切到该族。
-  3. 攒够族题数 → fire_10/everyday_10/adventure_10 等 6 枚勋章可解锁并参与车库/结算庆祝（复用已交付路径）；勋章柜 `/ 34`。
-  4. 全程语音（新故事/庆祝经 speak/speakQueue 不截断）；静音静默；reduced-motion 飞车退化但状态/计分正确。
-  5. 切回默认车 → 行为回到 police/ambulance（族随装备实时变）。
+  1. **零回归**：清数据默认开局（乐乐/昊昊各一局），故事/庆祝/飞车+警笛/称号/tagScore/既有勋章与改动前一致；现有 `node --test tests/garage.test.js` 全绿（含已有 22 + 新增映射/结构用例）。
+  2. **B3 默认即旧值**：全新玩家（清数据后）`currentFamily()` 对乐乐===`'police'`、昊昊===`'ambulance'`（= 各自旧 `preferTag`），证明零回归地基成立。
+  3. 乐乐装备 fire/everyday/adventure 任一车 → 该局故事明显出对应族；**B1**：与现有 60/40 机制一致——约 ≥60% 命中本族，~40% 仍为随机（含通用/警/急），这是**既有可接受机制**，不得当 bug；庆祝语/飞车文案/音效为该族；称号切到该族。
+  4. 攒够族题数 → fire_10/everyday_10/adventure_10 等 6 枚勋章可解锁并参与车库/结算庆祝（复用已交付路径）；勋章柜 `/ 34`。
+  5. 全程语音（新故事/庆祝经 speak/speakQueue 不截断）；静音对 `speak` 静默（新音效不受静音，B2，符合现有警笛行为）；reduced-motion 飞车退化但状态/计分正确。
+  6. 切回默认车 → 行为实时回到 police/ambulance（族随装备变）。
+  7. **A3**：`grep -nE "PLAYERS\[[^]]*\]\.preferTag|\.preferTag" index.html` 确认运行路径不再读 `preferTag`（仅 `PLAYERS` 定义处保留该字段属可接受 vestigial；不得有 generateQuestion/showCelebrate/submitAnswer/getTitle 等对它的主题/称号用途读取）。
 - 工具：`node --test tests/garage.test.js` + chrome-devtools MCP。
 
 ## 10. 可调项（评审/实现期）
