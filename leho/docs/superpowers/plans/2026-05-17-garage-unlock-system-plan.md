@@ -308,8 +308,10 @@ var PERFECT_BONUS = 5;
 function roundCoins(correct, total) {
   correct = Math.max(0, Math.floor(Number(correct) || 0));
   total = Math.max(0, Math.floor(Number(total) || 0));
+  correct = Math.min(correct, total); // can't answer more correct than total
+  if (total === 0) return 0;          // degenerate: no questions -> no coins
   var c = correct * COIN_PER_CORRECT;
-  if (total > 0 && correct >= total) c += PERFECT_BONUS;
+  if (correct === total) c += PERFECT_BONUS;
   return c;
 }
 ```
