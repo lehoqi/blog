@@ -2879,13 +2879,13 @@ const ALL_MEDALS = [
   { id: 'perfect_10',   icon: '👑', label: '满分十次',    check: st => st.perfectGames >= 10 },
   { id: 'streak7',      icon: '☄️', label: '七连满分',    check: st => st.streak >= 7 },
   { id: 'police_50',    icon: '🎖️', label: '警界传奇',    check: st => st.totalTagScores && st.totalTagScores.police >= 50 },
-  { id: 'ambulance_50', icon: '🏆', label: '急救传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
+  { id: 'ambulance_50', icon: '🦸', label: '急救传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
   { id: 'first_unlock', icon: '🔓', label: '第一次解锁',  check: st => st.ownedTotal > 2 },
   { id: 'collector_5',  icon: '🚙', label: '小小收藏家',  check: st => st.ownedVehicleCount >= 5 },
   { id: 'garage_master',icon: '🏰', label: '车库大师',    check: st => st.ownsAllVehicles === true },
   { id: 'dragon_rider', icon: '🐲', label: '驯龙高手',    check: st => st.ownsDragon === true },
   { id: 'coin_saver_50',icon: '🪙', label: '小财主',      check: st => st.lifetimeCoins >= 50 },
-  { id: 'coin_saver_150',icon:'💰', label: '大富翁',      check: st => st.lifetimeCoins >= 150 },
+  { id: 'coin_saver_150', icon: '💰', label: '大富翁',     check: st => st.lifetimeCoins >= 150 },
 ];
 
 // ── 排行榜 ──
