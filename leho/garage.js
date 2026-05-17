@@ -140,9 +140,15 @@ var GarageAPI = {
   canAfford: canAfford,
   unlock: unlock,
   equip: equip,
-  vEnterPlayer: vEnterPlayer, vOpenGarage: vOpenGarage, vInUse: vInUse,
-  vOwned: vOwned, vAffordPrompt: vAffordPrompt, vNotAfford: vNotAfford,
-  vUnlocked: vUnlocked, vEquipped: vEquipped, vResultCoins: vResultCoins,
+  vEnterPlayer: vEnterPlayer,
+  vOpenGarage: vOpenGarage,
+  vInUse: vInUse,
+  vOwned: vOwned,
+  vAffordPrompt: vAffordPrompt,
+  vNotAfford: vNotAfford,
+  vUnlocked: vUnlocked,
+  vEquipped: vEquipped,
+  vResultCoins: vResultCoins,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;
