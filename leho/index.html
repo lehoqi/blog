@@ -3334,6 +3334,7 @@ $('btn-back-garage').addEventListener('click', () => {
 $('btn-clear-data').addEventListener('click', () => {
   if (confirm('确定要清除所有记录吗？这个操作不能撤回哦！')) {
     clearRecords();
+    clearGarage();
     localStorage.removeItem(NAMES_KEY);
     PLAYERS.lele.name = DEFAULT_NAMES.lele;
     PLAYERS.haohao.name = DEFAULT_NAMES.haohao;
