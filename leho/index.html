@@ -2695,6 +2695,31 @@ function medalStats(playerId) {
     ownsDragon: owned.indexOf('dragon') !== -1
   };
 }
+// 简洁勋章庆祝（车库内用）：图标放大弹入 + 金色粒子 + speakQueue 语音；纯装饰
+function celebrateNewMedalsIfAny(playerId, beforeSet) {
+  const nm = findNewlyUnlocked(playerId, beforeSet);
+  if (!nm.length) return;
+  speakQueue(nm.map(m => '获得新勋章！' + m.label));
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  nm.forEach((m, i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.textContent = m.icon;
+      el.style.cssText = 'position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:96px;z-index:9998;pointer-events:none;filter:drop-shadow(0 8px 24px rgba(0,0,0,.4));';
+      document.body.appendChild(el);
+      el.animate([
+        { transform:'translate(-50%,-50%) scale(0.1) rotate(-25deg)', opacity:0 },
+        { transform:'translate(-50%,-50%) scale(1.25) rotate(8deg)',  opacity:1, offset:0.6 },
+        { transform:'translate(-50%,-50%) scale(1) rotate(0)',        opacity:1, offset:0.8 },
+        { transform:'translate(-50%,-50%) scale(1) rotate(0)',        opacity:0 }
+      ], { duration:1600, easing:'cubic-bezier(.34,1.56,.64,1)', fill:'forwards' })
+        .finished.then(() => el.remove()).catch(() => el.remove());
+      const cx = window.innerWidth/2, cy = window.innerHeight*0.38;
+      for (let j=0;j<16;j++) particles.push(new Particle(cx, cy, '#ffd600', 'star'));
+      if (!fwAnimId) fwLoop();
+    }, i * 1500);
+  });
+}
 function snapshotMedals(playerId) {
   if (!playerId) return new Set();
   const st = medalStats(playerId);
@@ -3207,12 +3232,12 @@ function animateEquip(id, done) {
 }
 
 // B2 解锁四幕：锁碎 → 聚光登场 → 凯旋驶过(参数化 showVehicleRush) → 烟花收尾
-function animateUnlock(id) {
+function animateUnlock(id, onDone) {
   const it = Garage.getItem(id);
-  if (!it) return;
+  if (!it) { if (onDone) onDone(); return; }
   if (_unlockCleanup) { _unlockCleanup(); _unlockCleanup = null; }
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) { startFireworks(1200); return; }
+  if (reduce) { startFireworks(1200); if (onDone) onDone(); return; }
 
   const ov = $('celebrate-overlay');
   const dino = $('celebrate-dino'), txt = $('celebrate-text'), st = $('celebrate-stars');
@@ -3249,7 +3274,7 @@ function animateUnlock(id) {
     _unlockCleanup = null;
     // 注：非 ambulance 项（含恐龙）统一用 police 配色；文案与音效已由 opts 覆盖，仅背景频闪色不同，属预期降级
     const type = it.id === 'police' ? 'police' : (it.id === 'ambulance' ? 'ambulance' : 'police');
-    showVehicleRush(it.emoji, type, 5, () => startFireworks(1400), {
+    showVehicleRush(it.emoji, type, 5, () => { startFireworks(1400); if (onDone) onDone(); }, {
       text: it.voiceName + '是你的啦！',
       sound: () => { [523,659,784,1047,1319].forEach((f,i)=>playTone(f,'sine',0.22,0.34,i*0.09)); }
     });
@@ -3264,6 +3289,7 @@ function handleGarageCellTap(id) {
   const pid = currentGaragePlayer;
   const it = Garage.getItem(id);
   if (!it) return;
+  const _medalBefore = snapshotMedals(pid);
   const g = getPlayerGarage(pid);
 
   if (Garage.isEquipped(g, id)) {            // tapping the in-use one
@@ -3277,7 +3303,7 @@ function handleGarageCellTap(id) {
     const ng = Garage.equip(g, id);
     if (!ng) return;
     setPlayerGarage(pid, ng);
-    animateEquip(id, () => { renderGarage(); });   // Task 13
+    animateEquip(id, () => { renderGarage(); celebrateNewMedalsIfAny(pid, _medalBefore); });
     speak(Garage.vEquipped(it.voiceName));
     return;
   }
@@ -3301,7 +3327,7 @@ function handleGarageCellTap(id) {
   setPlayerGarage(pid, ng);                  // state persisted before animation
   renderGarage();                            // reflects new coins/owned now
   speak(Garage.vUnlocked(it.voiceName));
-  animateUnlock(id);                          // Task 13 — pure decoration
+  animateUnlock(id, () => celebrateNewMedalsIfAny(pid, _medalBefore)); // medal pop sequenced after cinematic
 }
 
 function openLeaderboard() {
