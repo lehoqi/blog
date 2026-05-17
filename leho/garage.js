@@ -109,6 +109,20 @@ function equip(entry, id) {
   return n;
 }
 
+function vEnterPlayer(leleName, leleCoins, haohaoName, haohaoCoins) {
+  return ['谁来挑战？点击你的头像吧！',
+          leleName + '有 ' + leleCoins + ' 个金币',
+          haohaoName + '有 ' + haohaoCoins + ' 个金币'];
+}
+function vOpenGarage(name, coins) { return '这是' + name + '的车库，你有 ' + coins + ' 个金币，快来挑一辆车吧！'; }
+function vInUse(vn)  { return '你正在开' + vn + '，真酷！'; }
+function vOwned(vn)  { return '这是' + vn + '，点一下就能开它！'; }
+function vAffordPrompt(vn, price) { return vn + '，要 ' + price + ' 个金币，你够啦，再点一下就解锁！'; }
+function vNotAfford(vn, price, lack) { return vn + '要 ' + price + ' 个金币，你还差 ' + lack + ' 个，再答对几题就能买啦！'; }
+function vUnlocked(vn)  { return '太棒了！' + vn + '是你的啦！'; }
+function vEquipped(vn)  { return '换好啦！现在开' + vn + '！呜——'; }
+function vResultCoins(n) { return '这一局你赚了 ' + n + ' 个金币！'; }
+
 var GarageAPI = {
   CATALOG: CATALOG,
   getItem: getItem,
@@ -126,6 +140,9 @@ var GarageAPI = {
   canAfford: canAfford,
   unlock: unlock,
   equip: equip,
+  vEnterPlayer: vEnterPlayer, vOpenGarage: vOpenGarage, vInUse: vInUse,
+  vOwned: vOwned, vAffordPrompt: vAffordPrompt, vNotAfford: vNotAfford,
+  vUnlocked: vUnlocked, vEquipped: vEquipped, vResultCoins: vResultCoins,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;

@@ -151,3 +151,18 @@ test('isEquipped / canAfford return false for unknown id', () => {
   assert.equal(G.isEquipped(e, 'bogus'), false);
   assert.equal(G.canAfford(e, 'bogus'), false);
 });
+
+test('voice-line builders produce exact spec §10.2 strings', () => {
+  assert.deepEqual(
+    G.vEnterPlayer('乐乐', 24, '昊昊', 18),
+    ['谁来挑战？点击你的头像吧！', '乐乐有 24 个金币', '昊昊有 18 个金币']
+  );
+  assert.equal(G.vOpenGarage('乐乐', 24), '这是乐乐的车库，你有 24 个金币，快来挑一辆车吧！');
+  assert.equal(G.vInUse('消防车'), '你正在开消防车，真酷！');
+  assert.equal(G.vOwned('赛车'), '这是赛车，点一下就能开它！');
+  assert.equal(G.vAffordPrompt('火箭', 40), '火箭，要 40 个金币，你够啦，再点一下就解锁！');
+  assert.equal(G.vNotAfford('火箭', 40, 16), '火箭要 40 个金币，你还差 16 个，再答对几题就能买啦！');
+  assert.equal(G.vUnlocked('火箭'), '太棒了！火箭是你的啦！');
+  assert.equal(G.vEquipped('火箭'), '换好啦！现在开火箭！呜——');
+  assert.equal(G.vResultCoins(8), '这一局你赚了 8 个金币！');
+});
