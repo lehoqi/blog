@@ -2678,17 +2678,38 @@ function flyCoins(fromEl, toEl, n) {
 }
 
 // ── 检测新解锁勋章 ──
+// 统一勋章数据源：老字段透传 + 车库派生（单调字段，见 spec §3/§4）
+function medalStats(playerId) {
+  const s = getPlayerStats(playerId);
+  let g;
+  try { g = getPlayerGarage(playerId); } catch (e) { g = { coins: 0, owned: [] }; }
+  const owned = Array.isArray(g.owned) ? g.owned : [];
+  return {
+    ...s,
+    coinsNow: g.coins || 0,
+    lifetimeCoins: Garage.lifetimeCoins(s.records),
+    ownedVehicleCount: Garage.ownedCount(owned, 'vehicle'),
+    ownedDinoCount: Garage.ownedCount(owned, 'dino'),
+    ownedTotal: owned.length,
+    ownsAllVehicles: Garage.ownsAll(owned, 'vehicle'),
+    ownsDragon: owned.indexOf('dragon') !== -1
+  };
+}
+function snapshotMedals(playerId) {
+  if (!playerId) return new Set();
+  const st = medalStats(playerId);
+  return new Set(ALL_MEDALS.filter(m => m.check(st)).map(m => m.id));
+}
 function detectNewMedals(playerId) {
   if (!playerId) return [];
-  const statsBefore = getPlayerStats(playerId);
-  const beforeSet = new Set(ALL_MEDALS.filter(m => m.check(statsBefore)).map(m => m.id));
-  return { beforeSet };
+  return { beforeSet: snapshotMedals(playerId) };
 }
 function findNewlyUnlocked(playerId, beforeSet) {
   if (!playerId) return [];
-  const statsAfter = getPlayerStats(playerId);
+  const statsAfter = medalStats(playerId);
   return ALL_MEDALS.filter(m => !beforeSet.has(m.id) && m.check(statsAfter));
 }
+window.medalStats = medalStats; // test/debug hook
 
 // ── 结果页 ──
 function showResult() {
@@ -2857,8 +2878,8 @@ const ALL_MEDALS = [
 
 // ── 排行榜 ──
 function renderLeaderboard() {
-  const leleStats = getPlayerStats('lele');
-  const haohaoStats = getPlayerStats('haohao');
+  const leleStats = medalStats('lele');
+  const haohaoStats = medalStats('haohao');
   const leleLeading = leleStats.totalStars > haohaoStats.totalStars;
   const haohaoLeading = haohaoStats.totalStars > leleStats.totalStars;
   const maxStars = Math.max(leleStats.totalStars, haohaoStats.totalStars, 1);
