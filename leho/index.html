@@ -3064,7 +3064,51 @@ function openGarage(pid) {
   speak(Garage.vOpenGarage(PLAYERS[pid].name, g.coins));
 }
 
-function handleGarageCellTap(id) { /* implemented in Task 11 */ }
+function animateEquip(id, done) { if (done) done(); }   // replaced in Task 13
+function animateUnlock(id) {}                            // replaced in Task 13
+function handleGarageCellTap(id) {
+  const pid = currentGaragePlayer;
+  const it = Garage.getItem(id);
+  if (!it) return;
+  let g = getPlayerGarage(pid);
+
+  if (Garage.isEquipped(g, id)) {            // tapping the in-use one
+    garageConfirmId = null;
+    speak(Garage.vInUse(it.voiceName));
+    renderGarage();
+    return;
+  }
+  if (Garage.owns(g, id)) {                  // owned -> equip (1 tap, reversible)
+    garageConfirmId = null;
+    const ng = Garage.equip(g, id);
+    if (!ng) return;
+    setPlayerGarage(pid, ng);
+    animateEquip(id, () => { renderGarage(); });   // Task 13
+    speak(Garage.vEquipped(it.voiceName));
+    return;
+  }
+  // locked
+  if (!Garage.canAfford(g, id)) {            // not enough
+    garageConfirmId = null;
+    speak(Garage.vNotAfford(it.voiceName, it.price, it.price - g.coins));
+    renderGarage();
+    return;
+  }
+  if (garageConfirmId !== id) {              // 1st tap: arm confirm
+    garageConfirmId = id;
+    speak(Garage.vAffordPrompt(it.voiceName, it.price));
+    renderGarage();
+    return;
+  }
+  // 2nd tap on same locked-affordable cell: COMMIT immediately (spec A6)
+  const ng = Garage.unlock(g, id);
+  garageConfirmId = null;
+  if (!ng) { renderGarage(); return; }
+  setPlayerGarage(pid, ng);                  // state persisted before animation
+  renderGarage();                            // reflects new coins/owned now
+  speak(Garage.vUnlocked(it.voiceName));
+  animateUnlock(id);                          // Task 13 — pure decoration
+}
 
 function openLeaderboard() {
   renderLeaderboard();
