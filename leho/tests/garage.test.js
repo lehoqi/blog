@@ -99,3 +99,49 @@ test('roundCoins: impossible correct>total does not grant perfect bonus', () => 
   assert.equal(G.roundCoins(6, 5), 15);   // clamped to 5/5 -> 10 + 5
   assert.equal(G.roundCoins(9, 0), 0);    // zero-total still 0
 });
+
+function freshLele(coins) {
+  const e = G.initEntry('lele', 0);
+  e.coins = coins;
+  return e;
+}
+
+test('owns / isEquipped', () => {
+  const e = freshLele(0);
+  assert.equal(G.owns(e, 'police'), true);
+  assert.equal(G.owns(e, 'rocket'), false);
+  assert.equal(G.isEquipped(e, 'police'), true);
+  assert.equal(G.isEquipped(e, 'brontosaurus'), true);
+  assert.equal(G.isEquipped(e, 'rocket'), false);
+});
+
+test('canAfford boundary: equal price counts as affordable', () => {
+  assert.equal(G.canAfford(freshLele(39), 'rocket'), false);
+  assert.equal(G.canAfford(freshLele(40), 'rocket'), true);
+  assert.equal(G.canAfford(freshLele(99), 'rocket'), true);
+});
+
+test('unlock: returns NEW entry, deducts, adds owned; null on bad input', () => {
+  const e = freshLele(40);
+  const u = G.unlock(e, 'rocket');
+  assert.equal(u.coins, 0);
+  assert.ok(u.owned.includes('rocket'));
+  assert.equal(e.coins, 40);
+  assert.ok(!e.owned.includes('rocket'));
+  assert.equal(G.unlock(freshLele(39), 'rocket'), null);
+  assert.equal(G.unlock(freshLele(40), 'police'), null);
+  assert.equal(G.unlock(freshLele(40), 'bogus'), null);
+});
+
+test('equip: sets slot by kind, requires owned, returns NEW entry; null otherwise', () => {
+  let e = freshLele(40);
+  e = G.unlock(e, 'rocket');
+  const eq = G.equip(e, 'rocket');
+  assert.equal(eq.equippedVehicle, 'rocket');
+  assert.equal(eq.equippedDino, 'brontosaurus');
+  assert.equal(e.equippedVehicle, 'police');
+  assert.equal(G.equip(freshLele(0), 'rocket'), null);
+  const ed = G.equip(freshLele(0), 'brontosaurus');
+  assert.equal(ed.equippedDino, 'brontosaurus');
+  assert.equal(G.equip(freshLele(0), 'bogus'), null);
+});

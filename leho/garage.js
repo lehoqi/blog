@@ -81,6 +81,34 @@ function roundCoins(correct, total) {
   return c;
 }
 
+function _clone(e) {
+  return { coins:e.coins, owned:e.owned.slice(), equippedVehicle:e.equippedVehicle, equippedDino:e.equippedDino, migrated:true };
+}
+function owns(entry, id) { return entry.owned.indexOf(id) !== -1; }
+function isEquipped(entry, id) {
+  var it = _byId[id]; if (!it) return false;
+  return it.kind === 'vehicle' ? entry.equippedVehicle === id : entry.equippedDino === id;
+}
+function canAfford(entry, id) {
+  var it = _byId[id]; if (!it) return false;
+  return entry.coins >= it.price;
+}
+function unlock(entry, id) {
+  var it = _byId[id];
+  if (!it || owns(entry, id) || entry.coins < it.price) return null;
+  var n = _clone(entry);
+  n.coins -= it.price;
+  n.owned.push(id);
+  return n;
+}
+function equip(entry, id) {
+  var it = _byId[id];
+  if (!it || !owns(entry, id)) return null;
+  var n = _clone(entry);
+  if (it.kind === 'vehicle') n.equippedVehicle = id; else n.equippedDino = id;
+  return n;
+}
+
 var GarageAPI = {
   CATALOG: CATALOG,
   getItem: getItem,
@@ -93,6 +121,11 @@ var GarageAPI = {
   COIN_PER_CORRECT: COIN_PER_CORRECT,
   PERFECT_BONUS: PERFECT_BONUS,
   roundCoins: roundCoins,
+  owns: owns,
+  isEquipped: isEquipped,
+  canAfford: canAfford,
+  unlock: unlock,
+  equip: equip,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;
