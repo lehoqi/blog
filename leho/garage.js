@@ -68,6 +68,18 @@ function normalize(raw, playerId, priorTotalScore) {
   };
 }
 
+var COIN_PER_CORRECT = 2;
+var PERFECT_BONUS = 5;
+
+function roundCoins(correct, total) {
+  correct = Math.max(0, Math.floor(Number(correct) || 0));
+  total = Math.max(0, Math.floor(Number(total) || 0));
+  if (total === 0) return 0;
+  var c = correct * COIN_PER_CORRECT;
+  if (correct >= total) c += PERFECT_BONUS;
+  return c;
+}
+
 var GarageAPI = {
   CATALOG: CATALOG,
   getItem: getItem,
@@ -77,6 +89,9 @@ var GarageAPI = {
   migrationCoins: migrationCoins,
   initEntry: initEntry,
   normalize: normalize,
+  COIN_PER_CORRECT: COIN_PER_CORRECT,
+  PERFECT_BONUS: PERFECT_BONUS,
+  roundCoins: roundCoins,
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = GarageAPI;

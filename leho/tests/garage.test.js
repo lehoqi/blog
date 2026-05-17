@@ -81,3 +81,16 @@ test('normalize: dedupes corrupt duplicate owned ids', () => {
   assert.equal(n.owned.filter(id => id === 'police').length, 1);
   assert.equal(n.owned.filter(id => id === 'brontosaurus').length, 1);
 });
+
+test('economy constants', () => {
+  assert.equal(G.COIN_PER_CORRECT, 2);
+  assert.equal(G.PERFECT_BONUS, 5);
+});
+
+test('roundCoins: per-correct + perfect bonus only when all correct', () => {
+  assert.equal(G.roundCoins(0, 5), 0);
+  assert.equal(G.roundCoins(3, 5), 6);
+  assert.equal(G.roundCoins(5, 5), 15);
+  assert.equal(G.roundCoins(5, 0), 0);
+  assert.equal(G.roundCoins(2, 2), 4 + 5);
+});
