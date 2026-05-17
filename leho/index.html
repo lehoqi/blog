@@ -1802,11 +1802,10 @@ function showCelebrate(cb) {
   const starsEl  = $('celebrate-stars');
 
   const curQ = questions[currentIdx];
-  const isThemeQ = currentPlayer && curQ && curQ.tag && PLAYERS[currentPlayer].preferTag === curQ.tag;
-  if (isThemeQ && curQ.tag === 'police') {
-    textEl.textContent = CELEBRATE_POLICE[randInt(0, CELEBRATE_POLICE.length-1)];
-  } else if (isThemeQ && curQ.tag === 'ambulance') {
-    textEl.textContent = CELEBRATE_AMBULANCE[randInt(0, CELEBRATE_AMBULANCE.length-1)];
+  const isThemeQ = !!(curQ && curQ.tag && curQ.tag === currentFamily());
+  if (isThemeQ && CELEBRATE_BY_FAMILY[curQ.tag]) {
+    const arr = CELEBRATE_BY_FAMILY[curQ.tag];
+    textEl.textContent = arr[randInt(0, arr.length-1)];
   } else {
     textEl.textContent = CELEBRATE_TEXTS[randInt(0, CELEBRATE_TEXTS.length-1)];
   }
@@ -2680,7 +2679,7 @@ function submitAnswer() {
       { transform: 'scaleY(1)' }
     ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
 
-    const isThemeMatch = currentPlayer && q.tag && PLAYERS[currentPlayer].preferTag === q.tag;
+    const isThemeMatch = !!(q.tag && q.tag === currentFamily());
 
     setTimeout(() => {
       showCelebrate(() => {
@@ -2693,7 +2692,11 @@ function submitAnswer() {
         if (isThemeMatch) {
           const vType = q.tag;
           const vEmoji = equippedEmojis(currentPlayer).vehicle;
-          showVehicleRush(vEmoji, vType, correctStreak, goNext);
+          if (vType === 'police' || vType === 'ambulance') {
+            showVehicleRush(vEmoji, vType, correctStreak, goNext);
+          } else {
+            showVehicleRush(vEmoji, vType, correctStreak, goNext, { text: RUSH_TEXT[vType], sound: SFX_BY_FAMILY[vType] });
+          }
         } else {
           goNext();
         }
