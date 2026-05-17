@@ -65,3 +65,19 @@ test('normalize: repairs bad fields, keeps defaults owned, clamps coins', () => 
   assert.equal(n.equippedVehicle, 'rocket');
   assert.equal(n.equippedDino, 'brontosaurus');
 });
+
+test('initEntry/normalize: unknown playerId falls back to lele defaults', () => {
+  assert.equal(G.initEntry('nobody', 5).equippedVehicle, 'police');
+  assert.equal(G.normalize({ migrated:true, coins:1, owned:['police'], equippedVehicle:'police', equippedDino:'brontosaurus' }, 'nobody', 0).equippedDino, 'brontosaurus');
+});
+
+test('normalize: non-object raw -> fresh init', () => {
+  assert.equal(G.normalize([], 'haohao', 7).equippedVehicle, 'ambulance');
+  assert.equal(G.normalize(42, 'haohao', 7).coins, 7);
+});
+
+test('normalize: dedupes corrupt duplicate owned ids', () => {
+  const n = G.normalize({ migrated:true, coins:0, owned:['police','police','brontosaurus','brontosaurus'], equippedVehicle:'police', equippedDino:'brontosaurus' }, 'lele', 0);
+  assert.equal(n.owned.filter(id => id === 'police').length, 1);
+  assert.equal(n.owned.filter(id => id === 'brontosaurus').length, 1);
+});

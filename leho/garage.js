@@ -52,6 +52,7 @@ function normalize(raw, playerId, priorTotalScore) {
   var coins = Math.floor(Number(raw.coins) || 0);
   if (coins < 0) coins = 0;
   var owned = Array.isArray(raw.owned) ? raw.owned.filter(function (id) { return !!_byId[id]; }) : [];
+  owned = owned.filter(function (id, i) { return owned.indexOf(id) === i; });
   if (owned.indexOf(d.vehicle) === -1) owned.push(d.vehicle);
   if (owned.indexOf(d.dino) === -1) owned.push(d.dino);
   function pick(id, fallback, kind) {
