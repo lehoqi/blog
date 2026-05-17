@@ -1401,6 +1401,30 @@ function stopSpeech() {
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
+// 串行语音队列：onend 推进 + 超时兜底，避免连续 speak() 互相掐断（spec A1）
+let _spkSeq = 0;
+function speakQueue(lines, rate = 0.9) {
+  if (voiceMuted || !window.speechSynthesis || !lines || !lines.length) return;
+  const seq = ++_spkSeq;
+  clearTimeout(speakTimer);
+  window.speechSynthesis.cancel();
+  let i = 0;
+  const next = () => {
+    if (seq !== _spkSeq || i >= lines.length) return;
+    const txt = String(lines[i++]);
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = 'zh-CN'; u.rate = rate; u.pitch = 1.1;
+    let advanced = false;
+    const go = () => { if (advanced || seq !== _spkSeq) return; advanced = true; next(); };
+    u.onend = go;
+    u.onerror = go;
+    setTimeout(go, Math.max(1400, txt.length * 240)); // fallback if onend never fires
+    window.speechSynthesis.speak(u);
+  };
+  setTimeout(next, 80);
+}
+window.speakQueue = speakQueue; // test/debug hook
+
 $('mute-btn').addEventListener('click', () => {
   voiceMuted = !voiceMuted;
   $('mute-btn').textContent = voiceMuted ? '🔇' : '🔊';
@@ -2622,7 +2646,7 @@ function showResult() {
     resultRead += `恭喜解锁新勋章：${medalNames}！`;
   }
 
-  setTimeout(() => speak(resultRead), 600);
+  setTimeout(() => speakQueue([resultRead, Garage.vResultCoins(window.__roundCoins || 0)]), 600);
 }
 
 // ── 结果页 PK 对比 ──
@@ -2876,7 +2900,8 @@ $('btn-start').addEventListener('click', () => {
   playStart();
   updatePlayerPreview();
   showPage('player-page');
-  speak('谁来挑战？点击你的头像吧！');
+  const lg = getPlayerGarage('lele'), hg = getPlayerGarage('haohao');
+  speakQueue(Garage.vEnterPlayer(PLAYERS.lele.name, lg.coins, PLAYERS.haohao.name, hg.coins));
 });
 
 $('pick-lele').addEventListener('click', () => {
