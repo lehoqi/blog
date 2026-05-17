@@ -8,9 +8,9 @@ test('CATALOG has unique ids and required fields', () => {
     assert.ok(it.id && !ids.has(it.id), `dup/missing id: ${it.id}`);
     ids.add(it.id);
     assert.ok(['vehicle', 'dino'].includes(it.kind), `bad kind: ${it.id}`);
-    assert.equal(typeof it.emoji, 'string');
-    assert.equal(typeof it.name, 'string');
-    assert.equal(typeof it.voiceName, 'string');
+    assert.ok(it.emoji && typeof it.emoji === 'string', `empty emoji: ${it.id}`);
+    assert.ok(it.name && typeof it.name === 'string', `empty name: ${it.id}`);
+    assert.ok(it.voiceName && typeof it.voiceName === 'string', `empty voiceName: ${it.id}`);
     assert.ok(Number.isInteger(it.price) && it.price > 0);
   }
 });
