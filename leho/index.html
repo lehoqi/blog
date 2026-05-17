@@ -2705,6 +2705,7 @@ function celebrateNewMedalsIfAny(playerId, beforeSet) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   nm.forEach((m, i) => {
     setTimeout(() => {
+      if (gp && !gp.classList.contains('active')) return; // 离开车库页则不再弹后续图标
       const el = document.createElement('div');
       el.textContent = m.icon;
       el.style.cssText = 'position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-size:96px;z-index:9998;pointer-events:none;filter:drop-shadow(0 8px 24px rgba(0,0,0,.4));';
