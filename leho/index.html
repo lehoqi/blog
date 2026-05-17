@@ -2523,6 +2523,7 @@ function submitAnswer() {
     correctStreak++;
     const qTag = q.tag || 'general';
     tagScores[qTag] = (tagScores[qTag] || 0) + 1;
+    // 预览累加：结算时由 Garage.roundCoins 权威覆盖；仅在无玩家兜底路径下作为显示值
     window.__roundCoins = (window.__roundCoins || 0) + Garage.COIN_PER_CORRECT;
     flyCoins($('question-card'), $('score-badge'), Garage.COIN_PER_CORRECT);
     const total = questions.length;
@@ -2730,13 +2731,17 @@ function showResult() {
 
   $('result-msg').textContent = msg;
   const earned = window.__roundCoins || 0;
-  const cn = $('result-coins-n'); let cv = 0;
+  const cn = $('result-coins-n');
+  if (window.__resultCoinTick) clearInterval(window.__resultCoinTick);
+  let cv = 0;
   cn.textContent = '0';
-  const tick = setInterval(() => {
-    cv = Math.min(earned, cv + Math.max(1, Math.ceil(earned / 18)));
-    cn.textContent = cv;
-    if (cv >= earned) clearInterval(tick);
-  }, 45);
+  if (earned > 0) {
+    window.__resultCoinTick = setInterval(() => {
+      cv = Math.min(earned, cv + Math.max(1, Math.ceil(earned / 18)));
+      cn.textContent = cv;
+      if (cv >= earned) { clearInterval(window.__resultCoinTick); window.__resultCoinTick = null; }
+    }, 45);
+  }
   if (earned > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     for (let j = 0; j < 18; j++) {
       const c = document.createElement('div');
