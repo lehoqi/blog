@@ -1669,6 +1669,8 @@ let speakTimer = null;
 function speak(text, rate = 0.82) {
   if (voiceMuted || !window.speechSynthesis) return;
   if (typeof _spkSeq === 'number') _spkSeq++;   // supersede any running speakQueue
+  _spkQueue = [];
+  _spkActive = false;
   clearTimeout(speakTimer);
   window.speechSynthesis.cancel();
   speakTimer = setTimeout(() => {
@@ -1682,33 +1684,70 @@ function speak(text, rate = 0.82) {
 
 function stopSpeech() {
   if (typeof _spkSeq === 'number') _spkSeq++;   // kill any running speakQueue
+  _spkQueue = [];
+  _spkActive = false;
   clearTimeout(speakTimer);
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
 // 串行语音队列：onend 推进 + 超时兜底，避免连续 speak() 互相掐断（spec A1）
 let _spkSeq = 0;
+let _spkQueue = [];
+let _spkActive = false;
+
+function _speechItems(lines, rate) {
+  return (lines || []).filter(Boolean).map(txt => ({ text: String(txt), rate }));
+}
+
+function _drainSpeechQueue(seq) {
+  if (seq !== _spkSeq || voiceMuted || !window.speechSynthesis) {
+    _spkActive = false;
+    return;
+  }
+  const item = _spkQueue.shift();
+  if (!item) {
+    _spkActive = false;
+    return;
+  }
+  _spkActive = true;
+  const u = new SpeechSynthesisUtterance(item.text);
+  u.lang = 'zh-CN'; u.rate = item.rate; u.pitch = 1.1;
+  let advanced = false;
+  const go = () => {
+    if (advanced || seq !== _spkSeq) return;
+    advanced = true;
+    _drainSpeechQueue(seq);
+  };
+  u.onend = go;
+  u.onerror = go;
+  setTimeout(go, Math.max(1400, item.text.length * 240)); // fallback if onend never fires
+  window.speechSynthesis.speak(u);
+}
+
 function speakQueue(lines, rate = 0.9) {
   if (voiceMuted || !window.speechSynthesis || !lines || !lines.length) return;
   const seq = ++_spkSeq;
+  _spkQueue = _speechItems(lines, rate);
+  _spkActive = false;
   clearTimeout(speakTimer);
   window.speechSynthesis.cancel();
-  let i = 0;
-  const next = () => {
-    if (seq !== _spkSeq || i >= lines.length || voiceMuted) return;
-    const txt = String(lines[i++]);
-    const u = new SpeechSynthesisUtterance(txt);
-    u.lang = 'zh-CN'; u.rate = rate; u.pitch = 1.1;
-    let advanced = false;
-    const go = () => { if (advanced || seq !== _spkSeq) return; advanced = true; next(); };
-    u.onend = go;
-    u.onerror = go;
-    setTimeout(go, Math.max(1400, txt.length * 240)); // fallback if onend never fires
-    window.speechSynthesis.speak(u);
-  };
-  setTimeout(next, 80);
+  speakTimer = setTimeout(() => _drainSpeechQueue(seq), 80);
 }
+
+function speakQueueAfterCurrent(lines, rate = 0.9) {
+  if (voiceMuted || !window.speechSynthesis || !lines || !lines.length) return;
+  const items = _speechItems(lines, rate);
+  if (!items.length) return;
+  const seq = (_spkActive || _spkQueue.length) ? _spkSeq : ++_spkSeq;
+  _spkQueue.push(...items);
+  if (!_spkActive) {
+    clearTimeout(speakTimer);
+    speakTimer = setTimeout(() => _drainSpeechQueue(seq), 80);
+  }
+}
+
 window.speakQueue = speakQueue; // test/debug hook
+window.speakQueueAfterCurrent = speakQueueAfterCurrent; // test/debug hook
 
 $('mute-btn').addEventListener('click', () => {
   voiceMuted = !voiceMuted;
@@ -2366,23 +2405,28 @@ function showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done) {
   }
 }
 
-function speakQuestionWithAdventure(q, slideIn) {
+function speakQuestionWithAdventure(q, slideIn, leadLines = [], afterCurrentSpeech = false) {
   if (!q) return;
   const readText = buildReadText(q);
+  const queue = afterCurrentSpeech ? speakQueueAfterCurrent : speakQueue;
   if (adventureRun && Adventure.shouldShowBoss(adventureRun, currentIdx)) {
     const theme = Adventure.getTheme(adventureRun.family);
     adventureRun = Adventure.markBossShown(adventureRun);
     renderAdventureHud();
     const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
     showBossEntrance(theme, e.vehicle, e.dino, () => {
-      speakQueue([theme.bossLine, readText], 0.86);
+      queue([].concat(leadLines, theme.bossLine, readText), 0.86);
     });
+    return;
+  }
+  if (leadLines.length) {
+    setTimeout(() => queue([].concat(leadLines, readText), 0.86), slideIn ? 500 : 300);
     return;
   }
   setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
 }
 
-function renderQuestion(slideIn = true, speakNow = true) {
+function renderQuestion(slideIn = true, speakNow = true, leadSpeechLines = [], afterCurrentSpeech = false) {
   const q = questions[currentIdx];
   currentAnswer = '';
   wrongCount    = 0;
@@ -2425,7 +2469,7 @@ function renderQuestion(slideIn = true, speakNow = true) {
     ], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
   }
 
-  if (speakNow) speakQuestionWithAdventure(q, slideIn);
+  if (speakNow) speakQuestionWithAdventure(q, slideIn, leadSpeechLines, afterCurrentSpeech);
 }
 
 function rereadCurrentQuestion() {
@@ -3182,22 +3226,21 @@ function submitAnswer() {
     setTimeout(() => {
       const theme = Adventure.getTheme(adventureRun.family);
       const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
-      const goNext = () => {
+      const goNext = (leadSpeechLines = [], afterCurrentSpeech = false) => {
         adventureRun = Adventure.finishStep(adventureRun, currentIdx);
         renderAdventureHud();
         currentIdx++;
         setInputLocked(false);
         if (currentIdx >= questions.length) showResult();
-        else renderQuestion();
+        else renderQuestion(true, true, leadSpeechLines, afterCurrentSpeech);
       };
 
       if (currentIdx >= questions.length - 1) {
-        speakQueue([theme.victoryLine], 0.9);
+        speakQueueAfterCurrent([theme.victoryLine], 0.9);
         showBossFinisher(theme, e.vehicle, e.dino, correctStreak, goNext);
       } else {
         const line = theme.stepLines[Math.min(currentIdx, theme.stepLines.length - 1)];
-        speak(line, 0.9);
-        showAdventureStep(theme, e.vehicle, e.dino, currentIdx, correctStreak, goNext);
+        showAdventureStep(theme, e.vehicle, e.dino, currentIdx, correctStreak, () => goNext([line], true));
       }
     }, 220);
 
@@ -3244,9 +3287,8 @@ function submitAnswer() {
       fb.textContent = `${pName} 提示：答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`;
       speak(`提示一下，答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`);
     } else {
-      fb.textContent = `${pName} 正确答案是 ${q.answer}，下次一定行！`;
-      speak(`正确答案是 ${q.answer}，没关系，下次一定行！`);
-      $('btn-next-q').classList.remove('hidden');
+      fb.textContent = `${pName} 正确答案是 ${q.answer}，再试一次！`;
+      speak(`正确答案是 ${q.answer}，再试一次，你可以的！`);
     }
   }
 }
@@ -3348,6 +3390,8 @@ window.medalStats = medalStats; // test/debug hook
 
 // ── 结果页 ──
 function showResult() {
+  if (window.__resultShown) return;
+  window.__resultShown = true;
   const totalQ = questions.length;
 
   let beforeSet = new Set();
@@ -3721,6 +3765,7 @@ function startGame() {
   tagScores     = { police: 0, ambulance: 0, general: 0, fire: 0, everyday: 0, adventure: 0 };
   window.__roundCoins = 0;
   window.__roundFinalized = false;
+  window.__resultShown = false;
   buildNumpad();
   updatePlayerIndicator();
   showPage('quiz-page');
@@ -3774,10 +3819,9 @@ $('edit-haohao').addEventListener('click', e => {
 });
 
 $('btn-next-q').addEventListener('click', () => {
+  playClick();
   $('btn-next-q').classList.add('hidden');
-  currentIdx++;
-  if (currentIdx >= questions.length) showResult();
-  else renderQuestion();
+  rereadCurrentQuestion();
 });
 
 $('btn-restart').addEventListener('click', () => {
