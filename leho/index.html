@@ -1273,23 +1273,23 @@ var _hmt = _hmt || [];
       <div class="progress-bar-fill" id="progress-bar" style="width:0%"><span class="progress-dino" id="progress-dino">🦕</span></div>
     </div>
 
-    <div class="quiz-body">
-      <div class="adventure-hud" id="adventure-hud" aria-live="polite">
-        <div class="adventure-scene" id="adventure-scene">
-          <span class="adventure-map" id="adventure-map">🌌</span>
-          <span class="adventure-vehicle" id="adventure-vehicle">🚀</span>
-          <span class="adventure-boss" id="adventure-boss">☄️</span>
-        </div>
-        <div class="adventure-track" id="adventure-track">
-          <span class="adv-dot" data-step="0">1</span>
-          <span class="adv-dot" data-step="1">2</span>
-          <span class="adv-dot" data-step="2">3</span>
-          <span class="adv-dot" data-step="3">4</span>
-          <span class="adv-dot boss-dot" data-step="4">5</span>
-        </div>
-        <div class="adventure-title" id="adventure-title">太空探险</div>
+    <div class="adventure-hud" id="adventure-hud" aria-live="polite">
+      <div class="adventure-scene" id="adventure-scene">
+        <span class="adventure-map" id="adventure-map">🌌</span>
+        <span class="adventure-vehicle" id="adventure-vehicle">🚀</span>
+        <span class="adventure-boss" id="adventure-boss">☄️</span>
       </div>
+      <div class="adventure-track" id="adventure-track">
+        <span class="adv-dot" data-step="0">1</span>
+        <span class="adv-dot" data-step="1">2</span>
+        <span class="adv-dot" data-step="2">3</span>
+        <span class="adv-dot" data-step="3">4</span>
+        <span class="adv-dot boss-dot" data-step="4">5</span>
+      </div>
+      <div class="adventure-title" id="adventure-title">太空探险</div>
+    </div>
 
+    <div class="quiz-body">
       <div class="question-card" id="question-card">
         <div class="score-badge" id="score-badge">⭐ <span id="score-display">0</span></div>
         <span class="dino-small" id="quiz-dino">🦕</span>
@@ -1734,7 +1734,7 @@ let inputLocked = false;
 
 function setInputLocked(locked) {
   inputLocked = !!locked;
-  const ok = document.querySelector('#numpad .btn-ok');
+  const ok = document.querySelector('#numpad .ok-btn');
   if (ok) ok.disabled = inputLocked;
 }
 
