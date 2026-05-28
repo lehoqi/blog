@@ -3179,31 +3179,26 @@ function submitAnswer() {
       { transform: 'scaleY(1)' }
     ], { duration: 400, easing: 'cubic-bezier(.34,1.56,.64,1)' });
 
-    const isThemeMatch = !!(currentPlayer && q.tag && q.tag === currentFamily());
-
     setTimeout(() => {
-      showCelebrate(() => {
-        const goNext = () => {
-          adventureRun = Adventure.finishStep(adventureRun, currentIdx);
-          renderAdventureHud();
-          currentIdx++;
-          setInputLocked(false);
-          if (currentIdx >= questions.length) showResult();
-          else renderQuestion();
-        };
+      const theme = Adventure.getTheme(adventureRun.family);
+      const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
+      const goNext = () => {
+        adventureRun = Adventure.finishStep(adventureRun, currentIdx);
+        renderAdventureHud();
+        currentIdx++;
+        setInputLocked(false);
+        if (currentIdx >= questions.length) showResult();
+        else renderQuestion();
+      };
 
-        if (isThemeMatch) {
-          const vType = q.tag;
-          const vEmoji = equippedEmojis(currentPlayer).vehicle;
-          if (vType === 'police' || vType === 'ambulance') {
-            showVehicleRush(vEmoji, vType, correctStreak, goNext);
-          } else {
-            showVehicleRush(vEmoji, vType, correctStreak, goNext, { text: RUSH_TEXT[vType], sound: SFX_BY_FAMILY[vType] });
-          }
-        } else {
-          goNext();
-        }
-      });
+      if (currentIdx >= questions.length - 1) {
+        speakQueue([theme.victoryLine], 0.9);
+        showBossFinisher(theme, e.vehicle, e.dino, correctStreak, goNext);
+      } else {
+        const line = theme.stepLines[Math.min(currentIdx, theme.stepLines.length - 1)];
+        speak(line, 0.9);
+        showAdventureStep(theme, e.vehicle, e.dino, currentIdx, correctStreak, goNext);
+      }
     }, 220);
 
   } else {
