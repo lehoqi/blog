@@ -1733,6 +1733,7 @@ function currentFamily() {
 
 let adventureRun = null;
 let inputLocked = false;
+let adventureDepartureLine = '';
 
 function setInputLocked(locked) {
   inputLocked = !!locked;
@@ -3366,7 +3367,10 @@ function startGame() {
   setTimeout(() => {
     showAdventureIntro(introTheme, introE.vehicle, introE.dino, () => {
       const firstQuestion = questions[currentIdx] ? buildReadText(questions[currentIdx]) : '';
-      speakQueue(introTheme.introLines.concat(firstQuestion ? [firstQuestion] : []), 0.86);
+      const departureLine = adventureDepartureLine;
+      adventureDepartureLine = '';
+      const introLines = (departureLine ? [departureLine] : []).concat(introTheme.introLines, firstQuestion ? [firstQuestion] : []);
+      speakQueue(introLines, 0.86);
     });
   }, 80);
 }
@@ -3383,14 +3387,14 @@ $('btn-start').addEventListener('click', () => {
 $('pick-lele').addEventListener('click', () => {
   currentPlayer = 'lele';
   playStart();
-  speak(`${PLAYERS.lele.name}出发！`);
+  adventureDepartureLine = `${PLAYERS.lele.name}出发！`;
   startGame();
 });
 
 $('pick-haohao').addEventListener('click', () => {
   currentPlayer = 'haohao';
   playStart();
-  speak(`${PLAYERS.haohao.name}出发！`);
+  adventureDepartureLine = `${PLAYERS.haohao.name}出发！`;
   startGame();
 });
 
