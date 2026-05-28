@@ -2290,6 +2290,64 @@ function playAmbulanceSiren() {
   osc.stop(now + dur);
 }
 
+function playNoiseBurst(duration, gainValue, delay = 0) {
+  try {
+    const ctx = getAudioCtx();
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    const src = ctx.createBufferSource();
+    const g = ctx.createGain();
+    src.buffer = buffer;
+    g.gain.setValueAtTime(gainValue, ctx.currentTime + delay);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+    src.connect(g); g.connect(ctx.destination);
+    src.start(ctx.currentTime + delay);
+    src.stop(ctx.currentTime + delay + duration);
+  } catch (e) {}
+}
+
+function playAdventureIntroSound(family) {
+  if (family === 'police') return playPoliceSiren();
+  if (family === 'ambulance') return playAmbulanceSiren();
+  if (family === 'fire') return playFireBell();
+  if (family === 'everyday') return playEverydayHorn();
+  return playAdventureWhoosh();
+}
+
+function playAdventureBoost(family, streak) {
+  const s = Math.max(1, Math.min(5, streak || 1));
+  playTone(520 + s * 80, 'sawtooth', 0.12, 0.08 + s * 0.02);
+  playTone(760 + s * 90, 'triangle', 0.16, 0.07 + s * 0.018, 0.08);
+  if (s >= 3) playNoiseBurst(0.22, 0.08, 0.02);
+}
+
+function playBossEntranceSound(family) {
+  playTone(180, 'sawtooth', 0.22, 0.16);
+  playTone(120, 'square', 0.18, 0.10, 0.18);
+  playNoiseBurst(0.35, 0.10, 0.08);
+}
+
+function playBossHitSound(family) {
+  playTone(880, 'square', 0.08, 0.12);
+  playTone(440, 'sawtooth', 0.18, 0.10, 0.06);
+  playNoiseBurst(0.20, 0.10, 0.02);
+}
+
+function playBossDefeatSound(family) {
+  playTone(523, 'triangle', 0.13, 0.12);
+  playTone(659, 'triangle', 0.13, 0.12, 0.12);
+  playTone(784, 'triangle', 0.22, 0.14, 0.24);
+  playNoiseBurst(0.35, 0.08, 0.12);
+}
+
+function playRewardRain() {
+  playTone(988, 'sine', 0.08, 0.10);
+  playTone(1175, 'sine', 0.08, 0.10, 0.08);
+  playTone(1319, 'sine', 0.12, 0.12, 0.16);
+}
+
 // ── 全屏飞车动效（Canvas 粒子系统，三段式：冲入→亮相→冲出） ──
 function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
   opts = opts || {};
