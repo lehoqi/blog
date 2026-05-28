@@ -312,6 +312,60 @@ var _hmt = _hmt || [];
       font-size: 1rem; color: #558b2f; font-weight: 700; align-self: flex-end;
     }
 
+    .adventure-hud {
+      width: 100%;
+      background: rgba(255,255,255,0.92);
+      border: 3px solid rgba(76,175,80,0.18);
+      border-radius: 18px;
+      padding: 10px 12px 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .adventure-scene {
+      position: relative;
+      height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(33,150,243,0.12), rgba(255,214,0,0.14));
+    }
+    .adventure-map, .adventure-vehicle, .adventure-boss {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      line-height: 1;
+    }
+    .adventure-map { left: 10px; font-size: 28px; opacity: 0.82; }
+    .adventure-vehicle { left: 18%; font-size: 34px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25)); }
+    .adventure-boss { right: 12px; font-size: 34px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25)); }
+    .adventure-track {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .adv-dot {
+      height: 24px;
+      border-radius: 999px;
+      background: #e0e0e0;
+      color: #33691e;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .adv-dot.done { background: linear-gradient(135deg, #ffd600, #ff9800); color: #5d4037; }
+    .adv-dot.active { outline: 3px solid #4caf50; background: #c8e6c9; }
+    .adv-dot.boss-dot { background: #ffcdd2; color: #b71c1c; }
+    .adv-dot.boss-dot.done { background: linear-gradient(135deg, #ff5252, #ffd600); color: #fff; }
+    .adventure-title {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      color: var(--text);
+      text-align: center;
+    }
+
     .score-badge {
       position: absolute; top: -10px; right: 0;
       background: var(--yellow); color: #5d4037;
@@ -930,6 +984,10 @@ var _hmt = _hmt || [];
       .progress-bar-wrap { height: 18px; }
       .progress-dino { font-size: 16px; right: -10px; }
       .progress-label { font-size: 0.85rem; }
+      .adventure-scene { height: 46px; }
+      .adventure-map { font-size: 23px; }
+      .adventure-vehicle, .adventure-boss { font-size: 29px; }
+      .adventure-title { font-size: 0.82rem; }
 
       .btn-next-q { font-size: 0.95rem; padding: 7px 22px; }
     }
@@ -1216,6 +1274,22 @@ var _hmt = _hmt || [];
     </div>
 
     <div class="quiz-body">
+      <div class="adventure-hud" id="adventure-hud" aria-live="polite">
+        <div class="adventure-scene" id="adventure-scene">
+          <span class="adventure-map" id="adventure-map">🌌</span>
+          <span class="adventure-vehicle" id="adventure-vehicle">🚀</span>
+          <span class="adventure-boss" id="adventure-boss">☄️</span>
+        </div>
+        <div class="adventure-track" id="adventure-track">
+          <span class="adv-dot" data-step="0">1</span>
+          <span class="adv-dot" data-step="1">2</span>
+          <span class="adv-dot" data-step="2">3</span>
+          <span class="adv-dot" data-step="3">4</span>
+          <span class="adv-dot boss-dot" data-step="4">5</span>
+        </div>
+        <div class="adventure-title" id="adventure-title">太空探险</div>
+      </div>
+
       <div class="question-card" id="question-card">
         <div class="score-badge" id="score-badge">⭐ <span id="score-display">0</span></div>
         <span class="dino-small" id="quiz-dino">🦕</span>
@@ -1306,6 +1380,7 @@ var _hmt = _hmt || [];
 </div>
 
 <script src="garage.js"></script>
+<script src="adventure.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -1653,6 +1728,37 @@ function currentFamily() {
   try { return Garage.vehicleFamily(getPlayerGarage(currentPlayer).equippedVehicle); }
   catch (e) { if (typeof console !== 'undefined') console.warn('[currentFamily] fallback:', e); return 'general'; }
 }
+
+let adventureRun = null;
+let inputLocked = false;
+
+function setInputLocked(locked) {
+  inputLocked = !!locked;
+  const ok = document.querySelector('#numpad .btn-ok');
+  if (ok) ok.disabled = inputLocked;
+}
+
+function currentAdventureTheme() {
+  const family = currentFamily() || 'adventure';
+  return Adventure.getTheme(family);
+}
+
+function renderAdventureHud() {
+  if (!window.Adventure || !adventureRun) return;
+  const theme = Adventure.getTheme(adventureRun.family);
+  const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
+  $('adventure-map').textContent = theme.mapEmoji;
+  $('adventure-vehicle').textContent = e.vehicle;
+  $('adventure-boss').textContent = theme.bossEmoji;
+  $('adventure-title').textContent = theme.name;
+  document.querySelectorAll('.adv-dot').forEach((dot, i) => {
+    dot.classList.toggle('done', i < adventureRun.step);
+    dot.classList.toggle('active', i === Math.min(adventureRun.step, 4) && !adventureRun.completed);
+  });
+  const pct = Math.min(88, 12 + adventureRun.step * 18);
+  $('adventure-vehicle').style.left = pct + '%';
+}
+
 function generateQuestion() {
   const preferTag = currentFamily();
   const isAdd = Math.random() < 0.55;
@@ -1964,6 +2070,8 @@ function renderQuestion(slideIn = true) {
     $('quiz-dino').textContent = DINO_EMOJIS[randInt(0,4)];
     $('progress-dino').textContent = '🦕';
   }
+
+  renderAdventureHud();
 
   $('question-story').textContent = q.story + q.question;
   $('question-text').innerHTML    = `${q.a} <span class="op">${q.op}</span> ${q.b} <span class="eq">=</span>`;
