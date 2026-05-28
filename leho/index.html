@@ -365,6 +365,119 @@ var _hmt = _hmt || [];
       color: var(--text);
       text-align: center;
     }
+    .adv-spark {
+      position: absolute;
+      left: var(--spark-x, 50%);
+      top: var(--spark-y, 50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0 22%, #ffd600 24% 58%, rgba(255,152,0,0) 62%);
+      box-shadow: 0 0 12px #ffd600, 0 0 22px rgba(255,152,0,0.75);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .adv-boss-entrance,
+    .adv-finisher {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .adv-boss-entrance {
+      background: rgba(33,33,33,0);
+      backdrop-filter: blur(0);
+    }
+    .adv-boss-card {
+      min-width: min(78vw, 360px);
+      padding: 22px 28px;
+      border-radius: 26px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(255,245,157,0.96));
+      border: 4px solid rgba(255,214,0,0.88);
+      box-shadow: 0 22px 45px rgba(0,0,0,0.30), 0 0 32px rgba(255,214,0,0.50);
+      text-align: center;
+      animation: advBossSlam 1.05s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .adv-boss-emoji {
+      display: block;
+      font-size: clamp(72px, 22vw, 128px);
+      line-height: 1;
+      filter: drop-shadow(0 9px 10px rgba(0,0,0,0.30));
+    }
+    .adv-boss-name {
+      margin-top: 8px;
+      font-size: clamp(1.5rem, 8vw, 2.4rem);
+      font-weight: 900;
+      color: #b71c1c;
+      text-shadow: 0 3px 0 #fff59d;
+    }
+    @keyframes advBossSlam {
+      0% { transform: translateY(-140%) scale(0.55) rotate(-18deg); opacity: 0; }
+      52% { transform: translateY(18px) scale(1.18) rotate(4deg); opacity: 1; }
+      72% { transform: translateY(-10px) scale(0.96) rotate(-2deg); }
+      100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+    }
+    .adv-finisher {
+      background: radial-gradient(circle at 50% 45%, rgba(255,245,157,0.92), rgba(255,112,67,0.62) 42%, rgba(49,27,146,0.72));
+    }
+    .adv-finisher-vehicle,
+    .adv-finisher-boss,
+    .adv-finisher-text {
+      position: absolute;
+      line-height: 1;
+      will-change: transform, opacity;
+    }
+    .adv-finisher-vehicle {
+      left: 8%;
+      top: 44%;
+      font-size: clamp(62px, 18vw, 126px);
+      filter: drop-shadow(0 11px 12px rgba(0,0,0,0.30));
+      animation: advVehicleStrike 2.1s cubic-bezier(.22,.72,.15,1) both;
+    }
+    .adv-finisher-boss {
+      right: 12%;
+      top: 38%;
+      font-size: clamp(78px, 22vw, 150px);
+      filter: drop-shadow(0 11px 12px rgba(0,0,0,0.30));
+      animation: advBossDefeat 2.1s ease-in both;
+    }
+    .adv-finisher-text {
+      left: 50%;
+      bottom: 18%;
+      width: min(88vw, 620px);
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: clamp(1.8rem, 9vw, 3.4rem);
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 4px 0 rgba(183,28,28,0.55), 0 0 18px rgba(255,214,0,0.75);
+      animation: advTextPop 2.1s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes advVehicleStrike {
+      0% { transform: translate(-58vw, 18vh) scale(0.55) rotate(-18deg); opacity: 0; }
+      26% { transform: translate(18vw, 0) scale(1.1) rotate(4deg); opacity: 1; }
+      48% { transform: translate(46vw, -5vh) scale(1.32) rotate(-7deg); opacity: 1; }
+      68% { transform: translate(54vw, -8vh) scale(1.05) rotate(8deg); opacity: 1; }
+      100% { transform: translate(102vw, -16vh) scale(0.9) rotate(18deg); opacity: 0; }
+    }
+    @keyframes advBossDefeat {
+      0% { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+      40% { transform: translate(-3vw, 0) scale(1.08) rotate(-5deg); opacity: 1; }
+      58% { transform: translate(2vw, 1vh) scale(0.82) rotate(16deg); opacity: 0.9; }
+      82% { transform: translate(6vw, 18vh) scale(0.48) rotate(34deg); opacity: 0.45; }
+      100% { transform: translate(10vw, 34vh) scale(0.18) rotate(78deg); opacity: 0; }
+    }
+    @keyframes advTextPop {
+      0%, 45% { transform: translateX(-50%) scale(0.2) rotate(-10deg); opacity: 0; }
+      62% { transform: translateX(-50%) scale(1.16) rotate(3deg); opacity: 1; }
+      82% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(-50%) scale(0.95) rotate(0deg); opacity: 0; }
+    }
 
     .score-badge {
       position: absolute; top: -10px; right: 0;
@@ -1609,6 +1722,14 @@ function runAnim(el, keyframes, options) {
   const anim = el.animate(keyframes, { fill: 'forwards', ...options });
   return anim.finished;
 }
+function onceDone(fn) {
+  let called = false;
+  return function () {
+    if (called) return;
+    called = true;
+    if (fn) fn();
+  };
+}
 
 // ── 音效 ──
 let audioCtx = null;
@@ -2060,11 +2181,189 @@ function buildReadText(q) {
 }
 
 function showBossEntrance(theme, vehicleEmoji, dinoEmoji, done) {
-  if (done) setTimeout(done, 0);
+  const finish = onceDone(done);
+  playBossEntranceSound(theme.id);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setTimeout(finish, 80);
+    return;
+  }
+
+  let overlay = null;
+  let fallback = null;
+  const cleanup = onceDone(() => {
+    clearTimeout(fallback);
+    if (overlay) overlay.remove();
+    finish();
+  });
+
+  try {
+    overlay = document.createElement('div');
+    overlay.className = 'adv-boss-entrance';
+    overlay.innerHTML = `
+      <div class="adv-boss-card" style="border-color:${theme.fallbackColor || '#ffd600'}">
+        <span class="adv-boss-emoji">${theme.bossEmoji}</span>
+        <div class="adv-boss-name">${theme.bossName}</div>
+      </div>`;
+    document.body.appendChild(overlay);
+    fallback = setTimeout(cleanup, 1400);
+    overlay.animate([
+      { opacity: 0, background: 'rgba(33,33,33,0)' },
+      { opacity: 1, background: 'rgba(33,33,33,0.52)', offset: 0.24 },
+      { opacity: 1, background: 'rgba(33,33,33,0.46)', offset: 0.78 },
+      { opacity: 0, background: 'rgba(33,33,33,0)' }
+    ], { duration: 1100, easing: 'ease-in-out', fill: 'forwards' }).finished.then(cleanup).catch(cleanup);
+  } catch (e) {
+    cleanup();
+  }
 }
 
 function showAdventureIntro(theme, vehicleEmoji, dinoEmoji, done) {
-  if (done) setTimeout(done, 0);
+  const finish = onceDone(done);
+  playAdventureIntroSound(theme.id);
+  renderAdventureHud();
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setTimeout(finish, 80);
+    return;
+  }
+
+  const hud = $('adventure-hud');
+  if (!hud) {
+    setTimeout(finish, 0);
+    return;
+  }
+
+  let fallback = null;
+  const cleanup = onceDone(() => {
+    clearTimeout(fallback);
+    finish();
+  });
+
+  try {
+    fallback = setTimeout(cleanup, 1000);
+    hud.animate([
+      { transform: 'translateY(-22px) scale(0.96)', opacity: 0, filter: 'brightness(1.4)' },
+      { transform: 'translateY(7px) scale(1.03)', opacity: 1, filter: 'brightness(1.15)', offset: 0.68 },
+      { transform: 'translateY(0) scale(1)', opacity: 1, filter: 'brightness(1)' }
+    ], { duration: 720, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'both' }).finished.then(cleanup).catch(cleanup);
+  } catch (e) {
+    cleanup();
+  }
+}
+
+function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
+  const finish = onceDone(done);
+  playAdventureBoost(theme.id, streak);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setTimeout(finish, 80);
+    return;
+  }
+
+  const scene = $('adventure-scene');
+  const vehicle = $('adventure-vehicle');
+  if (!scene || !vehicle) {
+    setTimeout(finish, 0);
+    return;
+  }
+
+  const sparks = [];
+  let fallback = null;
+  const cleanup = onceDone(() => {
+    clearTimeout(fallback);
+    sparks.forEach(spark => spark.remove());
+    finish();
+  });
+
+  try {
+    const sparkCount = Math.min(24, 12 + Math.max(1, streak || 1) * 2);
+    for (let i = 0; i < sparkCount; i++) {
+      const spark = document.createElement('span');
+      spark.className = 'adv-spark';
+      spark.style.setProperty('--spark-x', `${22 + Math.random() * 62}%`);
+      spark.style.setProperty('--spark-y', `${18 + Math.random() * 62}%`);
+      scene.appendChild(spark);
+      sparks.push(spark);
+    }
+
+    const animations = [
+      scene.animate([
+        { transform: 'translateX(0) rotate(0deg)' },
+        { transform: 'translateX(-8px) rotate(-1deg)', offset: 0.18 },
+        { transform: 'translateX(10px) rotate(1.2deg)', offset: 0.36 },
+        { transform: 'translateX(-6px) rotate(-0.7deg)', offset: 0.56 },
+        { transform: 'translateX(4px) rotate(0.4deg)', offset: 0.76 },
+        { transform: 'translateX(0) rotate(0deg)' }
+      ], { duration: 620, easing: 'ease-in-out' }).finished,
+      vehicle.animate([
+        { transform: 'translateY(-50%) scale(1) rotate(0deg)', filter: 'drop-shadow(0 3px 4px rgba(0,0,0,0.25))' },
+        { transform: 'translateY(-68%) scale(1.42) rotate(-12deg)', filter: 'drop-shadow(0 0 16px rgba(255,214,0,0.95))', offset: 0.38 },
+        { transform: 'translateY(-44%) scale(1.16) rotate(9deg)', filter: 'drop-shadow(0 0 24px rgba(76,175,80,0.8))', offset: 0.68 },
+        { transform: 'translateY(-50%) scale(1) rotate(0deg)', filter: 'drop-shadow(0 3px 4px rgba(0,0,0,0.25))' }
+      ], { duration: 900, easing: 'cubic-bezier(.34,1.56,.64,1)' }).finished
+    ];
+
+    sparks.forEach((spark, i) => {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 36 + Math.random() * 58;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+      const anim = spark.animate([
+        { transform: 'translate(-50%, -50%) scale(0.2)', opacity: 0 },
+        { transform: 'translate(-50%, -50%) scale(1.25)', opacity: 1, offset: 0.24 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0)`, opacity: 0 }
+      ], { duration: 620 + Math.random() * 360, delay: i * 18, easing: 'cubic-bezier(.22,.72,.15,1)', fill: 'forwards' });
+      animations.push(anim.finished.then(() => spark.remove()).catch(() => spark.remove()));
+    });
+
+    fallback = setTimeout(cleanup, 1300);
+    Promise.allSettled(animations).then(cleanup).catch(cleanup);
+  } catch (e) {
+    cleanup();
+  }
+}
+
+function showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done) {
+  const finish = onceDone(done);
+  playBossHitSound(theme.id);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    playBossDefeatSound(theme.id);
+    setTimeout(finish, 100);
+    return;
+  }
+
+  let overlay = null;
+  let fallback = null;
+  let defeatTimer = null;
+  let rewardTimer = null;
+  const cleanup = onceDone(() => {
+    clearTimeout(fallback);
+    clearTimeout(defeatTimer);
+    clearTimeout(rewardTimer);
+    if (overlay) overlay.remove();
+    startFireworks(1400);
+    finish();
+  });
+
+  try {
+    overlay = document.createElement('div');
+    overlay.className = 'adv-finisher';
+    overlay.innerHTML = `
+      <span class="adv-finisher-vehicle">${vehicleEmoji}</span>
+      <span class="adv-finisher-boss">${theme.bossEmoji}</span>
+      <div class="adv-finisher-text">${theme.victoryLine}</div>`;
+    document.body.appendChild(overlay);
+
+    defeatTimer = setTimeout(() => playBossDefeatSound(theme.id), 650);
+    rewardTimer = setTimeout(() => playRewardRain(), 1150);
+    fallback = setTimeout(cleanup, 2600);
+    overlay.animate([
+      { opacity: 0 },
+      { opacity: 1, offset: 0.12 },
+      { opacity: 1, offset: 0.82 },
+      { opacity: 0 }
+    ], { duration: 2200, easing: 'ease-in-out', fill: 'forwards' }).finished.then(cleanup).catch(cleanup);
+  } catch (e) {
+    cleanup();
+  }
 }
 
 function speakQuestionWithAdventure(q, slideIn) {
