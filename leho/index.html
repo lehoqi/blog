@@ -2056,7 +2056,31 @@ function buildReadText(q) {
   return `${base}${q.a} ${opWord} ${q.b} 等于多少？`;
 }
 
-function renderQuestion(slideIn = true) {
+function showBossEntrance(theme, vehicleEmoji, dinoEmoji, done) {
+  if (done) setTimeout(done, 0);
+}
+
+function showAdventureIntro(theme, vehicleEmoji, dinoEmoji, done) {
+  if (done) setTimeout(done, 0);
+}
+
+function speakQuestionWithAdventure(q, slideIn) {
+  if (!q) return;
+  const readText = buildReadText(q);
+  if (adventureRun && Adventure.shouldShowBoss(adventureRun, currentIdx)) {
+    const theme = Adventure.getTheme(adventureRun.family);
+    adventureRun = Adventure.markBossShown(adventureRun);
+    renderAdventureHud();
+    const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
+    showBossEntrance(theme, e.vehicle, e.dino, () => {
+      speakQueue([theme.bossLine, readText], 0.86);
+    });
+    return;
+  }
+  setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+}
+
+function renderQuestion(slideIn = true, speakNow = true) {
   const q = questions[currentIdx];
   currentAnswer = '';
   wrongCount    = 0;
@@ -2099,8 +2123,7 @@ function renderQuestion(slideIn = true) {
     ], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' });
   }
 
-  const readText = buildReadText(q);
-  setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+  if (speakNow) speakQuestionWithAdventure(q, slideIn);
 }
 
 function rereadCurrentQuestion() {
@@ -3325,6 +3348,8 @@ function openSettings() {
 // ── 游戏启动 ──
 function startGame() {
   questions     = generateQuestions(5);
+  adventureRun = Adventure.createRun(currentFamily() || 'adventure', questions.length);
+  setInputLocked(false);
   currentIdx    = 0;
   score         = 0;
   correctStreak = 0;
@@ -3335,7 +3360,15 @@ function startGame() {
   updatePlayerIndicator();
   showPage('quiz-page');
   $('progress-bar').style.width = '0%';
-  renderQuestion(false);
+  const introTheme = Adventure.getTheme(adventureRun.family);
+  renderQuestion(false, false);
+  const introE = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: introTheme.targetEmoji, dino: '🦕' };
+  setTimeout(() => {
+    showAdventureIntro(introTheme, introE.vehicle, introE.dino, () => {
+      const firstQuestion = questions[currentIdx] ? buildReadText(questions[currentIdx]) : '';
+      speakQueue(introTheme.introLines.concat(firstQuestion ? [firstQuestion] : []), 0.86);
+    });
+  }, 80);
 }
 
 // ── 事件绑定 ──
