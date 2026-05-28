@@ -2027,11 +2027,13 @@ function buildNumpad() {
 }
 
 function inputDigit(d) {
+  if (inputLocked) return;
   if (currentAnswer.length >= 2) return;
   currentAnswer = currentAnswer === '0' ? d : currentAnswer + d;
   updateAnswerDisplay();
 }
 function deleteDigit() {
+  if (inputLocked) return;
   currentAnswer = currentAnswer.slice(0,-1);
   updateAnswerDisplay();
 }
@@ -2766,6 +2768,7 @@ function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
 
 // ── 提交答案 ──
 function submitAnswer() {
+  if (inputLocked) return;
   if (currentAnswer === '') return;
 
   const q       = questions[currentIdx];
@@ -2775,6 +2778,12 @@ function submitAnswer() {
   const bar     = $('progress-bar');
 
   if (userAns === q.answer) {
+    const settle = Adventure.beginSettle(adventureRun, currentIdx);
+    if (!settle.ok) return;
+    adventureRun = settle.run;
+    setInputLocked(true);
+    renderAdventureHud();
+
     score++;
     correctStreak++;
     const qTag = q.tag || 'general';
@@ -2818,7 +2827,10 @@ function submitAnswer() {
     setTimeout(() => {
       showCelebrate(() => {
         const goNext = () => {
+          adventureRun = Adventure.finishStep(adventureRun, currentIdx);
+          renderAdventureHud();
           currentIdx++;
+          setInputLocked(false);
           if (currentIdx >= questions.length) showResult();
           else renderQuestion();
         };
@@ -3669,6 +3681,7 @@ $('btn-clear-data').addEventListener('click', () => {
 
 document.addEventListener('keydown', e => {
   if ($('quiz-page').classList.contains('active')) {
+    if (inputLocked) return;
     if (e.key>='0' && e.key<='9') inputDigit(e.key);
     else if (e.key==='Backspace')  deleteDigit();
     else if (e.key==='Enter')      submitAnswer();
