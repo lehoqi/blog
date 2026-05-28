@@ -24,13 +24,13 @@
 
 - 让每局游戏更像一次完整冒险，而不是普通答题。
 - 让车库更有价值：装备不同座驾后，地图、Boss、音效、通关动画自动变化。
-- 强化“再玩一局”的动力：闯关、Boss、奖励、地图推进形成闭环。
+- 强化“再玩一局”的动力：本局内闯关、Boss、奖励、地图推进形成闭环。
 
 ### 2.2 硬约束
 
 这些约束是验收门槛，不是可选优化：
 
-- **H1 夸张酷炫动画**：答对、连对、Boss 登场、Boss 受击、Boss 击败、通关奖励都必须有明显动画。不能只是按钮变色或轻微弹一下。
+- **H1 夸张酷炫动画**：答对、连对、Boss 登场、Boss 受击、Boss 击败、通关奖励都必须有明显动画。不能只是按钮变色或轻微弹一下。每个关键动画至少包含以下 4 类反馈中的 2 类：屏幕级位移/全屏遮罩、粒子/闪光、震屏/缩放、主题音效。Boss 登场和通关奖励必须是全屏级表现；答对冲刺必须有座驾明显位移且主动画时长不少于 600ms。
 - **H2 每个关键动画必须有音效**：冲刺、攻击、Boss 登场、击败、金币雨、通关都必须有对应 Web Audio 音效。静音按钮只控制语音，不控制特效音，沿用现有警笛行为。
 - **H3 所有新文字必须有语音**：地图名、关卡目标、Boss 出场、奖励、按钮、提示、结算新增内容都必须经 `speak` 或 `speakQueue` 播报。
 - **H4 不能依赖识字**：核心流程必须靠 emoji、数字、颜色、进度条、动画和语音玩通。文字只能辅助家长理解，不能成为儿童完成操作的唯一信息。
@@ -52,7 +52,7 @@
 3. **第 5 题 Boss 段**：进入最后一题前 Boss 夸张登场；答对后触发终结技。
 4. **大结算动画**：Boss 被击败或逃跑，全屏烟花、金币雨、座驾凯旋、语音连续夸奖，再进入现有结果页。
 
-错题不推进地图。孩子答错后仍按现有规则重试，语音鼓励，不惩罚星星以外的冒险状态。只有首次答对一题时，地图进度和金币奖励推进一次。
+错题不推进地图。孩子答错后仍按现有规则重试，语音鼓励，不惩罚星星以外的冒险状态。只有本题首次答对时，分数、金币、tagScores、地图进度和冒险动画推进一次。答对瞬间必须锁住本题提交入口（按钮与 Enter），直到下一题或结果页出现，防止快速连点/连按导致重复计分、重复金币、重复动画或重复结算。
 
 ## 5. 五个主题冒险
 
@@ -122,7 +122,7 @@
 - 当前主题 emoji。
 - 5 段进度点，前 4 段为路点，第 5 段为 Boss。
 - 当前座驾 emoji 在进度线上移动。
-- Boss 血量用 1 个大图标 + 数字/颜色表示，不依赖文字。
+- Boss/终点能量用 1 个大图标 + 5 段能量槽表示，不依赖文字。第 1-4 题表现为给终结技蓄力，第 5 题一击击败 Boss；本期不做多回合 Boss 血量系统。
 
 HUD 文字必须可被语音播报；儿童操作不能依赖读文字。
 
@@ -139,11 +139,14 @@ HUD 文字必须可被语音播报；儿童操作不能依赖读文字。
 
 ### 6.3 答对冲刺
 
-在 `submitAnswer()` 首次答对分支中，现有金币飞入、庆祝、飞车逻辑改造为主题冒险动作：
+在 `submitAnswer()` 首次答对分支中，现有答对链路按下列规则改造，避免动画过载：
 
-- 第 1-4 题：播放 `showAdventureStep(...)`。
-- 第 5 题：播放 `showBossFinisher(...)` 后进入 `showResult()`。
+- 第 1-4 题：播放 `showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done)`。
+- 第 5 题：播放 `showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done)` 后进入 `showResult()`。
 - 答对仍保留当前计分、金币、tagScores、勋章逻辑。
+- 保留题卡弹跳、答案放大、进度条、金币飞入这类轻量即时反馈。
+- 答题主流程中用 `showAdventureStep/showBossFinisher` 替代现有 `showCelebrate + showVehicleRush` 长链路，避免一次答对同时出现多套全屏庆祝。`showVehicleRush` 仍可保留给车库解锁等现有非答题流程复用。
+- 若实现保留 `showCelebrate` 的文案，必须降级为冒险动画内的短文本/语音，不再额外阻塞下一题。
 
 连对越高，动画参数越夸张：
 
@@ -161,6 +164,8 @@ HUD 文字必须可被语音播报；儿童操作不能依赖读文字。
 - 语音播报 Boss 名和目标。
 
 登场只在每局第 5 题出现一次，避免重复重试时不断打断孩子。
+
+语音顺序必须显式编排：第 5 题不能先 `speak(bossLine)` 再由 `renderQuestion()` 的题目朗读 `speak(readText)` 打断。应使用一次 `speakQueue([bossLine, questionReadText])`，或让 `renderQuestion()` 接受本题前置语音队列。普通题仍可沿用现有题目朗读。
 
 ### 6.5 通关结算
 
@@ -187,16 +192,16 @@ const ADVENTURE_THEMES = {
     mapEmoji: '🏙️',
     bossEmoji: '🚧',
     bossName: '捣乱车',
-    introLines: [...],
-    stepLines: [...],
+    introLines: ['警车出动！追上捣乱车！'],
+    stepLines: ['追近啦！继续加速！', '警灯亮起来！', '快抓住它了！', '准备最后一击！'],
     bossLine: '捣乱车来了！答对这一题，抓住它！',
     victoryLine: '破案成功！太厉害了！',
-    sounds: { intro: playPoliceStart, step: playPoliceBoost, boss: playBossAlarm, hit: playPoliceHit, victory: playVictoryBurst }
+    sounds: { intro: playPoliceStart, step: playPoliceBoost, boss: playBossAlarm, hit: playPoliceHit, victory: playVictoryBurst, reward: playRewardRain }
   }
 };
 ```
 
-实现时优先抽共享结构，避免五套逻辑复制。文案可分主题不同，但状态机一致。
+实现时优先抽共享结构，避免五套逻辑复制。每个 family 的配置必须满足字段契约：`name`、`mapEmoji`、`bossEmoji`、`bossName` 非空；`introLines.length >= 1`；`stepLines.length >= 4`；`bossLine`、`victoryLine` 非空；`sounds.intro/step/boss/hit/victory/reward` 都存在函数或明确复用的安全函数。文案可分主题不同，但状态机一致。
 
 ### 7.2 冒险运行态
 
@@ -207,19 +212,22 @@ let adventureRun = {
   family: 'fire',
   step: 0,
   bossShown: false,
-  completed: false
+  completed: false,
+  advancing: false,
+  settledQuestions: [false, false, false, false, false]
 };
 ```
 
-`startGame()` 初始化；`renderQuestion()` 根据 `currentIdx` 和 `adventureRun` 更新 HUD；`submitAnswer()` 首次答对后推进 `step`。
+`startGame()` 初始化；`renderQuestion()` 根据 `currentIdx` 和 `adventureRun` 更新 HUD；`submitAnswer()` 首次答对后推进 `step`。`advancing` 用来锁住动画期输入，`settledQuestions[currentIdx]` 用来保证本题只结算一次。进入下一题时清理输入锁；进入结果页时 `completed = true`，防止重复结算。
 
 本期不持久化地图进度，避免扩大存档和清除记录语义。每一局都是一次完整冒险。
 
 ### 7.3 动画函数
 
-新增三个核心动画入口：
+新增四个核心动画入口：
 
 - `showAdventureIntro(theme, vehicleEmoji, dinoEmoji, done)`
+- `showBossEntrance(theme, vehicleEmoji, dinoEmoji, done)`
 - `showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done)`
 - `showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done)`
 
@@ -258,6 +266,19 @@ let adventureRun = {
 - 新按钮或新提示。
 
 单句即时反馈可用 `speak`。任何新 DOM 文案都必须能追溯到对应语音。
+
+现有 `speak()` 会取消正在进行的 `speakQueue`。实现时必须避免“先队列播 Boss，再由题目朗读单句打断”的路径。凡是同一时刻需要播多段内容，统一组装成一个 `speakQueue`；题目朗读可作为队列最后一段。
+
+### 7.6 提交锁与重入防护
+
+答对分支必须在任何异步动画开始前完成以下动作：
+
+1. 检查 `adventureRun.advancing` 或 `settledQuestions[currentIdx]`，若已为真则直接返回。
+2. 设置 `advancing = true` 和 `settledQuestions[currentIdx] = true`。
+3. 禁用数字键盘确认按钮和键盘 Enter 输入，直到 `goNext()` 或 `showResult()`。
+4. 在唯一出口恢复或结束状态。
+
+这条规则也适用于第 5 题通关：`showResult()` 只能从一个出口调用一次，不能被动画回调、下一题按钮或键盘事件重复触发。
 
 ## 8. UI 与视觉原则
 
