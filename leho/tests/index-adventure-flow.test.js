@@ -165,3 +165,15 @@ test('ultra adventure waits for burst effects before cleanup', () => {
   assert.match(animationBlock, /const\s+sparkAnim\s*=\s*spark\.animate\([\s\S]*?effectAnims\.push\(sparkAnim\.finished\.catch\(\(\) => \{\}\)\)/);
   assert.match(animationBlock, /Promise\.allSettled\(\[chargeAnim,\s*vehicleAnim\]\.concat\(lineAnims,\s*effectAnims\)\)/);
 });
+
+test('ultra adventure audio has charge, impact, boss, and reward hooks', () => {
+  const audioBlock = between('// ── 音效 ──', '// ── 全屏飞车动效');
+  assert.match(audioBlock, /function playAdventureCharge/);
+  assert.match(audioBlock, /function playAdventureImpact/);
+  assert.match(audioBlock, /function playAdventureBoost/);
+  assert.match(audioBlock, /function playBossEntranceSound/);
+  assert.match(audioBlock, /function playBossHitSound/);
+  assert.match(audioBlock, /function playBossDefeatSound/);
+  assert.match(audioBlock, /function playRewardRain/);
+  assert.match(audioBlock, /try \{/);
+});

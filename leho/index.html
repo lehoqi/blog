@@ -2947,11 +2947,36 @@ function playAdventureIntroSound(family) {
   return playAdventureWhoosh();
 }
 
+function playAdventureCharge(family, streak) {
+  try {
+    const s = Math.max(1, Math.min(5, streak || 1));
+    playTone(360 + s * 70, 'sine', 0.10, 0.07 + s * 0.012);
+    playTone(520 + s * 90, 'triangle', 0.16, 0.06 + s * 0.012, 0.08);
+    if (family === 'fire') playNoiseBurst(0.12, 0.045, 0.04);
+    if (family === 'adventure') playTone(160 + s * 45, 'sawtooth', 0.22, 0.05, 0.03);
+  } catch (e) {}
+}
+
+function playAdventureImpact(family, streak) {
+  try {
+    const s = Math.max(1, Math.min(5, streak || 1));
+    playTone(180 - s * 10, 'sawtooth', 0.16, 0.12);
+    playTone(760 + s * 60, 'square', 0.08, 0.08, 0.04);
+    playNoiseBurst(0.18 + s * 0.02, 0.08 + s * 0.01, 0.02);
+    if (family === 'ambulance') playTone(940, 'sine', 0.14, 0.06, 0.12);
+    if (family === 'everyday') playEverydayHorn();
+  } catch (e) {}
+}
+
 function playAdventureBoost(family, streak) {
   const s = Math.max(1, Math.min(5, streak || 1));
   playTone(520 + s * 80, 'sawtooth', 0.12, 0.08 + s * 0.02);
   playTone(760 + s * 90, 'triangle', 0.16, 0.07 + s * 0.018, 0.08);
   if (s >= 3) playNoiseBurst(0.22, 0.08, 0.02);
+  if (family === 'police') playTone(920, 'square', 0.10, 0.06, 0.14);
+  if (family === 'ambulance') playTone(700, 'sine', 0.16, 0.05, 0.10);
+  if (family === 'fire') playNoiseBurst(0.18, 0.07, 0.08);
+  if (family === 'adventure') playTone(1180, 'sawtooth', 0.18, 0.055, 0.10);
 }
 
 function playBossEntranceSound(family) {
