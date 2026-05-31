@@ -157,3 +157,11 @@ test('ultra adventure animation helpers exist and are used by answer flow', () =
   assert.match(animationBlock, /adventure-power-fill/);
   assert.match(animationBlock, /Promise\.allSettled/);
 });
+
+test('ultra adventure waits for burst effects before cleanup', () => {
+  const animationBlock = between('function showAdventureStep', '\n}\n\nfunction showBossFinisher');
+  assert.match(animationBlock, /const\s+effectAnims\s*=\s*\[\]/);
+  assert.match(animationBlock, /const\s+shockAnim\s*=\s*shock\.animate\([\s\S]*?effectAnims\.push\(shockAnim\.finished\.catch\(\(\) => \{\}\)\)/);
+  assert.match(animationBlock, /const\s+sparkAnim\s*=\s*spark\.animate\([\s\S]*?effectAnims\.push\(sparkAnim\.finished\.catch\(\(\) => \{\}\)\)/);
+  assert.match(animationBlock, /Promise\.allSettled\(\[chargeAnim,\s*vehicleAnim\]\.concat\(lineAnims,\s*effectAnims\)\)/);
+});

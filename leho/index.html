@@ -2569,8 +2569,13 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
   }
 
   const tempNodes = [];
+  const effectAnims = [];
   let fallback = null;
   let impactTimer = null;
+  let resolveImpactAnims = null;
+  effectAnims.push(new Promise(resolve => {
+    resolveImpactAnims = resolve;
+  }));
   const cleanup = onceDone(() => {
     clearTimeout(fallback);
     clearTimeout(impactTimer);
@@ -2612,10 +2617,11 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
       scene.classList.add('ultra-hit');
       const shock = createShockwave(effects, '58%', '52%');
       tempNodes.push(shock);
-      shock.animate([
+      const shockAnim = shock.animate([
         { transform: 'translate(-50%, -50%) scale(.2)', opacity: .95 },
         { transform: 'translate(-50%, -50%) scale(4.2)', opacity: 0 }
       ], { duration: 740, easing: 'ease-out', fill: 'forwards' });
+      effectAnims.push(shockAnim.finished.catch(() => {}));
       const sparks = createAdventureBurst(effects, Math.min(30, 14 + Math.max(1, streak || 1) * 3), 'adv-spark');
       tempNodes.push(...sparks);
       sparks.forEach((spark, i) => {
@@ -2623,16 +2629,18 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
         const distance = 42 + Math.random() * 76;
         const dx = Math.cos(angle) * distance;
         const dy = Math.sin(angle) * distance;
-        spark.animate([
+        const sparkAnim = spark.animate([
           { transform: 'translate(-50%, -50%) scale(.2)', opacity: 0 },
           { transform: 'translate(-50%, -50%) scale(1.3)', opacity: 1, offset: .2 },
           { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0)`, opacity: 0 }
         ], { duration: 720 + Math.random() * 300, delay: i * 14, easing: 'cubic-bezier(.22,.72,.15,1)', fill: 'forwards' });
+        effectAnims.push(sparkAnim.finished.catch(() => {}));
       });
+      Promise.allSettled(effectAnims.slice(1)).then(resolveImpactAnims).catch(resolveImpactAnims);
     }, 430);
 
-    fallback = setTimeout(cleanup, 1450);
-    Promise.allSettled([chargeAnim, vehicleAnim].concat(lineAnims)).then(() => setTimeout(cleanup, 220)).catch(cleanup);
+    fallback = setTimeout(cleanup, 2100);
+    Promise.allSettled([chargeAnim, vehicleAnim].concat(lineAnims, effectAnims)).then(() => setTimeout(cleanup, 120)).catch(cleanup);
   } catch (e) {
     cleanup();
   }
