@@ -133,3 +133,16 @@ test('ultra adventure CSS is applied by render state and short-height layout', (
   assert.match(renderHudBody, /adventure-power-fill/);
   assert.match(renderHudBody, /powerFill\.style\.width/);
 });
+
+test('renderAdventureHud applies scene class, landmarks, route progress, and power width', () => {
+  const renderBlock = between('function renderAdventureHud() {', '\n}\n\nfunction generateQuestion');
+  assert.match(renderBlock, /theme\.sceneClass/);
+  assert.match(renderBlock, /adventure-scene/);
+  assert.match(renderBlock, /adventure-landmarks/);
+  assert.match(renderBlock, /adventure-power-fill/);
+  assert.match(renderBlock, /theme\.landmarks\.forEach/);
+  assert.match(renderBlock, /dot\.style\.setProperty\('--step-progress'/);
+  assert.match(renderBlock, /powerFill\.style\.width/);
+  assert.match(renderBlock, /scene\.dataset\.routeStyle/);
+  assert.match(renderBlock, /boss-ready/);
+});

@@ -2075,19 +2075,48 @@ function renderAdventureHud() {
   const theme = Adventure.getTheme(adventureRun.family);
   const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
   const scene = $('adventure-scene');
+  const landmarks = $('adventure-landmarks');
+  const vehicle = $('adventure-vehicle');
+  const boss = $('adventure-boss');
   const powerFill = $('adventure-power-fill');
-  scene.className = 'adventure-scene ' + (theme.sceneClass || 'adv-scene-adventure') + (adventureRun.bossShown && !adventureRun.completed ? ' boss-arena' : '');
-  $('adventure-map').textContent = theme.mapEmoji;
-  $('adventure-vehicle').textContent = e.vehicle;
-  $('adventure-boss').textContent = theme.bossEmoji;
+  scene.className = 'adventure-scene ' + (theme.sceneClass || 'adv-scene-adventure');
+  scene.classList.toggle('boss-arena', adventureRun.bossShown && !adventureRun.completed);
+  scene.dataset.routeStyle = theme.routeStyle || 'space-orbit';
+  const map = $('adventure-map');
+  if (map) map.textContent = theme.mapEmoji;
+  vehicle.textContent = e.vehicle;
+  boss.textContent = theme.bossEmoji;
   $('adventure-title').textContent = theme.name;
-  powerFill.style.width = Math.min(100, adventureRun.step * 22 + (adventureRun.bossShown ? 12 : 0)) + '%';
+
+  landmarks.innerHTML = '';
+  theme.landmarks.forEach((name, i) => {
+    const mark = document.createElement('span');
+    mark.className = `adventure-landmark landmark-${name}`;
+    mark.style.left = `${10 + i * 28}%`;
+    mark.style.height = `${42 + (i % 3) * 12}px`;
+    landmarks.appendChild(mark);
+  });
+
   document.querySelectorAll('.adv-dot').forEach((dot, i) => {
     dot.classList.toggle('done', i < adventureRun.step);
     dot.classList.toggle('active', i === Math.min(adventureRun.step, 4) && !adventureRun.completed);
+    dot.classList.toggle('boss-ready', i === 4 && adventureRun.bossShown && !adventureRun.completed);
+    dot.style.setProperty('--step-progress', i < adventureRun.step ? '1' : '0');
   });
-  const pct = Math.min(88, 12 + adventureRun.step * 18);
-  $('adventure-vehicle').style.left = pct + '%';
+
+  const positions = [
+    { left: 7, top: 62 },
+    { left: 27, top: 49 },
+    { left: 47, top: 58 },
+    { left: 66, top: 42 },
+    { left: 84, top: 55 }
+  ];
+  const pos = positions[Math.min(adventureRun.step, positions.length - 1)];
+  vehicle.style.left = pos.left + '%';
+  vehicle.style.top = pos.top + '%';
+
+  const power = Math.min(100, adventureRun.step * 22 + (adventureRun.bossShown ? 12 : 0));
+  powerFill.style.width = power + '%';
 }
 
 function generateQuestion() {
