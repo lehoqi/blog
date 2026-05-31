@@ -1389,17 +1389,23 @@ var _hmt = _hmt || [];
     </div>
 
     <div class="adventure-hud" id="adventure-hud" aria-live="polite">
-      <div class="adventure-scene" id="adventure-scene">
-        <span class="adventure-map" id="adventure-map">🌌</span>
+      <div class="adventure-scene adv-scene-adventure" id="adventure-scene">
+        <div class="adventure-sky" id="adventure-sky"></div>
+        <div class="adventure-landmarks" id="adventure-landmarks" aria-hidden="true"></div>
+        <div class="adventure-route" id="adventure-route">
+          <span class="adv-route-beam" id="adv-route-beam"></span>
+          <span class="adv-dot" data-step="0">1</span>
+          <span class="adv-dot" data-step="1">2</span>
+          <span class="adv-dot" data-step="2">3</span>
+          <span class="adv-dot" data-step="3">4</span>
+          <span class="adv-dot boss-dot" data-step="4">5</span>
+        </div>
         <span class="adventure-vehicle" id="adventure-vehicle">🚀</span>
         <span class="adventure-boss" id="adventure-boss">☄️</span>
-      </div>
-      <div class="adventure-track" id="adventure-track">
-        <span class="adv-dot" data-step="0">1</span>
-        <span class="adv-dot" data-step="1">2</span>
-        <span class="adv-dot" data-step="2">3</span>
-        <span class="adv-dot" data-step="3">4</span>
-        <span class="adv-dot boss-dot" data-step="4">5</span>
+        <div class="adventure-effects" id="adventure-effects" aria-hidden="true"></div>
+        <div class="adventure-power" id="adventure-power" aria-hidden="true">
+          <span class="adventure-power-fill" id="adventure-power-fill"></span>
+        </div>
       </div>
       <div class="adventure-title" id="adventure-title">太空探险</div>
     </div>

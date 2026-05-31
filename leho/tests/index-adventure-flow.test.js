@@ -58,3 +58,16 @@ test('correct-answer adventure narration starts fresh after the submitted questi
   assert.doesNotMatch(correctAnswerBlock, /speakQueueAfterCurrent/);
   assert.doesNotMatch(correctAnswerBlock, /speak\(line,/);
 });
+
+test('adventure HUD has layered mini-world structure', () => {
+  const hudMarkup = between('<div class="adventure-hud" id="adventure-hud"', '\n    <div class="quiz-body">');
+  assert.match(hudMarkup, /id="adventure-scene"/);
+  assert.match(hudMarkup, /id="adventure-sky"/);
+  assert.match(hudMarkup, /id="adventure-landmarks"/);
+  assert.match(hudMarkup, /id="adventure-route"/);
+  assert.match(hudMarkup, /id="adventure-effects"/);
+  assert.match(hudMarkup, /id="adventure-power"/);
+  assert.match(hudMarkup, /id="adventure-power-fill"/);
+  assert.match(hudMarkup, /id="adventure-vehicle"/);
+  assert.match(hudMarkup, /id="adventure-boss"/);
+});
