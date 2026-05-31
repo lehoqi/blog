@@ -17,6 +17,15 @@ test('themes cover every vehicle family with required non-text gameplay fields',
     assert.ok(t.bossLine);
     assert.ok(t.victoryLine);
     assert.ok(t.fallbackColor);
+    assert.ok(t.sceneClass && t.sceneClass.startsWith('adv-scene-'), `missing sceneClass for ${id}`);
+    assert.ok(Array.isArray(t.landmarks) && t.landmarks.length >= 2, `missing landmarks for ${id}`);
+    assert.ok(t.routeStyle, `missing routeStyle for ${id}`);
+    assert.ok(t.powerLabel, `missing powerLabel for ${id}`);
+    assert.ok(t.sounds && t.sounds.charge, `missing charge sound key for ${id}`);
+    assert.ok(t.sounds && t.sounds.dash, `missing dash sound key for ${id}`);
+    assert.ok(t.sounds && t.sounds.impact, `missing impact sound key for ${id}`);
+    assert.ok(t.sounds && t.sounds.arena, `missing arena sound key for ${id}`);
+    assert.ok(t.sounds && t.sounds.finisher, `missing finisher sound key for ${id}`);
   }
 });
 
