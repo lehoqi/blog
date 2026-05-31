@@ -33,9 +33,28 @@ test('result settlement is idempotent before records or coins are saved', () => 
   assert.ok(guardIndex < showResultBody.indexOf('Garage.roundCoins('), 'result guard must run before coin settlement');
 });
 
-test('final victory narration waits behind the current boss/question queue', () => {
+test('answer submission cancels unfinished question narration before feedback or adventure speech', () => {
+  const submitPrefix = between('function submitAnswer() {', '\n\n  const q       = questions[currentIdx];');
+  assert.match(submitPrefix, /if \(currentAnswer === ''\) return;\s+stopSpeech\(\);/);
+});
+
+test('delayed question narration is cancellable when a child answers quickly', () => {
+  const speechBlock = between('// ── 语音朗读 ──', "// ── 动画工具 ──");
+  assert.match(speechBlock, /let speechDelayTimer = null;/);
+  assert.match(speechBlock, /let speechEpoch = 0;/);
+  assert.match(speechBlock, /function scheduleSpeech\(/);
+  assert.match(speechBlock, /clearTimeout\(speechDelayTimer\)/);
+
+  const questionSpeechBlock = between('function speakQuestionWithAdventure', '\n}\n\nfunction renderQuestion');
+  assert.match(questionSpeechBlock, /scheduleSpeech\(\(\) => speak\(readText, 0\.8\)/);
+  assert.doesNotMatch(questionSpeechBlock, /setTimeout\(\(\) => speak\(readText/);
+  assert.doesNotMatch(questionSpeechBlock, /setTimeout\(\(\) => queue\(/);
+});
+
+test('correct-answer adventure narration starts fresh after the submitted question is stopped', () => {
   const correctAnswerBlock = between('  if (userAns === q.answer) {', '\n  } else {');
-  assert.match(correctAnswerBlock, /speakQueueAfterCurrent\(\[theme\.victoryLine\], 0\.9\)/);
-  assert.doesNotMatch(correctAnswerBlock, /speakQueue\(\[theme\.victoryLine\]/);
+  assert.match(correctAnswerBlock, /speakQueue\(\[theme\.victoryLine\], 0\.9\)/);
+  assert.match(correctAnswerBlock, /goNext\(\[line\], false\)/);
+  assert.doesNotMatch(correctAnswerBlock, /speakQueueAfterCurrent/);
   assert.doesNotMatch(correctAnswerBlock, /speak\(line,/);
 });

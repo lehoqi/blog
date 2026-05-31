@@ -1665,13 +1665,33 @@ function getTitle(stats, playerId) {
 // ── 语音朗读 ──
 let voiceMuted = false;
 let speakTimer = null;
+let speechDelayTimer = null;
+let speechEpoch = 0;
+let _spkSeq = 0;
+let _spkQueue = [];
+let _spkActive = false;
+
+function resetSpeechState() {
+  _spkSeq++;
+  speechEpoch++;
+  clearTimeout(speakTimer);
+  clearTimeout(speechDelayTimer);
+  speechDelayTimer = null;
+  _spkQueue = [];
+  _spkActive = false;
+}
+
+function scheduleSpeech(fn, delay, epoch = speechEpoch) {
+  clearTimeout(speechDelayTimer);
+  speechDelayTimer = setTimeout(() => {
+    speechDelayTimer = null;
+    if (epoch === speechEpoch) fn();
+  }, delay);
+}
 
 function speak(text, rate = 0.82) {
   if (voiceMuted || !window.speechSynthesis) return;
-  if (typeof _spkSeq === 'number') _spkSeq++;   // supersede any running speakQueue
-  _spkQueue = [];
-  _spkActive = false;
-  clearTimeout(speakTimer);
+  resetSpeechState();
   window.speechSynthesis.cancel();
   speakTimer = setTimeout(() => {
     const utt = new SpeechSynthesisUtterance(text);
@@ -1683,18 +1703,11 @@ function speak(text, rate = 0.82) {
 }
 
 function stopSpeech() {
-  if (typeof _spkSeq === 'number') _spkSeq++;   // kill any running speakQueue
-  _spkQueue = [];
-  _spkActive = false;
-  clearTimeout(speakTimer);
+  resetSpeechState();
   window.speechSynthesis && window.speechSynthesis.cancel();
 }
 
 // 串行语音队列：onend 推进 + 超时兜底，避免连续 speak() 互相掐断（spec A1）
-let _spkSeq = 0;
-let _spkQueue = [];
-let _spkActive = false;
-
 function _speechItems(lines, rate) {
   return (lines || []).filter(Boolean).map(txt => ({ text: String(txt), rate }));
 }
@@ -1726,10 +1739,10 @@ function _drainSpeechQueue(seq) {
 
 function speakQueue(lines, rate = 0.9) {
   if (voiceMuted || !window.speechSynthesis || !lines || !lines.length) return;
-  const seq = ++_spkSeq;
+  resetSpeechState();
+  const seq = _spkSeq;
   _spkQueue = _speechItems(lines, rate);
   _spkActive = false;
-  clearTimeout(speakTimer);
   window.speechSynthesis.cancel();
   speakTimer = setTimeout(() => _drainSpeechQueue(seq), 80);
 }
@@ -2409,21 +2422,23 @@ function speakQuestionWithAdventure(q, slideIn, leadLines = [], afterCurrentSpee
   if (!q) return;
   const readText = buildReadText(q);
   const queue = afterCurrentSpeech ? speakQueueAfterCurrent : speakQueue;
+  const epoch = speechEpoch;
   if (adventureRun && Adventure.shouldShowBoss(adventureRun, currentIdx)) {
     const theme = Adventure.getTheme(adventureRun.family);
     adventureRun = Adventure.markBossShown(adventureRun);
     renderAdventureHud();
     const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
     showBossEntrance(theme, e.vehicle, e.dino, () => {
+      if (epoch !== speechEpoch) return;
       queue([].concat(leadLines, theme.bossLine, readText), 0.86);
     });
     return;
   }
   if (leadLines.length) {
-    setTimeout(() => queue([].concat(leadLines, readText), 0.86), slideIn ? 500 : 300);
+    scheduleSpeech(() => queue([].concat(leadLines, readText), 0.86), slideIn ? 500 : 300, epoch);
     return;
   }
-  setTimeout(() => speak(readText, 0.8), slideIn ? 500 : 300);
+  scheduleSpeech(() => speak(readText, 0.8), slideIn ? 500 : 300, epoch);
 }
 
 function renderQuestion(slideIn = true, speakNow = true, leadSpeechLines = [], afterCurrentSpeech = false) {
@@ -3171,6 +3186,7 @@ function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
 function submitAnswer() {
   if (inputLocked) return;
   if (currentAnswer === '') return;
+  stopSpeech();
 
   const q       = questions[currentIdx];
   const userAns = parseInt(currentAnswer, 10);
@@ -3236,11 +3252,11 @@ function submitAnswer() {
       };
 
       if (currentIdx >= questions.length - 1) {
-        speakQueueAfterCurrent([theme.victoryLine], 0.9);
+        speakQueue([theme.victoryLine], 0.9);
         showBossFinisher(theme, e.vehicle, e.dino, correctStreak, goNext);
       } else {
         const line = theme.stepLines[Math.min(currentIdx, theme.stepLines.length - 1)];
-        showAdventureStep(theme, e.vehicle, e.dino, currentIdx, correctStreak, () => goNext([line], true));
+        showAdventureStep(theme, e.vehicle, e.dino, currentIdx, correctStreak, () => goNext([line], false));
       }
     }, 220);
 
@@ -3773,8 +3789,10 @@ function startGame() {
   const introTheme = Adventure.getTheme(adventureRun.family);
   renderQuestion(false, false);
   const introE = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: introTheme.targetEmoji, dino: '🦕' };
+  const introSpeechEpoch = speechEpoch;
   setTimeout(() => {
     showAdventureIntro(introTheme, introE.vehicle, introE.dino, () => {
+      if (introSpeechEpoch !== speechEpoch) return;
       const firstQuestion = questions[currentIdx] ? buildReadText(questions[currentIdx]) : '';
       const departureLine = adventureDepartureLine;
       adventureDepartureLine = '';
