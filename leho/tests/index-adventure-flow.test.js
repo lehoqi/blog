@@ -177,3 +177,16 @@ test('ultra adventure audio has charge, impact, boss, and reward hooks', () => {
   assert.match(audioBlock, /function playRewardRain/);
   assert.match(audioBlock, /try \{/);
 });
+
+test('boss entrance and finisher use arena classes and synchronized sounds', () => {
+  const bossEntrance = between('function showBossEntrance', '\n}\n\nfunction showAdventureIntro');
+  assert.match(bossEntrance, /boss-arena/);
+  assert.match(bossEntrance, /playBossEntranceSound\(theme\.id\)/);
+  assert.match(bossEntrance, /adv-boss-arena-ring/);
+
+  const finisher = between('function showBossFinisher', '\n}\n\nfunction speakQuestionWithAdventure');
+  assert.match(finisher, /playBossHitSound\(theme\.id\)/);
+  assert.match(finisher, /playBossDefeatSound\(theme\.id\)/);
+  assert.match(finisher, /playRewardRain\(\)/);
+  assert.match(finisher, /adv-finisher-burst/);
+});

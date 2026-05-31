@@ -543,6 +543,16 @@ var _hmt = _hmt || [];
       background: rgba(33,33,33,0);
       backdrop-filter: blur(0);
     }
+    .adv-boss-arena-ring {
+      position: absolute;
+      width: min(70vw, 330px);
+      height: min(70vw, 330px);
+      border-radius: 50%;
+      border: 14px solid rgba(255,255,255,0.18);
+      background: conic-gradient(from 0deg, rgba(239,68,68,0.82), rgba(250,204,21,0.72), rgba(59,130,246,0.72), rgba(239,68,68,0.82));
+      box-shadow: 0 0 72px rgba(239,68,68,0.70), inset 0 0 44px rgba(250,204,21,0.42);
+      animation: advArenaSpin 0.9s linear infinite, advArenaPulse 1.1s ease-in-out infinite;
+    }
     .adv-boss-card {
       min-width: min(78vw, 360px);
       padding: 22px 28px;
@@ -572,8 +582,23 @@ var _hmt = _hmt || [];
       72% { transform: translateY(-10px) scale(0.96) rotate(-2deg); }
       100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
     }
+    @keyframes advArenaSpin { to { transform: rotate(360deg); } }
+    @keyframes advArenaPulse {
+      50% { filter: brightness(1.45); box-shadow: 0 0 96px rgba(239,68,68,0.92), inset 0 0 62px rgba(250,204,21,0.62); }
+    }
     .adv-finisher {
       background: radial-gradient(circle at 50% 45%, rgba(255,245,157,0.92), rgba(255,112,67,0.62) 42%, rgba(49,27,146,0.72));
+    }
+    .adv-finisher-burst {
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 8px solid rgba(255,255,255,0.76);
+      box-shadow: 0 0 52px rgba(250,204,21,0.95);
+      animation: advFinisherBurst 1.4s ease-out both;
     }
     .adv-finisher-vehicle,
     .adv-finisher-boss,
@@ -627,6 +652,10 @@ var _hmt = _hmt || [];
       62% { transform: translateX(-50%) scale(1.16) rotate(3deg); opacity: 1; }
       82% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
       100% { transform: translateX(-50%) scale(0.95) rotate(0deg); opacity: 0; }
+    }
+    @keyframes advFinisherBurst {
+      0% { transform: translate(-50%, -50%) scale(.2); opacity: .95; }
+      100% { transform: translate(-50%, -50%) scale(6.5); opacity: 0; }
     }
 
     .score-badge {
@@ -2463,9 +2492,12 @@ function showBossEntrance(theme, vehicleEmoji, dinoEmoji, done) {
   });
 
   try {
+    const scene = $('adventure-scene');
+    if (scene) scene.classList.add('boss-arena');
     overlay = document.createElement('div');
     overlay.className = 'adv-boss-entrance';
     overlay.innerHTML = `
+      <div class="adv-boss-arena-ring"></div>
       <div class="adv-boss-card" style="border-color:${theme.fallbackColor || '#ffd600'}">
         <span class="adv-boss-emoji">${theme.bossEmoji}</span>
         <div class="adv-boss-name">${theme.bossName}</div>
@@ -2672,6 +2704,7 @@ function showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done) {
     overlay = document.createElement('div');
     overlay.className = 'adv-finisher';
     overlay.innerHTML = `
+      <span class="adv-finisher-burst"></span>
       <span class="adv-finisher-vehicle">${vehicleEmoji}</span>
       <span class="adv-finisher-boss">${theme.bossEmoji}</span>
       <div class="adv-finisher-text">${theme.victoryLine}</div>`;
