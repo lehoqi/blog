@@ -110,3 +110,26 @@ test('adventure HUD defines ultra scene classes and mobile safety rules', () => 
   assert.match(styleBlock, /@media \(max-width: 420px\)[\s\S]*\.adventure-scene/);
   assert.match(styleBlock, /@media \(prefers-reduced-motion: reduce\)/);
 });
+
+test('ultra adventure CSS is applied by render state and short-height layout', () => {
+  const styleBlock = between('<style>', '\n  </style>');
+  const shortHeightBlock = between('    @media (max-height: 700px) {', '\n    }\n\n    /* ===== 横屏适配 ===== */');
+  assert.match(styleBlock, /@media \(max-height: 700px\)/);
+  [
+    '.adventure-hud',
+    '.adventure-scene',
+    '.adventure-landmark',
+    '.adventure-vehicle',
+    '.adventure-boss',
+    '.adv-dot',
+    '.adventure-power',
+    '.adventure-title'
+  ].forEach(selector => {
+    assert.match(shortHeightBlock, new RegExp(selector.replace('.', '\\.')), `missing short-height CSS for ${selector}`);
+  });
+
+  const renderHudBody = between('function renderAdventureHud() {', '\n}\n\nfunction generateQuestion');
+  assert.match(renderHudBody, /theme\.sceneClass/);
+  assert.match(renderHudBody, /adventure-power-fill/);
+  assert.match(renderHudBody, /powerFill\.style\.width/);
+});

@@ -1255,6 +1255,14 @@ var _hmt = _hmt || [];
       .question-text { font-size: 2.4rem; margin-bottom: 4px; }
       .answer-input-display { min-height: 42px; margin-bottom: 4px; }
       .numpad-btn { padding: 8px 0; }
+      .adventure-hud { padding: 8px 10px 9px; margin-bottom: 8px; border-radius: 16px; }
+      .adventure-scene { height: 82px; border-radius: 14px; }
+      .adventure-landmark { width: 25px; height: 38px; bottom: 32px; }
+      .adventure-vehicle { font-size: 34px; }
+      .adventure-boss { font-size: 36px; }
+      .adv-dot { width: 24px; height: 24px; font-size: 0.78rem; box-shadow: 0 0 0 3px rgba(255,255,255,0.42), 0 0 16px rgba(250,204,21,0.70); }
+      .adventure-power { left: 12px; right: 12px; bottom: 7px; height: 9px; }
+      .adventure-title { font-size: 0.82rem; margin-top: 4px; }
     }
 
     /* ===== 横屏适配 ===== */
@@ -2066,10 +2074,14 @@ function renderAdventureHud() {
   if (!window.Adventure || !adventureRun) return;
   const theme = Adventure.getTheme(adventureRun.family);
   const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🦕' };
+  const scene = $('adventure-scene');
+  const powerFill = $('adventure-power-fill');
+  scene.className = 'adventure-scene ' + (theme.sceneClass || 'adv-scene-adventure') + (adventureRun.bossShown && !adventureRun.completed ? ' boss-arena' : '');
   $('adventure-map').textContent = theme.mapEmoji;
   $('adventure-vehicle').textContent = e.vehicle;
   $('adventure-boss').textContent = theme.bossEmoji;
   $('adventure-title').textContent = theme.name;
+  powerFill.style.width = Math.min(100, adventureRun.step * 22 + (adventureRun.bossShown ? 12 : 0)) + '%';
   document.querySelectorAll('.adv-dot').forEach((dot, i) => {
     dot.classList.toggle('done', i < adventureRun.step);
     dot.classList.toggle('active', i === Math.min(adventureRun.step, 4) && !adventureRun.completed);
