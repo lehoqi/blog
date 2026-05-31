@@ -97,3 +97,16 @@ test('legacy adventure track grid contains only route dots', () => {
   assert.doesNotMatch(trackMarkup, /adv-route-beam/);
   assert.equal((trackMarkup.match(/class="adv-dot/g) || []).length, 5);
 });
+
+test('adventure HUD defines ultra scene classes and mobile safety rules', () => {
+  const styleBlock = between('<style>', '\n  </style>');
+  ['police', 'ambulance', 'fire', 'everyday', 'adventure'].forEach(family => {
+    assert.match(styleBlock, new RegExp(`\\.adv-scene-${family}`), `missing CSS for ${family}`);
+  });
+  assert.match(styleBlock, /\.adventure-route/);
+  assert.match(styleBlock, /\.adv-route-beam/);
+  assert.match(styleBlock, /\.adventure-effects/);
+  assert.match(styleBlock, /\.adventure-power-fill/);
+  assert.match(styleBlock, /@media \(max-width: 420px\)[\s\S]*\.adventure-scene/);
+  assert.match(styleBlock, /@media \(prefers-reduced-motion: reduce\)/);
+});

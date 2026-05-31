@@ -314,56 +314,176 @@ var _hmt = _hmt || [];
 
     .adventure-hud {
       width: 100%;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.94);
       border: 3px solid rgba(76,175,80,0.18);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 10px 12px 12px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
       margin-bottom: 10px;
       overflow: hidden;
     }
     .adventure-scene {
       position: relative;
-      height: 54px;
-      border-radius: 14px;
-      background: linear-gradient(90deg, rgba(33,150,243,0.12), rgba(255,214,0,0.14));
+      height: 132px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #38bdf8 0%, #bfdbfe 42%, #22c55e 43%, #047857 100%);
+      box-shadow: inset 0 -34px 36px rgba(0,0,0,0.20);
+      isolation: isolate;
     }
-    .adventure-map, .adventure-vehicle, .adventure-boss {
+    .adventure-sky,
+    .adventure-landmarks,
+    .adventure-route,
+    .adventure-effects {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      line-height: 1;
+      inset: 0;
+      pointer-events: none;
     }
-    .adventure-map { left: 10px; font-size: 28px; opacity: 0.82; }
-    .adventure-vehicle { left: 18%; font-size: 34px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25)); }
-    .adventure-boss { right: 12px; font-size: 34px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25)); }
+    .adventure-sky {
+      z-index: 0;
+      background:
+        radial-gradient(circle at 14% 24%, rgba(255,255,255,0.88) 0 6px, transparent 7px),
+        radial-gradient(circle at 44% 16%, rgba(255,255,255,0.72) 0 4px, transparent 5px),
+        radial-gradient(circle at 74% 22%, rgba(255,255,255,0.82) 0 5px, transparent 6px);
+      opacity: 0.72;
+    }
+    .adventure-map {
+      position: absolute;
+      z-index: 3;
+      left: 13px;
+      top: 13px;
+      font-size: 30px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.26));
+    }
+    .adventure-landmarks {
+      z-index: 1;
+    }
+    .adventure-landmark {
+      position: absolute;
+      bottom: 42px;
+      width: 36px;
+      height: 58px;
+      border-radius: 8px 8px 0 0;
+      background: rgba(51,65,85,0.92);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.16), 0 8px 14px rgba(0,0,0,0.22);
+    }
+    .adventure-landmark::before {
+      content: "";
+      position: absolute;
+      inset: 9px 7px;
+      background: repeating-linear-gradient(180deg, #fde68a 0 6px, transparent 6px 14px);
+    }
+    .adventure-landmark:nth-child(1) { left: 18%; transform: scale(0.78); }
+    .adventure-landmark:nth-child(2) { left: 37%; transform: scale(1.05); }
+    .adventure-landmark:nth-child(3) { left: 61%; transform: scale(0.86); }
+    .adventure-landmark:nth-child(4) { left: 78%; transform: scale(1.14); }
+    .adventure-route {
+      z-index: 2;
+    }
+    .adv-route-beam {
+      position: absolute;
+      left: 8%;
+      right: 10%;
+      top: 72%;
+      height: 10px;
+      border-radius: 999px;
+      transform: rotate(-8deg);
+      background: linear-gradient(90deg, #22c55e, #facc15 48%, #fb923c 72%, #ef4444);
+      box-shadow: 0 0 18px rgba(250,204,21,0.82);
+    }
     .adventure-track {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      margin-top: 8px;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
     }
     .adv-dot {
-      height: 24px;
-      border-radius: 999px;
-      background: #e0e0e0;
-      color: #33691e;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
+      position: absolute;
+      z-index: 4;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, #fff7ad, #f59e0b);
+      color: #7c2d12;
+      font-weight: 1000;
+      font-size: 0.9rem;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.44), 0 0 22px rgba(250,204,21,0.78);
     }
-    .adv-dot.done { background: linear-gradient(135deg, #ffd600, #ff9800); color: #5d4037; }
-    .adv-dot.active { outline: 3px solid #4caf50; background: #c8e6c9; }
-    .adv-dot.boss-dot { background: #ffcdd2; color: #b71c1c; }
-    .adv-dot.boss-dot.done { background: linear-gradient(135deg, #ff5252, #ffd600); color: #fff; }
+    .adv-dot[data-step="0"] { left: 7%; top: 70%; }
+    .adv-dot[data-step="1"] { left: 27%; top: 54%; }
+    .adv-dot[data-step="2"] { left: 47%; top: 65%; }
+    .adv-dot[data-step="3"] { left: 66%; top: 46%; }
+    .adv-dot[data-step="4"] { left: 84%; top: 62%; }
+    .adv-dot.done { background: radial-gradient(circle, #dcfce7, #22c55e); color: #064e3b; }
+    .adv-dot.active { transform: scale(1.15); outline: 4px solid rgba(255,255,255,0.62); }
+    .adv-dot.boss-dot { background: radial-gradient(circle, #fecaca, #ef4444); color: #fff; }
+    .adv-dot.boss-dot.done { background: radial-gradient(circle, #fef3c7, #dc2626); color: #fff; }
+    .adventure-vehicle,
+    .adventure-boss {
+      position: absolute;
+      z-index: 6;
+      line-height: 1;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,0.35));
+    }
+    .adventure-vehicle {
+      left: 7%;
+      top: 50%;
+      font-size: 48px;
+      transform: translate(-50%, -50%);
+    }
+    .adventure-boss {
+      right: 6%;
+      top: 40%;
+      font-size: 50px;
+      transform: translate(50%, -50%);
+    }
+    .adventure-effects {
+      z-index: 7;
+    }
+    .adventure-power {
+      position: absolute;
+      z-index: 5;
+      left: 18px;
+      right: 18px;
+      bottom: 10px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.38);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18);
+    }
+    .adventure-power-fill {
+      display: block;
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #fde047, #fb923c, #ef4444);
+      box-shadow: 0 0 18px rgba(250,204,21,0.90);
+      transition: width 0.55s cubic-bezier(.34,1.56,.64,1);
+    }
     .adventure-title {
       margin-top: 5px;
       font-size: 0.9rem;
       font-weight: 900;
       color: var(--text);
       text-align: center;
+    }
+    .adv-scene-police {
+      background: radial-gradient(circle at 82% 16%, rgba(255,236,104,0.92), transparent 15%), linear-gradient(180deg, #38bdf8 0%, #bfdbfe 42%, #334155 43%, #111827 100%);
+    }
+    .adv-scene-ambulance {
+      background: radial-gradient(circle at 20% 18%, rgba(187,247,208,0.92), transparent 16%), linear-gradient(180deg, #bae6fd 0%, #e0f2fe 42%, #10b981 43%, #047857 100%);
+    }
+    .adv-scene-fire {
+      background: radial-gradient(circle at 80% 32%, rgba(251,146,60,0.82), transparent 18%), linear-gradient(180deg, #fef3c7 0%, #fed7aa 42%, #7f1d1d 43%, #1f2937 100%);
+    }
+    .adv-scene-everyday {
+      background: radial-gradient(circle at 76% 18%, rgba(254,240,138,0.95), transparent 15%), linear-gradient(180deg, #93c5fd 0%, #dbeafe 42%, #22c55e 43%, #166534 100%);
+    }
+    .adv-scene-adventure {
+      background: radial-gradient(circle at 72% 28%, rgba(168,85,247,0.70), transparent 22%), radial-gradient(circle at 20% 16%, rgba(34,211,238,0.60), transparent 16%), linear-gradient(180deg, #0f172a 0%, #1e1b4b 58%, #312e81 100%);
     }
     .adv-spark {
       position: absolute;
@@ -376,7 +496,7 @@ var _hmt = _hmt || [];
       box-shadow: 0 0 12px #ffd600, 0 0 22px rgba(255,152,0,0.75);
       transform: translate(-50%, -50%);
       pointer-events: none;
-      z-index: 3;
+      z-index: 8;
     }
     .adv-boss-entrance,
     .adv-finisher {
@@ -1097,14 +1217,28 @@ var _hmt = _hmt || [];
       .progress-bar-wrap { height: 18px; }
       .progress-dino { font-size: 16px; right: -10px; }
       .progress-label { font-size: 0.85rem; }
-      .adventure-hud { padding: 8px 10px 10px; margin-bottom: 8px; border-radius: 16px; }
-      .adventure-scene { height: 46px; }
-      .adventure-map { font-size: 23px; }
-      .adventure-vehicle, .adventure-boss { font-size: 29px; }
-      .adventure-title { font-size: 0.82rem; }
-      .adv-dot { height: 22px; font-size: 0.78rem; }
+      .adventure-hud { padding: 8px 9px 9px; margin-bottom: 8px; border-radius: 16px; }
+      .adventure-scene { height: 86px; border-radius: 14px; }
+      .adventure-landmark { width: 26px; height: 40px; bottom: 34px; }
+      .adventure-vehicle { font-size: 34px; }
+      .adventure-boss { font-size: 36px; }
+      .adv-dot { width: 24px; height: 24px; font-size: 0.78rem; box-shadow: 0 0 0 3px rgba(255,255,255,0.42), 0 0 16px rgba(250,204,21,0.70); }
+      .adventure-power { left: 12px; right: 12px; bottom: 7px; height: 9px; }
+      .adventure-title { font-size: 0.82rem; margin-top: 4px; }
 
       .btn-next-q { font-size: 0.95rem; padding: 7px 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .adventure-scene,
+      .adventure-vehicle,
+      .adventure-boss,
+      .adv-dot,
+      .adv-spark,
+      .adv-speed-line,
+      .adv-shockwave {
+        animation: none !important;
+      }
     }
 
     @media (max-width: 360px) {
