@@ -204,6 +204,30 @@ test('ultra adventure audio has charge, impact, boss, and reward hooks', () => {
   assert.match(audioBlock, /try \{/);
 });
 
+test('animation audio resumes Web Audio before scheduling sounds', () => {
+  const audioBlock = between('// ── 音效 ──', '// ── 全屏飞车动效');
+  assert.equal((audioBlock.match(/function getAudioCtx\(/g) || []).length, 1, 'audio context helper should not be shadowed');
+  assert.match(audioBlock, /function withAudioCtx\(schedule\)/);
+  assert.match(audioBlock, /ctx\.state === 'suspended'/);
+  assert.match(audioBlock, /ctx\.resume\(\)\.then\(\(\) => schedule\(ctx\)\)/);
+  assert.match(audioBlock, /function bindAudioUnlock\(\)/);
+  assert.match(audioBlock, /document\.addEventListener\('pointerdown', unlockAudio/);
+  assert.match(audioBlock, /document\.addEventListener\('keydown', unlockAudio/);
+
+  [
+    'playTone',
+    'playPoliceSiren',
+    'playFireBell',
+    'playEverydayHorn',
+    'playAdventureWhoosh',
+    'playAmbulanceSiren',
+    'playNoiseBurst'
+  ].forEach(fnName => {
+    const fnBlock = between(`function ${fnName}`, '\n}\n');
+    assert.match(fnBlock, /withAudioCtx\(ctx =>/, `${fnName} must schedule after audio resume`);
+  });
+});
+
 test('boss entrance and finisher use arena classes and synchronized sounds', () => {
   const bossEntrance = between('function showBossEntrance', '\n}\n\nfunction showAdventureIntro');
   assert.match(bossEntrance, /boss-arena/);
