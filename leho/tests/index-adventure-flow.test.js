@@ -79,5 +79,21 @@ test('layered adventure HUD keeps pre-upgrade selectors compatible', () => {
   if (/\$\('adventure-map'\)/.test(renderHudBody)) {
     assert.match(hudMarkup, /id="adventure-map"/);
   }
-  assert.match(hudMarkup, /class="adventure-route adventure-track"/);
+  assert.match(hudMarkup, /class="adventure-track" id="adventure-track"/);
+});
+
+test('legacy adventure track grid contains only route dots', () => {
+  const hudMarkup = between('<div class="adventure-hud" id="adventure-hud"', '\n    <div class="quiz-body">');
+  const trackStart = hudMarkup.search(/<div[^>]*class="[^"]*\badventure-track\b[^"]*"[^>]*>/);
+  assert.notEqual(trackStart, -1, 'adventure HUD must keep an adventure-track dot container');
+
+  const trackOpen = hudMarkup.slice(trackStart).match(/^<div[^>]*class="[^"]*\badventure-track\b[^"]*"[^>]*>/);
+  assert.ok(trackOpen, 'adventure-track container must be a div');
+
+  const trackEnd = hudMarkup.indexOf('</div>', trackStart + trackOpen[0].length);
+  assert.notEqual(trackEnd, -1, 'adventure-track container must close before the quiz body');
+
+  const trackMarkup = hudMarkup.slice(trackStart, trackEnd);
+  assert.doesNotMatch(trackMarkup, /adv-route-beam/);
+  assert.equal((trackMarkup.match(/class="adv-dot/g) || []).length, 5);
 });
