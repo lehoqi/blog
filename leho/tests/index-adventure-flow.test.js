@@ -147,6 +147,32 @@ test('renderAdventureHud applies scene class, landmarks, route progress, and pow
   assert.match(renderBlock, /boss-ready/);
 });
 
+test('ultra theme route styles and landmarks have visible family-specific CSS', () => {
+  const styleBlock = between('<style>', '\n  </style>');
+  const adventureJs = fs.readFileSync(path.join(__dirname, '..', 'adventure.js'), 'utf8');
+  const routeStyles = [...adventureJs.matchAll(/routeStyle: '([^']+)'/g)].map(match => match[1]);
+  const landmarkNames = [...adventureJs.matchAll(/landmarks: \[([^\]]+)\]/g)]
+    .flatMap(match => [...match[1].matchAll(/'([^']+)'/g)].map(nameMatch => nameMatch[1]));
+
+  routeStyles.forEach(routeStyle => {
+    assert.match(
+      styleBlock,
+      new RegExp(`data-route-style="${routeStyle}"[\\s\\S]*\\.adv-route-beam`),
+      `missing route CSS for ${routeStyle}`
+    );
+  });
+
+  landmarkNames.forEach(name => {
+    const className = `.landmark-${name}`;
+    assert.match(styleBlock, new RegExp(className.replace('.', '\\.')), `missing landmark CSS for ${name}`);
+    assert.match(
+      styleBlock,
+      new RegExp(`${className.replace('.', '\\.')}::after[\\s\\S]*content:`),
+      `landmark ${name} needs a non-text visual icon`
+    );
+  });
+});
+
 test('ultra adventure animation helpers exist and are used by answer flow', () => {
   const animationBlock = between('function showAdventureStep', '\n}\n\nfunction showBossFinisher');
   assert.match(animationBlock, /playAdventureCharge/);
@@ -205,4 +231,22 @@ test('ultra answer flow still stops old speech before animation and new speech',
   const questionSpeechBlock = between('function speakQuestionWithAdventure', '\n}\n\nfunction renderQuestion');
   assert.match(questionSpeechBlock, /const epoch = speechEpoch;/);
   assert.match(questionSpeechBlock, /if \(epoch !== speechEpoch\) return;/);
+});
+
+test('result-page speech is cancellable when a new round starts quickly', () => {
+  const showResultBody = between('function showResult() {', '\n}\n\n// ── 结果页 PK');
+  assert.match(showResultBody, /const resultSpeechEpoch = speechEpoch;/);
+  assert.match(showResultBody, /scheduleSpeech\(\(\) => speakQueue\(\[resultRead, Garage\.vResultCoins/);
+  assert.doesNotMatch(showResultBody, /setTimeout\(\(\) => speakQueue\(\[resultRead/);
+
+  const startGamePrefix = between('function startGame() {', '\n  questions');
+  assert.match(startGamePrefix, /stopSpeech\(\);/);
+});
+
+test('delayed speech uses cancellable scheduler instead of raw timers', () => {
+  assert.doesNotMatch(html, /setTimeout\(\(\) => speak(?:Queue)?\(/);
+  const celebrateBlock = between('function showCelebrate(cb) {', '\n}\n\n// ── 游戏状态');
+  const leaderboardBlock = between('function openLeaderboard() {', "\n}\n\n$('btn-settings-home')");
+  assert.match(celebrateBlock, /scheduleSpeech\(\(\) => speak\(spokenText, 1\.0\), 400/);
+  assert.match(leaderboardBlock, /scheduleSpeech\(\(\) => speak\(txt, 0\.9\), 400/);
 });

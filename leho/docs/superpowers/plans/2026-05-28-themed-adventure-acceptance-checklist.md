@@ -118,10 +118,11 @@
 
 Ultra 复检证据：
 
-- 自动化验证：`node --test tests/garage.test.js tests/adventure.test.js tests/index-adventure-flow.test.js` 通过，45 tests passed, 0 failed；`git diff --check` 无输出。
+- 自动化验证：`node --test tests/garage.test.js tests/adventure.test.js tests/index-adventure-flow.test.js` 通过，48 tests passed, 0 failed；`git diff --check` 无输出。
 - 桌面浏览器验证使用 `http://localhost:4176/index.html`。默认乐乐警车开局渲染 `警车追捕`、`adv-scene-police`、`city-chase`、3 个地标、5 个数字点、`🚓` 座驾和 `🚧` Boss。
 - 第 1 题答对中途观察到 8 条速度线、17 个粒子、1 个冲击波、`ultra-hit` 震动状态，确认按钮锁定；动画结束后清理临时效果节点，地图推进到第 2 个数字点，能量条变为 `22%`。
 - 连续答完第 5 题前，地图进入 `boss-arena`，第 5 个数字点处于 Boss ready，前 4 个数字点完成。第 5 题答对后出现 `adv-finisher` 和 `adv-finisher-burst`，终结技显示 `🚓`、`🚧` 和胜利语音文案；结束后进入唯一结果页 `5 / 5`，`本局 +15 🪙`。
 - 装备联动验证：结果页进入车库后，用本局 15 金币解锁并装备 `🚒` 消防车；下一局自动渲染 `消防救援`、`adv-scene-fire`、`fire-rescue`、`🚒`、`🔥` 和消防地标 `building-fire/hydrant/water-arc`。
-- 语音取消由静态回归测试锁定：`submitAnswer()` 在非空答案后立即 `stopSpeech()`，正确答案分支不使用 `speakQueueAfterCurrent`，Boss 延迟朗读检查 `speechEpoch`，提交后旧朗读不会复活。
-- 移动端安全由 CSS 与静态测试复检：`max-width: 420px` 和 `max-height: 700px` 均压缩 HUD/场景/地标/座驾/Boss/数字点/能量条；reduced-motion 规则保留状态推进并禁用大动画。
+- 最终 review 后复检：五条 routeStyle 均有独立光路 CSS，15 个 landmark 均有独立图标/形状；浏览器确认 `fire-rescue` 路线和 `building-fire/hydrant/water-arc` 实际渲染。
+- 语音取消由静态回归测试锁定：`submitAnswer()` 在非空答案后立即 `stopSpeech()`，正确答案分支不使用 `speakQueueAfterCurrent`，Boss 延迟朗读检查 `speechEpoch`；结果页、庆祝、排行榜延迟语音均改用 `scheduleSpeech`，新开局先 `stopSpeech()`，提交或重开后旧朗读不会复活。
+- 移动端安全由浏览器 360 x 640 viewport、CSS 与静态测试复检：无水平溢出，HUD 与题卡/答案/数字键盘不重叠；`max-width: 420px` 和 `max-height: 700px` 均压缩 HUD/场景/地标/座驾/Boss/数字点/能量条；reduced-motion 规则保留状态推进并禁用大动画。

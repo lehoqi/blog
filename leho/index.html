@@ -374,6 +374,45 @@ var _hmt = _hmt || [];
       inset: 9px 7px;
       background: repeating-linear-gradient(180deg, #fde68a 0 6px, transparent 6px 14px);
     }
+    .adventure-landmark::after {
+      position: absolute;
+      left: 50%;
+      top: -18px;
+      transform: translateX(-50%);
+      font-size: 25px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.32));
+    }
+    .landmark-city-a { background: linear-gradient(180deg, #475569, #1e293b); }
+    .landmark-city-a::after { content: "🏢"; }
+    .landmark-city-b { background: linear-gradient(180deg, #2563eb, #1e3a8a); }
+    .landmark-city-b::after { content: "🏙️"; }
+    .landmark-roadblock { width: 46px; height: 28px; bottom: 50px; border-radius: 8px; background: repeating-linear-gradient(135deg, #f97316 0 8px, #111827 8px 16px); }
+    .landmark-roadblock::after { content: "🚧"; top: -22px; }
+    .landmark-hospital { background: linear-gradient(180deg, #f8fafc, #bfdbfe); box-shadow: inset 0 0 0 3px #ef4444, 0 8px 14px rgba(0,0,0,0.18); }
+    .landmark-hospital::after { content: "🏥"; }
+    .landmark-medical-cross { width: 34px; height: 34px; bottom: 56px; border-radius: 50%; background: radial-gradient(circle, #fff 0 42%, #ef4444 43% 58%, #fff 59% 100%); }
+    .landmark-medical-cross::after { content: "➕"; top: -19px; color: #dc2626; }
+    .landmark-green-lane { height: 24px; bottom: 54px; border-radius: 999px; background: linear-gradient(90deg, #bbf7d0, #22c55e, #bbf7d0); box-shadow: 0 0 20px rgba(34,197,94,0.75); }
+    .landmark-green-lane::after { content: "💚"; }
+    .landmark-building-fire { background: linear-gradient(180deg, #7f1d1d, #1f2937); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.14), 0 0 22px rgba(239,68,68,0.62); }
+    .landmark-building-fire::after { content: "🔥"; top: -24px; }
+    .landmark-hydrant { width: 32px; border-radius: 16px 16px 6px 6px; background: linear-gradient(180deg, #ef4444, #991b1b); }
+    .landmark-hydrant::after { content: "🧯"; }
+    .landmark-water-arc { width: 58px; height: 34px; bottom: 58px; border-radius: 999px 999px 0 0; background: transparent; border: 7px solid rgba(125,211,252,0.92); border-bottom: 0; box-shadow: 0 0 22px rgba(56,189,248,0.88); }
+    .landmark-water-arc::after { content: "💦"; top: -18px; }
+    .landmark-bus-stop { background: linear-gradient(180deg, #facc15, #f59e0b); border-radius: 8px; }
+    .landmark-bus-stop::after { content: "🚏"; }
+    .landmark-crosswalk { width: 54px; height: 22px; bottom: 52px; border-radius: 5px; background: repeating-linear-gradient(90deg, #fff 0 7px, #111827 7px 13px); }
+    .landmark-crosswalk::after { content: "🚶"; top: -24px; }
+    .landmark-traffic-sign { width: 34px; height: 34px; bottom: 58px; border-radius: 50%; background: radial-gradient(circle, #fde047 0 50%, #ef4444 51% 100%); }
+    .landmark-traffic-sign::after { content: "🚦"; top: -24px; }
+    .landmark-star-gate { width: 52px; height: 52px; bottom: 50px; border-radius: 50%; background: conic-gradient(from 0deg, #22d3ee, #a78bfa, #f472b6, #22d3ee); box-shadow: 0 0 28px rgba(167,139,250,0.95); }
+    .landmark-star-gate::after { content: "🌀"; top: -22px; }
+    .landmark-meteor-a { width: 38px; height: 38px; bottom: 62px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fde68a, #fb923c 48%, #7c2d12); box-shadow: 0 0 24px rgba(251,146,60,0.92); }
+    .landmark-meteor-a::after { content: "☄️"; top: -24px; }
+    .landmark-orbit-line { width: 68px; height: 30px; bottom: 58px; border: 5px solid rgba(34,211,238,0.84); border-left-color: transparent; border-right-color: transparent; border-radius: 50%; background: transparent; box-shadow: 0 0 22px rgba(34,211,238,0.82); }
+    .landmark-orbit-line::after { content: "🛰️"; top: -24px; }
     .adventure-landmark:nth-child(1) { left: 18%; transform: scale(0.78); }
     .adventure-landmark:nth-child(2) { left: 37%; transform: scale(1.05); }
     .adventure-landmark:nth-child(3) { left: 61%; transform: scale(0.86); }
@@ -391,6 +430,41 @@ var _hmt = _hmt || [];
       transform: rotate(-8deg);
       background: linear-gradient(90deg, #22c55e, #facc15 48%, #fb923c 72%, #ef4444);
       box-shadow: 0 0 18px rgba(250,204,21,0.82);
+    }
+    .adventure-scene[data-route-style="city-chase"] .adv-route-beam {
+      top: 74%;
+      height: 12px;
+      transform: rotate(-7deg);
+      background: repeating-linear-gradient(90deg, #111827 0 20px, #fde047 20px 30px, #111827 30px 50px);
+      box-shadow: 0 0 18px rgba(59,130,246,0.90), 0 0 34px rgba(250,204,21,0.55);
+    }
+    .adventure-scene[data-route-style="rescue-lane"] .adv-route-beam {
+      top: 70%;
+      height: 14px;
+      transform: rotate(-4deg);
+      background: linear-gradient(90deg, #ecfeff, #22c55e 28%, #fff 34%, #22c55e 40%, #10b981);
+      box-shadow: 0 0 22px rgba(34,197,94,0.92), 0 0 40px rgba(187,247,208,0.72);
+    }
+    .adventure-scene[data-route-style="fire-rescue"] .adv-route-beam {
+      top: 72%;
+      height: 16px;
+      transform: rotate(-9deg);
+      background: linear-gradient(90deg, #38bdf8, #7dd3fc 36%, #fef3c7 50%, #fb923c 72%, #ef4444);
+      box-shadow: 0 0 26px rgba(56,189,248,0.95), 0 0 42px rgba(239,68,68,0.58);
+    }
+    .adventure-scene[data-route-style="station-road"] .adv-route-beam {
+      top: 73%;
+      height: 13px;
+      transform: rotate(-6deg);
+      background: repeating-linear-gradient(90deg, #166534 0 18px, #facc15 18px 24px, #166534 24px 42px);
+      box-shadow: 0 0 20px rgba(250,204,21,0.88), 0 0 32px rgba(34,197,94,0.58);
+    }
+    .adventure-scene[data-route-style="space-orbit"] .adv-route-beam {
+      top: 68%;
+      height: 11px;
+      transform: rotate(-13deg);
+      background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #fde047);
+      box-shadow: 0 0 26px rgba(168,85,247,0.94), 0 0 46px rgba(34,211,238,0.76);
     }
     .adventure-track {
       position: absolute;
@@ -2352,7 +2426,7 @@ function showCelebrate(cb) {
   playCorrect();
 
   const spokenText = textEl.textContent.replace(/[^\u4e00-\u9fa5！？。，、]/g, '').trim();
-  setTimeout(() => speak(spokenText, 1.0), 400);
+  scheduleSpeech(() => speak(spokenText, 1.0), 400);
 
   dinoEl.animate([
     { transform: 'translateY(300px) scale(0.2) rotate(25deg)', opacity: 0 },
@@ -3846,7 +3920,8 @@ function showResult() {
     resultRead += `恭喜解锁新勋章：${medalNames}！`;
   }
 
-  setTimeout(() => speakQueue([resultRead, Garage.vResultCoins(window.__roundCoins || 0)]), 600);
+  const resultSpeechEpoch = speechEpoch;
+  scheduleSpeech(() => speakQueue([resultRead, Garage.vResultCoins(window.__roundCoins || 0)]), 600, resultSpeechEpoch);
 }
 
 // ── 结果页 PK 对比 ──
@@ -4103,6 +4178,7 @@ function openSettings() {
 
 // ── 游戏启动 ──
 function startGame() {
+  stopSpeech();
   questions     = generateQuestions(5);
   adventureRun = Adventure.createRun(currentFamily() || 'adventure', questions.length);
   setInputLocked(false);
@@ -4371,7 +4447,7 @@ function openLeaderboard() {
   } else {
     txt = `${ln}和${hn}打成平手！都是${ls.totalStars}颗星星！谁先拉开差距呢？`;
   }
-  setTimeout(() => speak(txt, 0.9), 400);
+  scheduleSpeech(() => speak(txt, 0.9), 400);
 }
 
 $('btn-settings-home').addEventListener('click', () => {
