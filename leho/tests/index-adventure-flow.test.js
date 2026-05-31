@@ -146,3 +146,14 @@ test('renderAdventureHud applies scene class, landmarks, route progress, and pow
   assert.match(renderBlock, /scene\.dataset\.routeStyle/);
   assert.match(renderBlock, /boss-ready/);
 });
+
+test('ultra adventure animation helpers exist and are used by answer flow', () => {
+  const animationBlock = between('function showAdventureStep', '\n}\n\nfunction showBossFinisher');
+  assert.match(animationBlock, /playAdventureCharge/);
+  assert.match(animationBlock, /playAdventureImpact/);
+  assert.match(animationBlock, /createAdventureBurst/);
+  assert.match(animationBlock, /createSpeedLines/);
+  assert.match(animationBlock, /createShockwave/);
+  assert.match(animationBlock, /adventure-power-fill/);
+  assert.match(animationBlock, /Promise\.allSettled/);
+});
