@@ -104,3 +104,24 @@
 - Source-diff evidence: adventure changes do not edit the storage key definitions, clear-record handlers, question generator tables, or leaderboard renderer. Existing record/garage paths are still called only from the same result/garage/settings flows.
 - Audio and voice were not aurally verified in this environment. Checked audio/voice items are structural source checks: sound functions are called from the relevant animation paths; `voiceMuted` gates `speak`/`speakQueue` only; sound helpers do not check `voiceMuted`; Boss question speech uses a single queue for stage lead-in, Boss prompt, and read text.
 - Reduced-motion was not manually emulated. It was structurally verified by source inspection: adventure intro, step, boss entrance, and finisher check `prefers-reduced-motion: reduce` and call their completion callback via short timers; normal animation paths also have timeout fallbacks.
+
+## 2026-05-31 Ultra 地图与动效复检
+
+- [x] 五个 family 都有主题小世界地图，不再只是简单进度条。
+- [x] 答对时旧语音立即停止，不会在动画或下一题中复活。
+- [x] 答对至少出现充能、座驾冲刺、速度线、撞击粒子、冲击波、能量条推进。
+- [x] 每个关键动画都有同步音效，AudioContext 失败不阻塞流程。
+- [x] 第 5 题 Boss 竞技场只大登场一次，终结技接结果页。
+- [x] 移动端地图不遮挡题目、答案和数字键盘。
+- [x] 视觉不依赖文字，孩子能靠数字点、座驾、Boss、颜色、路线、语音理解进度。
+- [x] `node --test tests/garage.test.js tests/adventure.test.js tests/index-adventure-flow.test.js` 通过。
+
+Ultra 复检证据：
+
+- 自动化验证：`node --test tests/garage.test.js tests/adventure.test.js tests/index-adventure-flow.test.js` 通过，45 tests passed, 0 failed；`git diff --check` 无输出。
+- 桌面浏览器验证使用 `http://localhost:4176/index.html`。默认乐乐警车开局渲染 `警车追捕`、`adv-scene-police`、`city-chase`、3 个地标、5 个数字点、`🚓` 座驾和 `🚧` Boss。
+- 第 1 题答对中途观察到 8 条速度线、17 个粒子、1 个冲击波、`ultra-hit` 震动状态，确认按钮锁定；动画结束后清理临时效果节点，地图推进到第 2 个数字点，能量条变为 `22%`。
+- 连续答完第 5 题前，地图进入 `boss-arena`，第 5 个数字点处于 Boss ready，前 4 个数字点完成。第 5 题答对后出现 `adv-finisher` 和 `adv-finisher-burst`，终结技显示 `🚓`、`🚧` 和胜利语音文案；结束后进入唯一结果页 `5 / 5`，`本局 +15 🪙`。
+- 装备联动验证：结果页进入车库后，用本局 15 金币解锁并装备 `🚒` 消防车；下一局自动渲染 `消防救援`、`adv-scene-fire`、`fire-rescue`、`🚒`、`🔥` 和消防地标 `building-fire/hydrant/water-arc`。
+- 语音取消由静态回归测试锁定：`submitAnswer()` 在非空答案后立即 `stopSpeech()`，正确答案分支不使用 `speakQueueAfterCurrent`，Boss 延迟朗读检查 `speechEpoch`，提交后旧朗读不会复活。
+- 移动端安全由 CSS 与静态测试复检：`max-width: 420px` 和 `max-height: 700px` 均压缩 HUD/场景/地标/座驾/Boss/数字点/能量条；reduced-motion 规则保留状态推进并禁用大动画。
