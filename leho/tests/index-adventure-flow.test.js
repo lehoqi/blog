@@ -190,3 +190,19 @@ test('boss entrance and finisher use arena classes and synchronized sounds', () 
   assert.match(finisher, /playRewardRain\(\)/);
   assert.match(finisher, /adv-finisher-burst/);
 });
+
+test('ultra answer flow still stops old speech before animation and new speech', () => {
+  const submitPrefix = between('function submitAnswer() {', '\n\n  const q       = questions[currentIdx];');
+  assert.match(submitPrefix, /if \(currentAnswer === ''\) return;\s+stopSpeech\(\);/);
+
+  const correctAnswerBlock = between('  if (userAns === q.answer) {', '\n  } else {');
+  assert.match(correctAnswerBlock, /showAdventureStep/);
+  assert.match(correctAnswerBlock, /showBossFinisher/);
+  assert.match(correctAnswerBlock, /goNext\(\[line\], false\)/);
+  assert.doesNotMatch(correctAnswerBlock, /speak\(line,/);
+  assert.doesNotMatch(correctAnswerBlock, /speakQueueAfterCurrent/);
+
+  const questionSpeechBlock = between('function speakQuestionWithAdventure', '\n}\n\nfunction renderQuestion');
+  assert.match(questionSpeechBlock, /const epoch = speechEpoch;/);
+  assert.match(questionSpeechBlock, /if \(epoch !== speechEpoch\) return;/);
+});
