@@ -71,3 +71,13 @@ test('adventure HUD has layered mini-world structure', () => {
   assert.match(hudMarkup, /id="adventure-vehicle"/);
   assert.match(hudMarkup, /id="adventure-boss"/);
 });
+
+test('layered adventure HUD keeps pre-upgrade selectors compatible', () => {
+  const hudMarkup = between('<div class="adventure-hud" id="adventure-hud"', '\n    <div class="quiz-body">');
+  const renderHudBody = between('function renderAdventureHud() {', '\n}\n\nfunction generateQuestion');
+
+  if (/\$\('adventure-map'\)/.test(renderHudBody)) {
+    assert.match(hudMarkup, /id="adventure-map"/);
+  }
+  assert.match(hudMarkup, /class="adventure-route adventure-track"/);
+});
