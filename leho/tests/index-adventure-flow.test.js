@@ -184,6 +184,57 @@ test('ultra adventure animation helpers exist and are used by answer flow', () =
   assert.match(animationBlock, /Promise\.allSettled/);
 });
 
+test('correct answer uses a full-screen cinematic rush with combo escalation', () => {
+  const styleBlock = between('<style>', '\n  </style>');
+  [
+    '.adv-cinematic',
+    '.adv-cinematic-route',
+    '.adv-cinematic-vehicle',
+    '.adv-cinematic-afterimage',
+    '.adv-cinematic-speed-line',
+    '.adv-cinematic-shock',
+    '.adv-combo-4'
+  ].forEach(selector => {
+    assert.match(styleBlock, new RegExp(selector.replace('.', '\\.')), `missing cinematic CSS for ${selector}`);
+  });
+  assert.match(styleBlock, /@keyframes advCinematicVehicle/);
+  assert.match(styleBlock, /@keyframes advCinematicRoute/);
+  assert.match(styleBlock, /@keyframes advCinematicShake/);
+
+  const cinematicBlock = between('function adventureComboTier', '\nfunction showAdventureStep');
+  assert.match(cinematicBlock, /function createAdventureCinematicLayer/);
+  assert.match(cinematicBlock, /function animateAdventureCinematic/);
+  assert.match(cinematicBlock, /adventureComboTier\(streak\)/);
+  assert.match(cinematicBlock, /theme\.sceneClass/);
+  assert.match(cinematicBlock, /theme\.routeStyle/);
+  assert.match(cinematicBlock, /adv-cinematic-afterimage/);
+  assert.match(cinematicBlock, /adv-cinematic-speed-line/);
+
+  const animationBlock = between('function showAdventureStep', '\n}\n\nfunction showBossFinisher');
+  assert.match(animationBlock, /const comboTier = adventureComboTier\(streak\)/);
+  assert.match(animationBlock, /const cinematic = createAdventureCinematicLayer\(theme, vehicleEmoji, step, streak\)/);
+  assert.match(animationBlock, /animateAdventureCinematic\(cinematic, theme, vehicleFace, travelPitch, streak\)/);
+  assert.match(animationBlock, /playAdventureComboSurge\(theme\.id, streak\)/);
+});
+
+test('adventure map has persistent motion but reduced-motion disables it', () => {
+  const styleBlock = between('<style>', '\n  </style>');
+  assert.match(styleBlock, /\.adventure-scene::before/);
+  assert.match(styleBlock, /\.adventure-sky/);
+  assert.match(styleBlock, /\.adventure-landmark::after/);
+  assert.match(styleBlock, /\.adv-route-beam/);
+  assert.match(styleBlock, /\.adventure-boss/);
+  assert.match(styleBlock, /@keyframes advSkyDrift/);
+  assert.match(styleBlock, /@keyframes advRoutePulse/);
+  assert.match(styleBlock, /@keyframes advLandmarkBlink/);
+  assert.match(styleBlock, /@keyframes advBossBreathe/);
+
+  const reducedMotionBlock = between('@media (prefers-reduced-motion: reduce)', '\n    }\n\n    @media (max-width: 360px)');
+  ['.adv-cinematic', '.adventure-sky', '.adventure-landmark::after', '.adv-route-beam'].forEach(selector => {
+    assert.match(reducedMotionBlock, new RegExp(selector.replace('.', '\\.')), `reduced-motion must disable ${selector}`);
+  });
+});
+
 test('ultra adventure waits for burst effects before cleanup', () => {
   const animationBlock = between('function showAdventureStep', '\n}\n\nfunction showBossFinisher');
   assert.match(animationBlock, /const\s+effectAnims\s*=\s*\[\]/);
@@ -219,6 +270,7 @@ test('ultra adventure audio has charge, impact, boss, and reward hooks', () => {
   assert.match(audioBlock, /function playAdventureCharge/);
   assert.match(audioBlock, /function playAdventureImpact/);
   assert.match(audioBlock, /function playAdventureBoost/);
+  assert.match(audioBlock, /function playAdventureComboSurge/);
   assert.match(audioBlock, /function playBossEntranceSound/);
   assert.match(audioBlock, /function playBossHitSound/);
   assert.match(audioBlock, /function playBossDefeatSound/);
@@ -261,6 +313,11 @@ test('boss entrance and finisher use arena classes and synchronized sounds', () 
   assert.match(finisher, /playBossDefeatSound\(theme\.id\)/);
   assert.match(finisher, /playRewardRain\(\)/);
   assert.match(finisher, /adv-finisher-burst/);
+  assert.match(finisher, /adv-finisher-route/);
+  assert.match(finisher, /adv-finisher-flash/);
+  assert.match(finisher, /adv-finisher-star/);
+  assert.match(finisher, /createFinisherStars/);
+  assert.match(finisher, /playAdventureComboSurge\(theme\.id, streak\)/);
 });
 
 test('ultra answer flow still stops old speech before animation and new speech', () => {
