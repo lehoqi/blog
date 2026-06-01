@@ -2234,6 +2234,38 @@ function currentAdventureTheme() {
   return Adventure.getTheme(family);
 }
 
+const ADVENTURE_VEHICLE_POSES = [
+  { left: 7, top: 62 },
+  { left: 27, top: 49 },
+  { left: 47, top: 58 },
+  { left: 66, top: 42 },
+  { left: 84, top: 55 }
+];
+
+function adventureVehiclePose(step) {
+  const max = ADVENTURE_VEHICLE_POSES.length - 1;
+  const i = Math.max(0, Math.min(max, Math.floor(Number(step) || 0)));
+  return ADVENTURE_VEHICLE_POSES[i];
+}
+
+function adventureVehicleFace(theme) {
+  return theme && theme.id === 'adventure' ? 1 : -1;
+}
+
+function adventureVehiclePitch(fromPose, toPose, theme) {
+  const dx = toPose.left - fromPose.left;
+  const dy = toPose.top - fromPose.top;
+  const raw = Math.atan2(dy, Math.max(1, Math.abs(dx))) * 180 / Math.PI;
+  const limit = theme && theme.id === 'adventure' ? 24 : 16;
+  const tilt = raw * (theme && theme.id === 'adventure' ? 0.62 : 0.42);
+  return Math.max(-limit, Math.min(limit, tilt));
+}
+
+function adventureVehicleTransform(theme, scale = 1, pitch = 0) {
+  const face = adventureVehicleFace(theme);
+  return `translate(-50%, -50%) rotate(${pitch}deg) scaleX(${face}) scale(${scale})`;
+}
+
 function renderAdventureHud() {
   if (!window.Adventure || !adventureRun) return;
   const theme = Adventure.getTheme(adventureRun.family);
@@ -2268,16 +2300,10 @@ function renderAdventureHud() {
     dot.style.setProperty('--step-progress', i < adventureRun.step ? '1' : '0');
   });
 
-  const positions = [
-    { left: 7, top: 62 },
-    { left: 27, top: 49 },
-    { left: 47, top: 58 },
-    { left: 66, top: 42 },
-    { left: 84, top: 55 }
-  ];
-  const pos = positions[Math.min(adventureRun.step, positions.length - 1)];
+  const pos = adventureVehiclePose(adventureRun.step);
   vehicle.style.left = pos.left + '%';
   vehicle.style.top = pos.top + '%';
+  vehicle.style.transform = adventureVehicleTransform(theme);
 
   const power = Math.min(100, adventureRun.step * 22 + (adventureRun.bossShown ? 12 : 0));
   powerFill.style.width = power + '%';
@@ -2700,6 +2726,20 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
   const effects = $('adventure-effects');
   const vehicle = $('adventure-vehicle');
   const powerFill = $('adventure-power-fill');
+  const startPose = adventureVehiclePose(step);
+  const endPose = adventureVehiclePose(step + 1);
+  const vehicleFace = adventureVehicleFace(theme);
+  const travelPitch = adventureVehiclePitch(startPose, endPose, theme);
+  const dx = endPose.left - startPose.left;
+  const dy = endPose.top - startPose.top;
+  const pullPose = {
+    left: startPose.left - dx * 0.08,
+    top: startPose.top - dy * 0.08
+  };
+  const arcPose = {
+    left: startPose.left + dx * 0.58,
+    top: Math.min(startPose.top, endPose.top) - 10 - Math.min(5, Math.max(1, streak || 1))
+  };
   if (!scene || !effects || !vehicle || !powerFill) {
     setTimeout(finish, 0);
     return;
@@ -2718,6 +2758,9 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
     clearTimeout(impactTimer);
     scene.classList.remove('ultra-hit');
     tempNodes.forEach(node => node.remove());
+    vehicle.style.left = `${endPose.left}%`;
+    vehicle.style.top = `${endPose.top}%`;
+    vehicle.style.transform = adventureVehicleTransform(theme);
     finish();
   });
 
@@ -2739,20 +2782,51 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
       { transform: 'translateX(122vw) skewX(-20deg)', opacity: 0 }
     ], { duration: 520, delay: i * 22, easing: 'linear', fill: 'forwards' }).finished);
 
+    vehicle.style.left = `${startPose.left}%`;
+    vehicle.style.top = `${startPose.top}%`;
+    vehicle.style.transform = `translate(-50%, -50%) rotate(${travelPitch * -0.35}deg) scaleX(${vehicleFace}) scale(1)`;
     const vehicleAnim = vehicle.animate([
-      { transform: 'translate(-50%, -50%) scale(1) rotate(-5deg)', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.35))' },
-      { transform: 'translate(-78%, -42%) scale(0.92) rotate(-13deg)', filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.75))', offset: 0.18 },
-      { transform: 'translate(-12%, -78%) scale(1.42) rotate(14deg)', filter: 'drop-shadow(0 0 30px rgba(250,204,21,0.95))', offset: 0.48 },
-      { transform: 'translate(-44%, -36%) scale(1.13) rotate(-6deg)', filter: 'drop-shadow(0 0 22px rgba(34,197,94,0.75))', offset: 0.72 },
-      { transform: 'translate(-50%, -50%) scale(1) rotate(0deg)', filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.35))' }
-    ], { duration: 980, easing: 'cubic-bezier(.16,1,.3,1)' }).finished;
+      {
+        left: `${startPose.left}%`,
+        top: `${startPose.top}%`,
+        transform: `translate(-50%, -50%) rotate(${travelPitch * -0.35}deg) scaleX(${vehicleFace}) scale(1)`,
+        filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.35))'
+      },
+      {
+        left: `${pullPose.left}%`,
+        top: `${pullPose.top}%`,
+        transform: `translate(-50%, -50%) rotate(${travelPitch * -0.7}deg) scaleX(${vehicleFace}) scale(0.88)`,
+        filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.75))',
+        offset: 0.16
+      },
+      {
+        left: `${arcPose.left}%`,
+        top: `${arcPose.top}%`,
+        transform: `translate(-50%, -50%) rotate(${travelPitch}deg) scaleX(${vehicleFace}) scale(1.46)`,
+        filter: 'drop-shadow(0 0 32px rgba(250,204,21,0.98))',
+        offset: 0.54
+      },
+      {
+        left: `${endPose.left}%`,
+        top: `${endPose.top}%`,
+        transform: `translate(-50%, -50%) rotate(${travelPitch * 0.28}deg) scaleX(${vehicleFace}) scale(1.16)`,
+        filter: 'drop-shadow(0 0 24px rgba(34,197,94,0.82))',
+        offset: 0.80
+      },
+      {
+        left: `${endPose.left}%`,
+        top: `${endPose.top}%`,
+        transform: adventureVehicleTransform(theme),
+        filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.35))'
+      }
+    ], { duration: 1120, easing: 'cubic-bezier(.18,.78,.16,1)', fill: 'forwards' }).finished;
 
     impactTimer = setTimeout(() => {
       if (typeof playAdventureImpact === 'function') {
         playAdventureImpact(theme.id, streak);
       }
       scene.classList.add('ultra-hit');
-      const shock = createShockwave(effects, '58%', '52%');
+      const shock = createShockwave(effects, `${Math.min(94, endPose.left + 3)}%`, `${Math.max(16, endPose.top - 4)}%`);
       tempNodes.push(shock);
       const shockAnim = shock.animate([
         { transform: 'translate(-50%, -50%) scale(.2)', opacity: .95 },
@@ -2774,7 +2848,7 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
         effectAnims.push(sparkAnim.finished.catch(() => {}));
       });
       Promise.allSettled(effectAnims.slice(1)).then(resolveImpactAnims).catch(resolveImpactAnims);
-    }, 430);
+    }, 620);
 
     fallback = setTimeout(cleanup, 2100);
     Promise.allSettled([chargeAnim, vehicleAnim].concat(lineAnims, effectAnims)).then(() => setTimeout(cleanup, 120)).catch(cleanup);

@@ -192,6 +192,28 @@ test('ultra adventure waits for burst effects before cleanup', () => {
   assert.match(animationBlock, /Promise\.allSettled\(\[chargeAnim,\s*vehicleAnim\]\.concat\(lineAnims,\s*effectAnims\)\)/);
 });
 
+test('ultra vehicle rush follows route pose and faces forward', () => {
+  const helperBlock = between('const ADVENTURE_VEHICLE_POSES', '\nfunction renderAdventureHud');
+  assert.match(helperBlock, /function adventureVehiclePose\(step\)/);
+  assert.match(helperBlock, /function adventureVehicleFace\(theme\)/);
+  assert.match(helperBlock, /function adventureVehicleTransform\(theme, scale = 1, pitch = 0\)/);
+  assert.match(helperBlock, /scaleX\(\$\{face\}\)/);
+
+  const renderBlock = between('function renderAdventureHud() {', '\n}\n\nfunction generateQuestion');
+  assert.match(renderBlock, /const pos = adventureVehiclePose\(adventureRun\.step\)/);
+  assert.match(renderBlock, /vehicle\.style\.transform = adventureVehicleTransform\(theme\)/);
+
+  const animationBlock = between('function showAdventureStep', '\n}\n\nfunction showBossFinisher');
+  assert.match(animationBlock, /const startPose = adventureVehiclePose\(step\)/);
+  assert.match(animationBlock, /const endPose = adventureVehiclePose\(step \+ 1\)/);
+  assert.match(animationBlock, /const vehicleFace = adventureVehicleFace\(theme\)/);
+  assert.ok(animationBlock.includes('left: `${startPose.left}%`'), 'vehicle animation must start from current route point');
+  assert.ok(animationBlock.includes('top: `${startPose.top}%`'), 'vehicle animation must start from current route point');
+  assert.ok(animationBlock.includes('left: `${endPose.left}%`'), 'vehicle animation must end at next route point');
+  assert.ok(animationBlock.includes('top: `${endPose.top}%`'), 'vehicle animation must end at next route point');
+  assert.doesNotMatch(animationBlock, /translate\(-12%, -78%\)/, 'vehicle should not use old in-place jump transform');
+});
+
 test('ultra adventure audio has charge, impact, boss, and reward hooks', () => {
   const audioBlock = between('// ── 音效 ──', '// ── 全屏飞车动效');
   assert.match(audioBlock, /function playAdventureCharge/);
