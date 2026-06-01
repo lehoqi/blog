@@ -248,6 +248,21 @@ var _hmt = _hmt || [];
       color: #5d4037; font-size: 0.85rem; font-weight: 900;
       padding: 3px 12px; border-radius: 20px; margin-top: 6px;
     }
+    .player-trophy-strip {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      min-height: 28px; margin-top: 8px;
+      font-size: 1.15rem;
+    }
+    .player-trophy-strip.empty {
+      font-size: 0.72rem; font-weight: 800; color: #9e9e9e;
+    }
+    .player-trophy {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(180deg, #fffde7, #ffe082);
+      border: 2px solid #ffd54f;
+      filter: drop-shadow(0 2px 4px rgba(255,143,0,0.25));
+    }
 
     .btn-leaderboard {
       background: linear-gradient(135deg, #ffd54f, #ffb300);
@@ -1148,6 +1163,17 @@ var _hmt = _hmt || [];
     }
     .question-text .op { color: var(--orange); }
     .question-text .eq { color: var(--purple); }
+    .question-text .missing {
+      color: var(--red);
+      display: inline-block;
+      min-width: 0.8em;
+      text-shadow: 0 2px 0 rgba(255,255,255,0.9);
+      animation: missingPulse 1.1s ease-in-out infinite;
+    }
+    @keyframes missingPulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
     #question-text.hidden { display: none; }
 
     .quiz-progress-row {
@@ -2018,6 +2044,7 @@ var _hmt = _hmt || [];
         <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
         <div class="player-coins" id="lele-preview-coins">🪙 0</div>
         <div class="player-rank-badge" id="lele-preview-title">警车新手</div>
+        <div class="player-trophy-strip empty" id="lele-preview-trophies">还没有奖杯</div>
         <button class="btn-garage" id="btn-garage-lele" type="button">🔧 我的车库</button>
       </div>
       <div class="player-card haohao" id="pick-haohao">
@@ -2030,6 +2057,7 @@ var _hmt = _hmt || [];
         <div class="player-total-stars" id="haohao-preview-stars">⭐ 0</div>
         <div class="player-coins" id="haohao-preview-coins">🪙 0</div>
         <div class="player-rank-badge" id="haohao-preview-title">急救新手</div>
+        <div class="player-trophy-strip empty" id="haohao-preview-trophies">还没有奖杯</div>
         <button class="btn-garage" id="btn-garage-haohao" type="button">🔧 我的车库</button>
       </div>
     </div>
@@ -2145,7 +2173,7 @@ var _hmt = _hmt || [];
 
       <!-- 勋章展示柜 -->
       <div class="medal-cabinet">
-        <div class="medal-cabinet-title">🎖️ 勋章展示柜</div>
+        <div class="medal-cabinet-title">🏆 奖杯与勋章展示柜</div>
         <div class="medal-progress">已解锁 0 / 34 枚勋章</div>
         <div class="medal-grid" id="medal-grid"></div>
       </div>
@@ -2166,6 +2194,7 @@ var _hmt = _hmt || [];
 
 </div>
 
+<script src="logic/question-mix.js"></script>
 <script src="garage.js"></script>
 <script src="adventure.js"></script>
 <script>
@@ -2238,7 +2267,7 @@ function loadRecords() {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch { return []; }
 }
-function saveRecord(playerId, score, totalQ, tagScoresData) {
+function saveRecord(playerId, score, totalQ, tagScoresData, questionTypeStatsData) {
   const records = loadRecords();
   records.push({
     player: playerId,
@@ -2246,7 +2275,8 @@ function saveRecord(playerId, score, totalQ, tagScoresData) {
     total: totalQ,
     stars: scoreToStarCount(score, totalQ),
     date: new Date().toISOString(),
-    tagScores: tagScoresData || {}
+    tagScores: tagScoresData || {},
+    questionTypeStats: questionTypeStatsData || QuestionMix.buildRoundTypeStats([], {})
   });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
 }
@@ -2274,8 +2304,9 @@ function getPlayerStats(playerId) {
       }
     }
   });
+  const typeStats = QuestionMix.aggregateTypeStats(records);
 
-  return { totalStars, totalScore, games, perfectGames, streak, records, totalTagScores };
+  return { totalStars, totalScore, games, perfectGames, streak, records, totalTagScores, typeStats };
 }
 // ── 车库数据（localStorage 适配，纯逻辑在 Garage） ──
 const GARAGE_KEY = 'dino_math_garage';
@@ -2698,19 +2729,140 @@ function renderAdventureHud() {
 }
 
 function generateQuestion() {
+  const type = QuestionMix.chooseQuestionType();
+  switch (type) {
+    case 'basic':
+      return generateBasicQuestion();
+    case 'carryBorrow':
+      return generateCarryBorrowQuestion();
+    case 'missing':
+      return generateMissingQuestion();
+    case 'compare':
+      return generateCompareQuestion();
+    case 'twoStep':
+      return generateTwoStepQuestion();
+    default:
+      return generateCarryBorrowQuestion();
+  }
+}
+function attachEquation(q, parts, readEquation) {
+  return {
+    ...q,
+    equationParts: parts,
+    readEquation
+  };
+}
+function opWord(op) {
+  return op === '+' ? '加' : '减';
+}
+function makeStoryQuestion(a, b, op, type) {
   const preferTag = currentFamily();
-  const isAdd = Math.random() < 0.55;
-  if (isAdd) {
-    const a = randInt(1,15), b = randInt(1,20-a);
+  if (op === '+') {
     const storyFn = pickStory(STORIES_ADD, preferTag);
     const s = storyFn(a,b);
-    return { a, b, op:'+', answer:a+b, story: s.text, question: s.q, tag: s.tag || null };
-  } else {
-    const a = randInt(2,20), b = randInt(1,a);
-    const storyFn = pickStory(STORIES_SUB, preferTag);
-    const s = storyFn(a,b);
-    return { a, b, op:'-', answer:a-b, story: s.text, question: s.q, tag: s.tag || null };
+    return attachEquation(
+      { a, b, op:'+', answer:a+b, story: s.text, question: s.q, tag: s.tag || null, type },
+      [a, '+', b, '='],
+      `${a} 加 ${b} 等于多少？`
+    );
   }
+  const storyFn = pickStory(STORIES_SUB, preferTag);
+  const s = storyFn(a,b);
+  return attachEquation(
+    { a, b, op:'-', answer:a-b, story: s.text, question: s.q, tag: s.tag || null, type },
+    [a, '-', b, '='],
+    `${a} 减 ${b} 等于多少？`
+  );
+}
+function generateBasicQuestion() {
+  if (Math.random() < 0.55) {
+    const a = randInt(1, 9);
+    const b = randInt(1, Math.max(1, 10 - a));
+    return makeStoryQuestion(a, b, '+', 'basic');
+  }
+  const a = randInt(2, 10);
+  const b = randInt(1, a);
+  return makeStoryQuestion(a, b, '-', 'basic');
+}
+function generateCarryBorrowQuestion() {
+  if (Math.random() < 0.55) {
+    const a = randInt(6, 9);
+    const b = randInt(11 - a, 9);
+    return makeStoryQuestion(a, b, '+', 'carryBorrow');
+  }
+  const a = randInt(11, 18);
+  const b = randInt((a % 10) + 1, 9);
+  return makeStoryQuestion(a, b, '-', 'carryBorrow');
+}
+function generateMissingQuestion() {
+  const mode = randInt(0, 3);
+  if (mode === 0) {
+    const a = randInt(3, 9), b = randInt(3, 9), total = a + b;
+    return attachEquation(
+      { a, b, op:'+', answer:a, story:`小恐龙先有一些星星，又找到 ${b} 颗，合起来是 ${total} 颗，`, question:'它一开始有多少颗？', tag: currentFamily() || 'general', type:'missing' },
+      ['?', '+', b, '=', total],
+      `几加 ${b} 等于 ${total}？`
+    );
+  }
+  if (mode === 1) {
+    const a = randInt(3, 9), b = randInt(3, 9), total = a + b;
+    return attachEquation(
+      { a, b, op:'+', answer:b, story:`小恐龙先有 ${a} 颗星星，又找到一些，合起来是 ${total} 颗，`, question:'后来又找到多少颗？', tag: currentFamily() || 'general', type:'missing' },
+      [a, '+', '?', '=', total],
+      `${a} 加几等于 ${total}？`
+    );
+  }
+  if (mode === 2) {
+    const a = randInt(11, 20), b = randInt(2, 9), left = a - b;
+    return attachEquation(
+      { a, b, op:'-', answer:a, story:`救援车上原来有一些急救包，用掉 ${b} 个后还剩 ${left} 个，`, question:'原来有多少个急救包？', tag: currentFamily() || 'general', type:'missing' },
+      ['?', '-', b, '=', left],
+      `几减 ${b} 等于 ${left}？`
+    );
+  }
+  const a = randInt(11, 20), answer = randInt(2, 9), left = a - answer;
+  return attachEquation(
+    { a, b: answer, op:'-', answer, story:`小恐龙有 ${a} 颗星星，送出去一些后还剩 ${left} 颗，`, question:'它送出去了多少颗？', tag: currentFamily() || 'general', type:'missing' },
+    [a, '-', '?', '=', left],
+    `${a} 减几等于 ${left}？`
+  );
+}
+function generateCompareQuestion() {
+  const high = randInt(9, 20);
+  const low = randInt(1, high - 1);
+  const askMore = Math.random() < 0.75;
+  if (askMore) {
+    return attachEquation(
+      { a: high, b: low, op:'-', answer: high - low, story:`小恐龙有 ${high} 颗星星，小伙伴有 ${low} 颗，`, question:'小恐龙比小伙伴多多少颗？', tag: currentFamily() || 'general', type:'compare' },
+      [high, '-', low, '='],
+      `${high} 减 ${low} 等于多少？`
+    );
+  }
+  return attachEquation(
+    { a: high, b: low, op:'-', answer: high - low, story:`校车上有 ${low} 位小朋友，公交车上有 ${high} 位小朋友，`, question:'校车比公交车少多少位？', tag: currentFamily() || 'general', type:'compare' },
+    [high, '-', low, '='],
+    `${high} 减 ${low} 等于多少？`
+  );
+}
+function generateTwoStepQuestion() {
+  if (Math.random() < 0.5) {
+    const a = randInt(6, 14);
+    const b = randInt(2, Math.min(8, 20 - a));
+    const c = randInt(1, Math.min(9, a + b - 1));
+    return attachEquation(
+      { a, b, c, op:'+-', answer:a + b - c, story:`小恐龙先收集 ${a} 颗星星，又收集 ${b} 颗，后来送给朋友 ${c} 颗，`, question:'现在还剩多少颗？', tag: currentFamily() || 'general', type:'twoStep' },
+      [a, '+', b, '-', c, '='],
+      `${a} 加 ${b} 再减 ${c} 等于多少？`
+    );
+  }
+  const a = randInt(10, 20);
+  const b = randInt(1, Math.min(9, a - 1));
+  const c = randInt(1, Math.min(9, 30 - (a - b)));
+  return attachEquation(
+    { a, b, c, op:'-+', answer:a - b + c, story:`火箭带了 ${a} 桶燃料，飞行用掉 ${b} 桶，又补充 ${c} 桶，`, question:'现在有多少桶燃料？', tag: currentFamily() || 'general', type:'twoStep' },
+    [a, '-', b, '+', c, '='],
+    `${a} 减 ${b} 再加 ${c} 等于多少？`
+  );
 }
 function generateQuestions(n=10) {
   return Array.from({length:n}, generateQuestion);
@@ -2919,6 +3071,7 @@ let currentAnswer = '';
 let wrongCount    = 0;
 let correctStreak = 0;
 let tagScores     = { police: 0, ambulance: 0, general: 0, fire: 0, everyday: 0, adventure: 0 };
+let roundCorrectByIndex = {};
 
 // ── 数字键盘 ──
 function buildNumpad() {
@@ -2990,8 +3143,18 @@ const DINO_EMOJIS = ['🦕','🦖','🦕','🦖','🦕'];
 function buildReadText(q) {
   const base = q.story + q.question;
   if (!loadSpeakEquation()) return base;
-  const opWord = q.op === '+' ? '加' : '减';
-  return `${base}${q.a} ${opWord} ${q.b} 等于多少？`;
+  if (q.readEquation) return `${base}${q.readEquation}`;
+  return `${base}${q.a} ${opWord(q.op)} ${q.b} 等于多少？`;
+}
+function equationPartHtml(part) {
+  if (part === '+' || part === '-') return `<span class="op">${part}</span>`;
+  if (part === '=') return '<span class="eq">=</span>';
+  if (part === '?') return '<span class="missing">?</span>';
+  return String(part);
+}
+function equationHtml(q) {
+  const parts = q.equationParts || [q.a, q.op, q.b, '='];
+  return parts.map(equationPartHtml).join(' ');
 }
 
 function showBossEntrance(theme, vehicleEmoji, dinoEmoji, done) {
@@ -3450,7 +3613,7 @@ function renderQuestion(slideIn = true, speakNow = true, leadSpeechLines = [], a
   renderAdventureHud();
 
   $('question-story').textContent = q.story + q.question;
-  $('question-text').innerHTML    = `${q.a} <span class="op">${q.op}</span> ${q.b} <span class="eq">=</span>`;
+  $('question-text').innerHTML    = equationHtml(q);
   $('question-text').classList.toggle('hidden', !loadShowEquation());
 
   const ansEl = $('answer-display');
@@ -4239,6 +4402,7 @@ function submitAnswer() {
 
     score++;
     correctStreak++;
+    roundCorrectByIndex[currentIdx] = true;
     const qTag = q.tag || 'general';
     tagScores[qTag] = (tagScores[qTag] || 0) + 1;
     // 预览累加：结算时由 Garage.roundCoins 权威覆盖；仅在无玩家兜底路径下作为显示值
@@ -4445,12 +4609,13 @@ function showResult() {
   if (window.__resultShown) return;
   window.__resultShown = true;
   const totalQ = questions.length;
+  const questionTypeStats = QuestionMix.buildRoundTypeStats(questions, roundCorrectByIndex);
 
   let beforeSet = new Set();
   if (currentPlayer) {
     const pre = detectNewMedals(currentPlayer);
     beforeSet = pre.beforeSet;
-    saveRecord(currentPlayer, score, totalQ, { ...tagScores });
+    saveRecord(currentPlayer, score, totalQ, { ...tagScores }, questionTypeStats);
     if (!window.__roundFinalized) {
       window.__roundFinalized = true;
       window.__roundCoins = Garage.roundCoins(score, totalQ); // authoritative (incl. perfect bonus)
@@ -4592,6 +4757,12 @@ function renderResultPK() {
 const ALL_MEDALS = [
   { id: 'first_game',   icon: '🎯', label: '初次冒险',    check: st => st.games >= 1 },
   { id: 'perfect',      icon: '💯', label: '满分达人',    check: st => st.perfectGames >= 1 },
+  { id: 'trophy_streak_round', icon: '🏆', label: '五题连胜杯',  check: st => st.perfectGames >= 1 },
+  { id: 'trophy_carry_borrow', icon: '🥈', label: '进退位奖杯',  check: st => st.typeStats && st.typeStats.carryBorrow.correct >= 3 },
+  { id: 'trophy_missing',      icon: '🧩', label: '缺数奖杯',    check: st => st.typeStats && st.typeStats.missing.correct >= 1 },
+  { id: 'trophy_compare',      icon: '⚖️', label: '比较奖杯',    check: st => st.typeStats && st.typeStats.compare.correct >= 1 },
+  { id: 'trophy_two_step',     icon: '🧠', label: '推理奖杯',    check: st => st.typeStats && st.typeStats.twoStep.correct >= 1 },
+  { id: 'trophy_mixed_perfect', icon: '👑', label: '全能奖杯',   check: st => st.records && st.records.some(QuestionMix.hasMixedPerfectRound) },
   { id: 'five_games',   icon: '✋', label: '五次挑战',    check: st => st.games >= 5 },
   { id: 'ten_games',    icon: '🏃', label: '勤奋小将',    check: st => st.games >= 10 },
   { id: 'twenty_games', icon: '💪', label: '超级勤奋',    check: st => st.games >= 20 },
@@ -4625,6 +4796,13 @@ const ALL_MEDALS = [
   { id: 'adventure_10', icon: '🏁', label: '勇敢探险家',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 10 },
   { id: 'adventure_30', icon: '🛰️', label: '太空英雄',    check: st => st.totalTagScores && st.totalTagScores.adventure >= 30 },
 ];
+
+function topTrophiesForPlayer(playerId) {
+  const stats = medalStats(playerId);
+  return ALL_MEDALS
+    .filter(m => m.id.startsWith('trophy_') && m.check(stats))
+    .slice(0, 3);
+}
 
 // ── 排行榜 ──
 function renderLeaderboard() {
@@ -4757,6 +4935,12 @@ function updatePlayerPreview() {
     $(`${pid}-preview-stars`).textContent = `⭐ ${stats.totalStars}`;
     $(`${pid}-preview-coins`).textContent = `🪙 ${g.coins}`;
     $(`${pid}-preview-title`).textContent = getTitle(stats, pid);
+    const trophies = topTrophiesForPlayer(pid);
+    const trophyEl = $(`${pid}-preview-trophies`);
+    trophyEl.classList.toggle('empty', trophies.length === 0);
+    trophyEl.innerHTML = trophies.length
+      ? trophies.map(t => `<span class="player-trophy" title="${t.label}">${t.icon}</span>`).join('')
+      : '还没有奖杯';
   }
 }
 
@@ -4817,6 +5001,7 @@ function startGame() {
   score         = 0;
   correctStreak = 0;
   tagScores     = { police: 0, ambulance: 0, general: 0, fire: 0, everyday: 0, adventure: 0 };
+  roundCorrectByIndex = {};
   window.__roundCoins = 0;
   window.__roundFinalized = false;
   window.__resultShown = false;

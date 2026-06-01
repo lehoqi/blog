@@ -184,6 +184,59 @@ test('ultra adventure animation helpers exist and are used by answer flow', () =
   assert.match(animationBlock, /Promise\.allSettled/);
 });
 
+test('question generation uses weighted mixed question types without visible difficulty modes', () => {
+  assert.match(html, /<script src="logic\/question-mix\.js"><\/script>/);
+
+  const generationBlock = between('function generateQuestion()', '\nfunction generateQuestions');
+  assert.match(generationBlock, /QuestionMix\.chooseQuestionType\(\)/);
+  ['basic', 'carryBorrow', 'missing', 'compare', 'twoStep'].forEach(type => {
+    assert.match(generationBlock, new RegExp(`case '${type}'`), `missing generator branch for ${type}`);
+  });
+
+  const startGameBlock = between('function startGame() {', "\n  const introTheme");
+  assert.match(startGameBlock, /roundCorrectByIndex\s*=\s*\{\};/);
+  assert.doesNotMatch(html, /id="difficulty/);
+});
+
+test('results persist per-question-type stats and ability trophies', () => {
+  const saveRecordBlock = between('function saveRecord', '\nfunction clearRecords');
+  assert.match(saveRecordBlock, /questionTypeStats/);
+
+  const statsBlock = between('function getPlayerStats', '\n}\n\/\/ ── 车库数据');
+  assert.match(statsBlock, /QuestionMix\.aggregateTypeStats\(records\)/);
+  assert.match(statsBlock, /typeStats/);
+
+  const correctAnswerBlock = between('  if (userAns === q.answer) {', '\n  } else {');
+  assert.match(correctAnswerBlock, /roundCorrectByIndex\[currentIdx\]\s*=\s*true/);
+
+  const showResultBlock = between('function showResult() {', '\n}\n\n// ── 结果页 PK');
+  assert.match(showResultBlock, /QuestionMix\.buildRoundTypeStats\(questions, roundCorrectByIndex\)/);
+
+  const medalBlock = between('const ALL_MEDALS = [', '\n];\n\nfunction topTrophiesForPlayer');
+  [
+    'trophy_streak_round',
+    'trophy_carry_borrow',
+    'trophy_missing',
+    'trophy_compare',
+    'trophy_two_step',
+    'trophy_mixed_perfect'
+  ].forEach(id => assert.match(medalBlock, new RegExp(`id: '${id}'`), `missing trophy ${id}`));
+});
+
+test('player previews surface unlocked trophies as the child-facing reward', () => {
+  assert.match(html, /id="lele-preview-trophies"/);
+  assert.match(html, /id="haohao-preview-trophies"/);
+  assert.match(html, /奖杯与勋章展示柜/);
+
+  const trophyBlock = between('function topTrophiesForPlayer', '\n}\n\n// ── 排行榜');
+  assert.match(trophyBlock, /id\.startsWith\('trophy_'\)/);
+  assert.match(trophyBlock, /slice\(0, 3\)/);
+
+  const previewBlock = between('function updatePlayerPreview() {', '\n}\n\n// ── 编辑名字');
+  assert.match(previewBlock, /topTrophiesForPlayer\(pid\)/);
+  assert.match(previewBlock, /preview-trophies/);
+});
+
 test('correct answer uses a full-screen cinematic rush with combo escalation', () => {
   const styleBlock = between('<style>', '\n  </style>');
   [
