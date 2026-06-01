@@ -200,11 +200,13 @@ test('correct answer uses a full-screen cinematic rush with combo escalation', (
   assert.match(styleBlock, /@keyframes advCinematicVehicle/);
   assert.match(styleBlock, /@keyframes advCinematicRoute/);
   assert.match(styleBlock, /@keyframes advCinematicShake/);
+  assert.match(styleBlock, /advCinematicVehicle 1\.72s/);
 
   const cinematicBlock = between('function adventureComboTier', '\nfunction showAdventureStep');
   assert.match(cinematicBlock, /function createAdventureCinematicLayer/);
   assert.match(cinematicBlock, /function animateAdventureCinematic/);
   assert.match(cinematicBlock, /adventureComboTier\(streak\)/);
+  assert.match(cinematicBlock, /const duration = 1680 \+ comboTier \* 150/);
   assert.match(cinematicBlock, /theme\.sceneClass/);
   assert.match(cinematicBlock, /theme\.routeStyle/);
   assert.match(cinematicBlock, /adv-cinematic-afterimage/);
@@ -214,7 +216,9 @@ test('correct answer uses a full-screen cinematic rush with combo escalation', (
   assert.match(animationBlock, /const comboTier = adventureComboTier\(streak\)/);
   assert.match(animationBlock, /const cinematic = createAdventureCinematicLayer\(theme, vehicleEmoji, step, streak\)/);
   assert.match(animationBlock, /animateAdventureCinematic\(cinematic, theme, vehicleFace, travelPitch, streak\)/);
+  assert.match(animationBlock, /playAdventureCinematicSound\(theme\.id, streak\)/);
   assert.match(animationBlock, /playAdventureComboSurge\(theme\.id, streak\)/);
+  assert.match(animationBlock, /fallback = setTimeout\(cleanup, 3000\)/);
 });
 
 test('adventure map has persistent motion but reduced-motion disables it', () => {
@@ -270,12 +274,19 @@ test('ultra adventure audio has charge, impact, boss, and reward hooks', () => {
   assert.match(audioBlock, /function playAdventureCharge/);
   assert.match(audioBlock, /function playAdventureImpact/);
   assert.match(audioBlock, /function playAdventureBoost/);
+  assert.match(audioBlock, /function playAdventureCinematicSound/);
   assert.match(audioBlock, /function playAdventureComboSurge/);
   assert.match(audioBlock, /function playBossEntranceSound/);
   assert.match(audioBlock, /function playBossHitSound/);
   assert.match(audioBlock, /function playBossDefeatSound/);
   assert.match(audioBlock, /function playRewardRain/);
   assert.match(audioBlock, /try \{/);
+
+  const cinematicSoundBlock = between('function playAdventureCinematicSound', '\n}\n\nfunction playAdventureComboSurge');
+  assert.match(cinematicSoundBlock, /playNoiseBurst\(0\.42/);
+  assert.match(cinematicSoundBlock, /playTone\(260 \+ s \* 45/);
+  assert.match(cinematicSoundBlock, /playTone\(900 \+ s \* 80/);
+  assert.match(cinematicSoundBlock, /playAdventureWhoosh\(\)/);
 });
 
 test('animation audio resumes Web Audio before scheduling sounds', () => {
@@ -317,6 +328,9 @@ test('boss entrance and finisher use arena classes and synchronized sounds', () 
   assert.match(finisher, /adv-finisher-flash/);
   assert.match(finisher, /adv-finisher-star/);
   assert.match(finisher, /createFinisherStars/);
+  assert.match(finisher, /fallback = setTimeout\(cleanup, 3600\)/);
+  assert.match(finisher, /duration: 3100/);
+  assert.match(finisher, /playAdventureCinematicSound\(theme\.id, streak\)/);
   assert.match(finisher, /playAdventureComboSurge\(theme\.id, streak\)/);
 });
 

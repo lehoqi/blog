@@ -650,7 +650,7 @@ var _hmt = _hmt || [];
       overflow: hidden;
       opacity: 0;
       isolation: isolate;
-      animation: advCinematicShake 1.28s cubic-bezier(.36,.07,.19,.97) both;
+      animation: advCinematicShake 1.92s cubic-bezier(.36,.07,.19,.97) both;
     }
     .adv-cinematic::before,
     .adv-cinematic::after {
@@ -665,13 +665,13 @@ var _hmt = _hmt || [];
         radial-gradient(circle at 52% 46%, rgba(255,255,255,0.92), transparent 0 13%, rgba(255,255,255,0) 22%),
         repeating-conic-gradient(from 0deg, rgba(255,255,255,0.18) 0deg 8deg, rgba(255,255,255,0) 8deg 17deg);
       mix-blend-mode: screen;
-      animation: advCinematicRays 1.18s linear both;
+      animation: advCinematicRays 1.82s linear both;
     }
     .adv-cinematic::after {
       z-index: 1;
       background: radial-gradient(circle at 70% 42%, rgba(255,255,255,0.22), transparent 0 17%), linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.24), rgba(255,255,255,0));
       transform: translateX(-110%) skewX(-18deg);
-      animation: advCinematicFlashSweep 1.12s ease-out both;
+      animation: advCinematicFlashSweep 1.74s ease-out both;
     }
     .adv-cinematic-sky,
     .adv-cinematic-route,
@@ -709,7 +709,7 @@ var _hmt = _hmt || [];
       transform: rotate(-8deg) scaleX(0.2);
       background: linear-gradient(90deg, rgba(255,255,255,0), #22c55e 15%, #facc15 48%, #fb923c 75%, rgba(255,255,255,0.96));
       box-shadow: 0 0 26px rgba(255,255,255,0.92), 0 0 72px rgba(250,204,21,0.86);
-      animation: advCinematicRoute 1.08s cubic-bezier(.18,.78,.16,1) both;
+      animation: advCinematicRoute 1.66s cubic-bezier(.18,.78,.16,1) both;
     }
     .adv-cinematic[data-cinematic-route="city-chase"] .adv-cinematic-route {
       background: repeating-linear-gradient(90deg, rgba(17,24,39,0.05) 0 24px, #fde047 24px 38px, #111827 38px 64px);
@@ -740,7 +740,7 @@ var _hmt = _hmt || [];
       font-size: clamp(78px, 21vw, 188px);
       filter: drop-shadow(0 18px 18px rgba(0,0,0,0.35)) drop-shadow(0 0 28px rgba(255,255,255,0.86));
       transform-origin: center;
-      animation: advCinematicVehicle 1.16s cubic-bezier(.14,.82,.12,1) both;
+      animation: advCinematicVehicle 1.72s cubic-bezier(.14,.82,.12,1) both;
     }
     .adv-cinematic-boss-echo {
       z-index: 3;
@@ -749,14 +749,14 @@ var _hmt = _hmt || [];
       font-size: clamp(66px, 18vw, 150px);
       opacity: 0.5;
       filter: drop-shadow(0 0 30px rgba(239,68,68,0.74));
-      animation: advCinematicBossEcho 1.16s ease-out both;
+      animation: advCinematicBossEcho 1.72s ease-out both;
     }
     .adv-cinematic-landmark {
       z-index: 1;
       bottom: 15vh;
       transform: scale(1.65);
       opacity: 0.8;
-      animation: advCinematicLandmark 1.08s ease-out both;
+      animation: advCinematicLandmark 1.66s ease-out both;
     }
     .adv-cinematic-afterimage {
       z-index: 5;
@@ -765,7 +765,7 @@ var _hmt = _hmt || [];
       font-size: clamp(72px, 18vw, 160px);
       opacity: 0;
       filter: blur(1px) drop-shadow(0 0 24px rgba(255,255,255,0.9));
-      animation: advCinematicAfterimage 1.08s cubic-bezier(.14,.82,.12,1) both;
+      animation: advCinematicAfterimage 1.68s cubic-bezier(.14,.82,.12,1) both;
       animation-delay: var(--after-delay, 0ms);
     }
     .adv-cinematic-speed-line {
@@ -778,7 +778,7 @@ var _hmt = _hmt || [];
       background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.96), rgba(250,204,21,0.95));
       box-shadow: 0 0 22px rgba(255,255,255,0.9), 0 0 32px rgba(250,204,21,0.78);
       transform: skewX(-20deg);
-      animation: advCinematicSpeed 0.66s linear both;
+      animation: advCinematicSpeed 1.02s linear both;
       animation-delay: var(--line-delay, 0ms);
     }
     .adv-cinematic-spark {
@@ -790,7 +790,7 @@ var _hmt = _hmt || [];
       border-radius: 50%;
       background: #fff7ad;
       box-shadow: 0 0 18px #fff, 0 0 34px #fde047, 0 0 54px #fb923c;
-      animation: advCinematicSpark 0.88s cubic-bezier(.22,.72,.15,1) both;
+      animation: advCinematicSpark 1.22s cubic-bezier(.22,.72,.15,1) both;
       animation-delay: var(--spark-delay, 0ms);
     }
     .adv-cinematic-shock {
@@ -807,13 +807,13 @@ var _hmt = _hmt || [];
       opacity: 0;
       transform: translate(-50%, -50%) scale(.2);
       animation: advCinematicShock 0.72s ease-out both;
-      animation-delay: 620ms;
+      animation-delay: 900ms;
     }
     .adv-cinematic-flash {
       z-index: 8;
       inset: 0;
       background: rgba(255,255,255,0);
-      animation: advCinematicFlash 1.16s ease-out both;
+      animation: advCinematicFlash 1.82s ease-out both;
     }
     .adv-cinematic.adv-combo-2 .adv-cinematic-vehicle { font-size: clamp(86px, 22vw, 198px); }
     .adv-cinematic.adv-combo-3 .adv-cinematic-route { height: clamp(28px, 5.8vw, 70px); }
@@ -947,7 +947,7 @@ var _hmt = _hmt || [];
     }
     .adv-finisher {
       background: radial-gradient(circle at 50% 45%, rgba(255,245,157,0.92), rgba(255,112,67,0.62) 42%, rgba(49,27,146,0.72));
-      animation: advFinisherQuake 2.35s cubic-bezier(.36,.07,.19,.97) both;
+      animation: advFinisherQuake 3.25s cubic-bezier(.36,.07,.19,.97) both;
     }
     .adv-finisher-rift,
     .adv-finisher-route,
@@ -967,7 +967,7 @@ var _hmt = _hmt || [];
       transform: translate(-50%, -50%);
       background: conic-gradient(from 0deg, rgba(34,211,238,0), rgba(34,211,238,0.64), rgba(250,204,21,0.76), rgba(244,114,182,0.62), rgba(34,211,238,0));
       box-shadow: 0 0 90px rgba(255,255,255,0.64), inset 0 0 72px rgba(49,27,146,0.38);
-      animation: advFinisherRift 2.1s linear both;
+      animation: advFinisherRift 3.05s linear both;
     }
     .adv-finisher-route {
       left: -20vw;
@@ -979,12 +979,12 @@ var _hmt = _hmt || [];
       transform: rotate(-11deg) scaleX(.1);
       background: linear-gradient(90deg, rgba(255,255,255,0), #22d3ee, #fde047, #fb923c, rgba(255,255,255,0.96));
       box-shadow: 0 0 44px rgba(255,255,255,0.98), 0 0 96px rgba(250,204,21,0.9);
-      animation: advFinisherRoute 2.1s cubic-bezier(.18,.78,.16,1) both;
+      animation: advFinisherRoute 3.05s cubic-bezier(.18,.78,.16,1) both;
     }
     .adv-finisher-flash {
       inset: 0;
       background: rgba(255,255,255,0);
-      animation: advFinisherFlash 2.1s ease-out both;
+      animation: advFinisherFlash 3.05s ease-out both;
     }
     .adv-finisher-burst {
       position: absolute;
@@ -1006,7 +1006,7 @@ var _hmt = _hmt || [];
       background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.98), rgba(250,204,21,0.92));
       box-shadow: 0 0 24px rgba(255,255,255,0.96);
       transform: skewX(-22deg);
-      animation: advFinisherSpeed 0.78s linear both;
+      animation: advFinisherSpeed 1.08s linear both;
       animation-delay: var(--line-delay, 0ms);
     }
     .adv-finisher-star {
@@ -1015,7 +1015,7 @@ var _hmt = _hmt || [];
       font-size: var(--star-size, 26px);
       opacity: 0;
       filter: drop-shadow(0 0 12px rgba(255,255,255,0.95));
-      animation: advFinisherStarRain 1.2s cubic-bezier(.22,.72,.15,1) both;
+      animation: advFinisherStarRain 1.55s cubic-bezier(.22,.72,.15,1) both;
       animation-delay: var(--star-delay, 0ms);
     }
     .adv-finisher-vehicle,
@@ -1030,14 +1030,14 @@ var _hmt = _hmt || [];
       top: 44%;
       font-size: clamp(62px, 18vw, 126px);
       filter: drop-shadow(0 11px 12px rgba(0,0,0,0.30));
-      animation: advVehicleStrike 2.1s cubic-bezier(.22,.72,.15,1) both;
+      animation: advVehicleStrike 3.05s cubic-bezier(.22,.72,.15,1) both;
     }
     .adv-finisher-boss {
       right: 12%;
       top: 38%;
       font-size: clamp(78px, 22vw, 150px);
       filter: drop-shadow(0 11px 12px rgba(0,0,0,0.30));
-      animation: advBossDefeat 2.1s ease-in both;
+      animation: advBossDefeat 3.05s ease-in both;
     }
     .adv-finisher-text {
       left: 50%;
@@ -1049,7 +1049,7 @@ var _hmt = _hmt || [];
       font-weight: 900;
       color: #fff;
       text-shadow: 0 4px 0 rgba(183,28,28,0.55), 0 0 18px rgba(255,214,0,0.75);
-      animation: advTextPop 2.1s cubic-bezier(.34,1.56,.64,1) both;
+      animation: advTextPop 3.05s cubic-bezier(.34,1.56,.64,1) both;
     }
     @keyframes advVehicleStrike {
       0% { transform: translate(-58vw, 18vh) scale(0.55) rotate(-18deg); opacity: 0; }
@@ -3161,7 +3161,7 @@ function createAdventureCinematicLayer(theme, vehicleEmoji, step, streak) {
 
 function animateAdventureCinematic(cinematic, theme, vehicleFace, travelPitch, streak) {
   const comboTier = adventureComboTier(streak);
-  const duration = 1080 + comboTier * 90;
+  const duration = 1680 + comboTier * 150;
   cinematic.overlay.style.setProperty('--vehicle-face', vehicleFace);
   cinematic.overlay.style.setProperty('--travel-pitch', `${travelPitch}deg`);
   cinematic.overlay.style.setProperty('--combo-tier', comboTier);
@@ -3228,6 +3228,9 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
     if (typeof playAdventureCharge === 'function') {
       playAdventureCharge(theme.id, streak);
     }
+    if (typeof playAdventureCinematicSound === 'function') {
+      playAdventureCinematicSound(theme.id, streak);
+    }
     if (comboTier >= 2 && typeof playAdventureComboSurge === 'function') {
       playAdventureComboSurge(theme.id, streak);
     }
@@ -3247,7 +3250,7 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
       { transform: 'translateX(0) skewX(-20deg)', opacity: 0 },
       { transform: 'translateX(92vw) skewX(-20deg)', opacity: 1, offset: 0.22 },
       { transform: 'translateX(122vw) skewX(-20deg)', opacity: 0 }
-    ], { duration: 520, delay: i * 22, easing: 'linear', fill: 'forwards' }).finished);
+    ], { duration: 820, delay: i * 28, easing: 'linear', fill: 'forwards' }).finished);
 
     vehicle.style.left = `${startPose.left}%`;
     vehicle.style.top = `${startPose.top}%`;
@@ -3286,7 +3289,7 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
         transform: adventureVehicleTransform(theme),
         filter: 'drop-shadow(0 8px 10px rgba(0,0,0,0.35))'
       }
-    ], { duration: 1120, easing: 'cubic-bezier(.18,.78,.16,1)', fill: 'forwards' }).finished;
+    ], { duration: 1660, easing: 'cubic-bezier(.18,.78,.16,1)', fill: 'forwards' }).finished;
 
     impactTimer = setTimeout(() => {
       if (typeof playAdventureImpact === 'function') {
@@ -3298,7 +3301,7 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
       const shockAnim = shock.animate([
         { transform: 'translate(-50%, -50%) scale(.2)', opacity: .95 },
         { transform: 'translate(-50%, -50%) scale(4.2)', opacity: 0 }
-      ], { duration: 740, easing: 'ease-out', fill: 'forwards' });
+      ], { duration: 1040, easing: 'ease-out', fill: 'forwards' });
       effectAnims.push(shockAnim.finished.catch(() => {}));
       const sparks = createAdventureBurst(effects, Math.min(30, 14 + Math.max(1, streak || 1) * 3), 'adv-spark');
       tempNodes.push(...sparks);
@@ -3311,13 +3314,13 @@ function showAdventureStep(theme, vehicleEmoji, dinoEmoji, step, streak, done) {
           { transform: 'translate(-50%, -50%) scale(.2)', opacity: 0 },
           { transform: 'translate(-50%, -50%) scale(1.3)', opacity: 1, offset: .2 },
           { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0)`, opacity: 0 }
-        ], { duration: 720 + Math.random() * 300, delay: i * 14, easing: 'cubic-bezier(.22,.72,.15,1)', fill: 'forwards' });
+        ], { duration: 980 + Math.random() * 360, delay: i * 18, easing: 'cubic-bezier(.22,.72,.15,1)', fill: 'forwards' });
         effectAnims.push(sparkAnim.finished.catch(() => {}));
       });
       Promise.allSettled(effectAnims.slice(1)).then(resolveImpactAnims).catch(resolveImpactAnims);
-    }, 620);
+    }, 900);
 
-    fallback = setTimeout(cleanup, 2100);
+    fallback = setTimeout(cleanup, 3000);
     Promise.allSettled([chargeAnim, vehicleAnim].concat(lineAnims, effectAnims)).then(() => setTimeout(cleanup, 120)).catch(cleanup);
   } catch (e) {
     cleanup();
@@ -3353,6 +3356,7 @@ function showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done) {
   const finish = onceDone(done);
   const comboTier = adventureComboTier(streak);
   playBossHitSound(theme.id);
+  playAdventureCinematicSound(theme.id, streak);
   playAdventureComboSurge(theme.id, streak);
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     playBossDefeatSound(theme.id);
@@ -3389,15 +3393,15 @@ function showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done) {
     document.body.appendChild(overlay);
     createFinisherStars(overlay, 24 + comboTier * 8);
 
-    defeatTimer = setTimeout(() => playBossDefeatSound(theme.id), 650);
-    rewardTimer = setTimeout(() => playRewardRain(), 1150);
-    fallback = setTimeout(cleanup, 2600);
+    defeatTimer = setTimeout(() => playBossDefeatSound(theme.id), 950);
+    rewardTimer = setTimeout(() => playRewardRain(), 1700);
+    fallback = setTimeout(cleanup, 3600);
     overlay.animate([
       { opacity: 0 },
       { opacity: 1, offset: 0.12 },
       { opacity: 1, offset: 0.82 },
       { opacity: 0 }
-    ], { duration: 2200, easing: 'ease-in-out', fill: 'forwards' }).finished.then(cleanup).catch(cleanup);
+    ], { duration: 3100, easing: 'ease-in-out', fill: 'forwards' }).finished.then(cleanup).catch(cleanup);
   } catch (e) {
     cleanup();
   }
@@ -3679,6 +3683,26 @@ function playAdventureBoost(family, streak) {
   if (family === 'ambulance') playTone(700, 'sine', 0.16, 0.05, 0.10);
   if (family === 'fire') playNoiseBurst(0.18, 0.07, 0.08);
   if (family === 'adventure') playTone(1180, 'sawtooth', 0.18, 0.055, 0.10);
+}
+
+function playAdventureCinematicSound(family, streak) {
+  try {
+    const s = Math.max(1, Math.min(5, streak || 1));
+    playNoiseBurst(0.42, 0.09 + s * 0.012, 0);
+    playTone(260 + s * 45, 'sawtooth', 0.42, 0.09 + s * 0.012, 0.02);
+    playTone(420 + s * 58, 'triangle', 0.52, 0.07 + s * 0.01, 0.18);
+    playTone(640 + s * 70, 'sawtooth', 0.50, 0.06 + s * 0.008, 0.48);
+    playTone(900 + s * 80, 'square', 0.18, 0.09, 0.92);
+    playNoiseBurst(0.34, 0.12 + s * 0.01, 0.88);
+    playTone(1140 + s * 110, 'triangle', 0.22, 0.07, 1.18);
+    if (family === 'fire') {
+      playNoiseBurst(0.30, 0.10, 0.26);
+      playFireBell();
+    }
+    if (family === 'ambulance') playTone(760, 'sine', 0.24, 0.06, 0.36);
+    if (family === 'everyday') playEverydayHorn();
+    if (family === 'adventure') playAdventureWhoosh();
+  } catch (e) {}
 }
 
 function playAdventureComboSurge(family, streak) {
