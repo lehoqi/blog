@@ -2839,7 +2839,7 @@ function generateCompareQuestion() {
     );
   }
   return attachEquation(
-    { a: high, b: low, op:'-', answer: high - low, story:`校车上有 ${low} 位小朋友，公交车上有 ${high} 位小朋友，`, question:'校车比公交车少多少位？', tag: currentFamily() || 'general', type:'compare' },
+    { a: high, b: low, op:'-', answer: high - low, story:`校车上有 ${low} 位小朋友，公交车上有 ${high} 位小朋友，`, question:'公交车比校车多多少位？', tag: currentFamily() || 'general', type:'compare' },
     [high, '-', low, '='],
     `${high} 减 ${low} 等于多少？`
   );
@@ -4381,6 +4381,14 @@ function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
   requestAnimationFrame(render);
 }
 
+function answerHintRange(q) {
+  const answer = Math.max(0, Math.floor(Number(q && q.answer) || 0));
+  return {
+    min: Math.max(0, answer - 3),
+    max: answer + 3
+  };
+}
+
 // ── 提交答案 ──
 function submitAnswer() {
   if (inputLocked) return;
@@ -4500,8 +4508,9 @@ function submitAnswer() {
       fb.textContent = `${pName} 哎呀，再想想！加油！`;
       speak('哎呀，再想想，加油！');
     } else if (wrongCount === 2) {
-      fb.textContent = `${pName} 提示：答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`;
-      speak(`提示一下，答案在 ${Math.max(0,q.answer-3)} 到 ${Math.min(20,q.answer+3)} 之间哦！`);
+      const hintRange = answerHintRange(q);
+      fb.textContent = `${pName} 提示：答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`;
+      speak(`提示一下，答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`);
     } else {
       fb.textContent = `${pName} 正确答案是 ${q.answer}，再试一次！`;
       speak(`正确答案是 ${q.answer}，再试一次，你可以的！`);

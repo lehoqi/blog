@@ -237,6 +237,21 @@ test('player previews surface unlocked trophies as the child-facing reward', () 
   assert.match(previewBlock, /preview-trophies/);
 });
 
+test('mixed question wording keeps comparison direction aligned with shown equation', () => {
+  const compareBlock = between('function generateCompareQuestion()', '\nfunction generateTwoStepQuestion');
+  assert.doesNotMatch(compareBlock, /校车比公交车少多少位/);
+  assert.match(compareBlock, /公交车比校车多多少位/);
+});
+
+test('wrong-answer hint range is not capped to the old 20以内 question set', () => {
+  const wrongAnswerBlock = between('  } else {\n    wrongCount++;', '\n  }\n}\n\n// B1');
+  assert.doesNotMatch(wrongAnswerBlock, /Math\.min\(20,\s*q\.answer\+3\)/);
+  assert.match(wrongAnswerBlock, /answerHintRange\(q\)/);
+
+  const hintBlock = between('function answerHintRange(q) {', '\n}\n\n// ── 提交答案 ──');
+  assert.match(hintBlock, /answer \+ 3/);
+});
+
 test('correct answer uses a full-screen cinematic rush with combo escalation', () => {
   const styleBlock = between('<style>', '\n  </style>');
   [
