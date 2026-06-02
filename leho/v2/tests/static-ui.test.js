@@ -110,3 +110,14 @@ test('garage UI reads and persists Garage catalog state', () => {
     'btn-garage-back'
   ].forEach(pattern => assert.match(ui, new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${pattern}`));
 });
+
+test('responsive css covers required v2 viewport constraints', () => {
+  const arcade = read('styles/arcade.css');
+  const base = read('styles/base.css');
+  assert.match(arcade, /@media\s*\(max-width:\s*380px\)/);
+  assert.match(arcade, /@media\s*\(max-height:\s*430px\)/);
+  assert.match(arcade, /@media\s*\(min-width:\s*900px\)/);
+  assert.match(arcade, /"stage question"/);
+  assert.match(arcade, /"stage controls"/);
+  assert.match(base, /min-height:\s*100svh/);
+});

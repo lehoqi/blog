@@ -95,3 +95,52 @@
 .garage-cell.afford { outline: 3px solid var(--yellow); }
 .garage-cell.equipped { outline: 4px solid var(--green); }
 .garage-emoji { font-size: 36px; }
+@media (max-width: 380px) {
+  .page { padding: 10px; }
+  .page-game {
+    grid-template-rows: auto 92px auto auto auto;
+    gap: 6px;
+  }
+  .adventure-stage { min-height: 92px; border-radius: 14px; }
+  #question-story { font-size: 17px; }
+  #question-equation { font-size: 30px; }
+  .numpad { gap: 5px; max-width: 230px; }
+  .numpad button { min-height: 34px; font-size: 18px; }
+  .submit { min-width: 140px; padding: 10px 20px; }
+}
+
+@media (max-height: 430px) {
+  .page-game {
+    grid-template-columns: minmax(220px, 1fr) minmax(280px, 1.15fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "top top"
+      "stage question"
+      "stage controls";
+    align-items: stretch;
+  }
+  .game-topbar { grid-area: top; }
+  .adventure-stage { grid-area: stage; min-height: 210px; }
+  .question-panel { grid-area: question; }
+  .numpad { grid-area: controls; max-width: 300px; }
+  .submit { grid-column: 2; justify-self: center; }
+}
+
+@media (min-width: 900px) {
+  .page-game {
+    grid-template-columns: minmax(380px, 0.95fr) minmax(420px, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "top top"
+      "stage question"
+      "stage controls";
+    gap: 18px;
+    padding: 28px;
+  }
+  .game-topbar { grid-area: top; }
+  .adventure-stage { grid-area: stage; min-height: 420px; }
+  .question-panel { grid-area: question; align-self: end; }
+  .numpad { grid-area: controls; align-self: start; }
+  .submit { grid-column: 2; justify-self: center; }
+  .stage-vehicle, .stage-boss { font-size: 96px; }
+}
