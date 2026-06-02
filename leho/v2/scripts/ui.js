@@ -134,6 +134,26 @@
     });
   }
 
+  function renderTrophyHall() {
+    const hall = $('trophy-hall');
+    const groups = [
+      { title: '能力奖杯', filter: a => a.kind === 'trophy' },
+      { title: '长期勋章', filter: a => a.kind === 'medal' }
+    ];
+    hall.innerHTML = groups.map(group => {
+      const awards = root.V2Rewards.AWARDS.filter(group.filter);
+      return `<section class="trophy-group">
+        <h3>${group.title}</h3>
+        <div class="trophy-grid">
+          ${awards.map(a => `<div class="trophy-card ${a.kind}" data-award="${a.id}">
+            <span>${a.icon}</span>
+            <strong>${a.label}</strong>
+          </div>`).join('')}
+        </div>
+      </section>`;
+    }).join('');
+  }
+
   function init() {
     initNumpad();
     $('btn-start').addEventListener('click', () => setPage('page-player'));
@@ -146,12 +166,12 @@
       $('btn-toggle-voice').textContent = muted ? '🔇' : '🔊';
     });
     $('btn-again').addEventListener('click', () => startRound(currentPlayerId));
-    $('btn-open-trophies').addEventListener('click', () => setPage('page-trophies'));
-    $('btn-result-trophies').addEventListener('click', () => setPage('page-trophies'));
+    $('btn-open-trophies').addEventListener('click', () => { renderTrophyHall(); setPage('page-trophies'); });
+    $('btn-result-trophies').addEventListener('click', () => { renderTrophyHall(); setPage('page-trophies'); });
     $('btn-trophies-back').addEventListener('click', () => setPage('page-home'));
   }
 
-  root.V2UI = { setPage, initNumpad, startRound, renderQuestion, submitCurrentAnswer, renderResult, init };
+  root.V2UI = { setPage, initNumpad, startRound, renderQuestion, submitCurrentAnswer, renderResult, renderTrophyHall, init };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })(typeof window !== 'undefined' ? window : globalThis);

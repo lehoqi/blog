@@ -36,3 +36,26 @@
 .submit { justify-self: center; min-width: 180px; }
 .page-result, .page-trophies { place-items: center; background: linear-gradient(180deg, #11386a, #351366); color: white; }
 .result-award-stage, .trophy-hall { width: min(680px, 100%); border-radius: 22px; padding: 20px; background: rgba(255,255,255,.12); box-shadow: var(--shadow); text-align: center; }
+.award-chip,
+.highlight-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.9);
+  color: var(--ink);
+  font-weight: 900;
+}
+.award-chip.trophy {
+  font-size: 1.15rem;
+  background: linear-gradient(180deg, #fff176, #ffc83d);
+  box-shadow: 0 8px 24px rgba(255, 212, 71, .42);
+}
+.award-chip.medal { opacity: .9; }
+.trophy-group { width: 100%; margin: 0 0 18px; }
+.trophy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+.trophy-card { min-height: 96px; display: grid; place-items: center; border-radius: 16px; padding: 10px; background: rgba(255,255,255,.14); }
+.trophy-card.trophy { outline: 3px solid rgba(255, 212, 71, .8); }
+.trophy-card span { font-size: 34px; }

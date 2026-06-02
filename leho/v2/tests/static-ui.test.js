@@ -86,3 +86,13 @@ test('ui module wires gameplay render and submit functions', () => {
     'V2Speech.createSpeechController'
   ].forEach(pattern => assert.match(ui, new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${pattern}`));
 });
+
+test('result UI renders awards before highlights and trophy hall groups', () => {
+  const ui = read('scripts/ui.js');
+  const awardIndex = ui.indexOf("result-awards");
+  const highlightIndex = ui.indexOf("result-highlights");
+  assert.ok(awardIndex !== -1 && highlightIndex !== -1 && awardIndex < highlightIndex);
+  assert.match(ui, /function renderTrophyHall/);
+  assert.match(ui, /award-chip trophy/);
+  assert.match(ui, /award-chip medal/);
+});
