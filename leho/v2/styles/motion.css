@@ -24,3 +24,13 @@
     scroll-behavior: auto !important;
   }
 }
+.combo-tier-1 .stage-energy { filter: brightness(1); }
+.combo-tier-2 .stage-energy { filter: brightness(1.15); }
+.combo-tier-3 .stage-energy { filter: brightness(1.35) drop-shadow(0 0 16px rgba(255,255,255,.55)); }
+.combo-tier-4 .stage-energy { filter: brightness(1.6) drop-shadow(0 0 24px rgba(255,212,71,.9)); }
+.combo-tier-5 .stage-energy { filter: brightness(1.9) drop-shadow(0 0 34px rgba(255,138,42,1)); }
+.motion-finisher .stage-boss { transform: scale(1.28) rotate(-8deg); opacity: .25; transition: transform 650ms ease, opacity 650ms ease; }
+.feedback-carryBorrow .stage-vehicle { filter: drop-shadow(0 0 26px rgba(255, 138, 42, .95)); }
+.feedback-missing #question-equation { outline: 4px solid rgba(255, 212, 71, .75); outline-offset: 6px; border-radius: 14px; }
+.feedback-compare .stage-route::after { content: ""; position: absolute; left: 42%; right: 18%; top: -8px; height: 26px; border-radius: 999px; background: rgba(255, 255, 255, .72); }
+.feedback-twoStep .stage-energy { box-shadow: 0 0 32px rgba(255, 255, 255, .95), 0 0 52px rgba(255, 138, 42, .8); }
