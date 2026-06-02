@@ -1,0 +1,38 @@
+.page-home {
+  place-items: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255, 244, 122, 0.9), transparent 24%),
+    linear-gradient(180deg, #36b5ff 0%, #7ed957 45%, #194c7d 100%);
+}
+.home-racetrack {
+  position: absolute;
+  inset: 42% -20% -10%;
+  background: linear-gradient(90deg, transparent 47%, rgba(255,255,255,.8) 49%, transparent 51%),
+              linear-gradient(180deg, #2f3640, #121820);
+  transform: perspective(520px) rotateX(58deg);
+}
+.home-players, .icon-actions { position: relative; z-index: 1; }
+.home-combo { font-size: clamp(54px, 12vw, 120px); filter: drop-shadow(0 14px 12px rgba(0,0,0,.28)); }
+.page-home h1 { position: relative; z-index: 1; font-size: clamp(34px, 8vw, 76px); margin: 0; }
+.player-grid { display: grid; grid-template-columns: repeat(2, minmax(130px, 260px)); gap: 18px; justify-content: center; }
+.player-stand { border: 0; border-radius: 20px; padding: 18px; background: var(--panel); box-shadow: var(--shadow); }
+.player-combo { display: block; font-size: clamp(48px, 10vw, 90px); }
+.page-game { grid-template-rows: auto minmax(110px, 28vh) auto auto auto; gap: 10px; background: #102c54; }
+.game-topbar { display: flex; justify-content: space-between; color: white; font-weight: 900; }
+.adventure-stage { position: relative; overflow: hidden; border-radius: 18px; min-height: 110px; box-shadow: var(--shadow); }
+.stage-vehicle, .stage-boss { position: absolute; font-size: clamp(38px, 9vw, 88px); z-index: 3; }
+.stage-vehicle { left: 8%; bottom: 18%; }
+.stage-boss { right: 10%; top: 18%; }
+.stage-energy { position: absolute; left: 16px; right: 16px; bottom: 12px; height: 12px; border-radius: 999px; background: rgba(255,255,255,.32); overflow: hidden; }
+#stage-energy-fill { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #65ff7a, #fff176, #ff8a2a); }
+.question-panel { background: var(--panel); border-radius: 18px; padding: 14px; text-align: center; box-shadow: var(--shadow); }
+#question-story { margin: 0 0 8px; font-size: clamp(18px, 4.7vw, 28px); font-weight: 800; }
+#question-equation { font-size: clamp(30px, 9vw, 58px); font-weight: 900; }
+.answer-row { display: flex; justify-content: center; align-items: center; gap: 10px; }
+#answer-display { min-width: 84px; min-height: 44px; border-radius: 14px; background: white; border: 3px solid var(--blue); font-size: 32px; font-weight: 900; }
+.numpad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; max-width: 360px; width: 100%; margin: 0 auto; }
+.numpad button { min-height: 46px; border: 0; border-radius: 14px; background: #fff; box-shadow: 0 5px 0 #9db3c7; font-weight: 900; font-size: 22px; }
+.submit { justify-self: center; min-width: 180px; }
+.page-result, .page-trophies { place-items: center; background: linear-gradient(180deg, #11386a, #351366); color: white; }
+.result-award-stage, .trophy-hall { width: min(680px, 100%); border-radius: 22px; padding: 20px; background: rgba(255,255,255,.12); box-shadow: var(--shadow); text-align: center; }

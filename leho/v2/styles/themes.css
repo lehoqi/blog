@@ -1,0 +1,18 @@
+.theme-police { background: linear-gradient(135deg, #071a3c, #1363df); }
+.theme-ambulance { background: linear-gradient(135deg, #073b2f, #19d18f); }
+.theme-fire { background: linear-gradient(135deg, #4b1208, #ff6a1a); }
+.theme-everyday { background: linear-gradient(135deg, #1f6aa5, #ffd45c); }
+.theme-adventure { background: radial-gradient(circle at 65% 20%, #9f7bff, transparent 22%), linear-gradient(135deg, #150b35, #2858ff); }
+.theme-police .stage-route,
+.theme-ambulance .stage-route,
+.theme-fire .stage-route,
+.theme-everyday .stage-route,
+.theme-adventure .stage-route {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 54%;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.55);
+}

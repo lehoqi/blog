@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小恐龙数学冒险 V2</title>
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/arcade.css">
+  <link rel="stylesheet" href="styles/themes.css">
+  <link rel="stylesheet" href="styles/motion.css">
+</head>
+<body>
+  <main class="app-shell" id="app-shell">
+    <section class="page page-home active" id="page-home" data-page="home">
+      <div class="home-racetrack" aria-hidden="true"></div>
+      <div class="home-players" aria-hidden="true">
+        <span class="home-combo">🚓🦕</span>
+        <span class="home-combo">🚑🦖</span>
+      </div>
+      <h1>小恐龙数学冒险</h1>
+      <button class="arcade-primary" id="btn-start" type="button">开始冒险</button>
+      <div class="icon-actions">
+        <button id="btn-open-trophies" type="button" aria-label="奖杯大厅">🏆</button>
+        <button id="btn-toggle-voice" type="button" aria-label="静音">🔊</button>
+      </div>
+    </section>
+
+    <section class="page page-player" id="page-player" data-page="player" aria-hidden="true">
+      <h2>选择出赛车手</h2>
+      <div class="player-grid">
+        <button class="player-stand" id="player-lele" type="button" data-player="lele">
+          <span class="player-combo" id="lele-combo">🚓🦕</span>
+          <strong id="lele-name">乐乐</strong>
+          <span id="lele-stats">⭐ 0 · 🪙 0</span>
+          <span class="mini-trophies" id="lele-trophies">还没有奖杯</span>
+        </button>
+        <button class="player-stand" id="player-haohao" type="button" data-player="haohao">
+          <span class="player-combo" id="haohao-combo">🚑🦖</span>
+          <strong id="haohao-name">昊昊</strong>
+          <span id="haohao-stats">⭐ 0 · 🪙 0</span>
+          <span class="mini-trophies" id="haohao-trophies">还没有奖杯</span>
+        </button>
+      </div>
+      <button id="btn-open-garage" type="button">我的车库</button>
+    </section>
+
+    <section class="page page-game" id="page-game" data-page="game" aria-hidden="true">
+      <header class="game-topbar">
+        <span id="round-player">乐乐</span>
+        <span id="round-progress">1 / 5</span>
+        <span id="round-score">⭐ 0</span>
+      </header>
+      <div class="adventure-stage theme-adventure" id="adventure-stage">
+        <div class="stage-sky" id="stage-sky" aria-hidden="true"></div>
+        <div class="stage-route" id="stage-route" aria-hidden="true"></div>
+        <span class="stage-vehicle" id="stage-vehicle">🚀🦕</span>
+        <span class="stage-boss" id="stage-boss">☄️</span>
+        <div class="stage-energy" aria-hidden="true"><span id="stage-energy-fill"></span></div>
+      </div>
+      <article class="question-panel" id="question-panel">
+        <p id="question-story"></p>
+        <div id="question-equation" aria-label="算式"></div>
+        <div class="answer-row">
+          <span id="answer-display" aria-live="polite"></span>
+          <button id="btn-clear" type="button">删除</button>
+        </div>
+        <p id="feedback-message" aria-live="polite"></p>
+      </article>
+      <div class="numpad" id="numpad" aria-label="数字键盘"></div>
+      <button class="arcade-primary submit" id="btn-submit" type="button">OK</button>
+    </section>
+
+    <section class="page page-result" id="page-result" data-page="result" aria-hidden="true">
+      <div class="result-award-stage" id="result-award-stage">
+        <span id="result-combo">🦕</span>
+        <h2 id="result-title">冒险完成</h2>
+        <div id="result-score">0 / 5</div>
+        <div id="result-stars"></div>
+        <div id="result-coins"></div>
+        <div id="result-awards"></div>
+        <div id="result-highlights"></div>
+      </div>
+      <button class="arcade-primary" id="btn-again" type="button">再来一次</button>
+      <button id="btn-result-garage" type="button">去车库</button>
+      <button id="btn-result-trophies" type="button">奖杯大厅</button>
+    </section>
+
+    <section class="page page-garage" id="page-garage" data-page="garage" aria-hidden="true">
+      <h2><span id="garage-player-name">乐乐</span>的车库</h2>
+      <div class="garage-wallet">🪙 <span id="garage-coins">0</span></div>
+      <div class="garage-grid" id="garage-grid"></div>
+      <p id="garage-message" aria-live="polite"></p>
+      <button id="btn-garage-back" type="button">返回</button>
+    </section>
+
+    <section class="page page-trophies" id="page-trophies" data-page="trophies" aria-hidden="true">
+      <h2>奖杯与成就大厅</h2>
+      <div class="trophy-hall" id="trophy-hall"></div>
+      <button id="btn-trophies-back" type="button">返回</button>
+    </section>
+  </main>
+
+  <script src="../logic/question-mix.js"></script>
+  <script src="../garage.js"></script>
+  <script src="../adventure.js"></script>
+  <script src="scripts/questions.js"></script>
+  <script src="scripts/themes.js"></script>
+  <script src="scripts/rewards.js"></script>
+  <script src="scripts/game-state.js"></script>
+  <script src="scripts/storage.js"></script>
+  <script src="scripts/motion.js"></script>
+  <script src="scripts/speech.js"></script>
+  <script src="scripts/ui.js"></script>
+</body>
+</html>

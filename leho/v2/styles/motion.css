@@ -1,0 +1,26 @@
+@keyframes v2Pulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.04); }
+}
+@keyframes v2CorrectDash {
+  0% { transform: translateX(0) scale(1); }
+  70% { transform: translateX(42vw) scale(1.16); }
+  100% { transform: translateX(0) scale(1); }
+}
+@keyframes v2WrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-6px); }
+}
+.home-combo { animation: v2Pulse 2.4s ease-in-out infinite; }
+.motion-correct .stage-vehicle { animation: v2CorrectDash 1100ms cubic-bezier(.22,1,.36,1); }
+.motion-wrong .question-panel { animation: v2WrongShake 420ms ease-in-out; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
