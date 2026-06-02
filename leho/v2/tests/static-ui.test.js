@@ -68,3 +68,21 @@ test('v2 css files are linked and define reduced motion support', () => {
   const motionCss = read('styles/motion.css');
   assert.match(motionCss, /prefers-reduced-motion:\s*reduce/);
 });
+
+test('ui module wires gameplay render and submit functions', () => {
+  const ui = read('scripts/ui.js');
+  [
+    'function startRound',
+    'function renderQuestion',
+    'function submitCurrentAnswer',
+    'function renderResult',
+    'V2GameState.submitAnswer',
+    'V2Rewards.calculateRoundSettlement',
+    'V2Storage.saveRecord',
+    'V2Storage.addCoins',
+    'V2Motion.comboTier',
+    'V2Motion.durationFor',
+    'V2Motion.feedbackClassForQuestion',
+    'V2Speech.createSpeechController'
+  ].forEach(pattern => assert.match(ui, new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${pattern}`));
+});
