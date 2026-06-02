@@ -134,6 +134,47 @@
     });
   }
 
+  function renderGarage() {
+    const garage = root.V2Storage.getPlayerGarage(currentPlayerId);
+    const names = root.V2Storage.loadNames();
+    $('garage-player-name').textContent = names[currentPlayerId] || PLAYERS[currentPlayerId].name;
+    $('garage-coins').textContent = garage.coins;
+    $('garage-grid').innerHTML = root.Garage.CATALOG.map(item => {
+      const owned = root.Garage.owns(garage, item.id);
+      const equipped = root.Garage.isEquipped(garage, item.id);
+      const afford = root.Garage.canAfford(garage, item.id);
+      const stateText = equipped ? '正在使用' : (owned ? '点我换上' : `🪙 ${item.price}`);
+      const locked = owned ? '' : 'locked';
+      const affordClass = !owned && afford ? 'afford' : '';
+      return `<button class="garage-cell ${item.kind} ${locked} ${affordClass} ${equipped ? 'equipped' : ''}" type="button" data-item="${item.id}">
+        <span class="garage-emoji">${item.emoji}</span>
+        <strong>${item.name}</strong>
+        <span>${stateText}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function handleGarageCellTap(id) {
+    const item = root.Garage.getItem(id);
+    if (!item) return;
+    const garage = root.V2Storage.getPlayerGarage(currentPlayerId);
+    let next = null;
+    if (root.Garage.owns(garage, id)) next = root.Garage.equip(garage, id);
+    else next = root.Garage.unlock(garage, id);
+    if (!next) {
+      $('garage-message').textContent = `${item.name}还不能解锁，再赚一些金币吧！`;
+      return;
+    }
+    root.V2Storage.setPlayerGarage(currentPlayerId, next);
+    $('garage-message').textContent = `${item.name}准备好了！`;
+    renderGarage();
+  }
+
+  function openGarage() {
+    renderGarage();
+    setPage('page-garage');
+  }
+
   function renderTrophyHall() {
     const hall = $('trophy-hall');
     const groups = [
@@ -166,12 +207,19 @@
       $('btn-toggle-voice').textContent = muted ? '🔇' : '🔊';
     });
     $('btn-again').addEventListener('click', () => startRound(currentPlayerId));
+    $('btn-open-garage').addEventListener('click', openGarage);
+    $('btn-result-garage').addEventListener('click', openGarage);
+    $('btn-garage-back').addEventListener('click', () => setPage('page-player'));
+    $('garage-grid').addEventListener('click', event => {
+      const cell = event.target.closest('[data-item]');
+      if (cell) handleGarageCellTap(cell.dataset.item);
+    });
     $('btn-open-trophies').addEventListener('click', () => { renderTrophyHall(); setPage('page-trophies'); });
     $('btn-result-trophies').addEventListener('click', () => { renderTrophyHall(); setPage('page-trophies'); });
     $('btn-trophies-back').addEventListener('click', () => setPage('page-home'));
   }
 
-  root.V2UI = { setPage, initNumpad, startRound, renderQuestion, submitCurrentAnswer, renderResult, renderTrophyHall, init };
+  root.V2UI = { setPage, initNumpad, startRound, renderQuestion, submitCurrentAnswer, renderResult, renderTrophyHall, renderGarage, handleGarageCellTap, init };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -96,3 +96,17 @@ test('result UI renders awards before highlights and trophy hall groups', () => 
   assert.match(ui, /award-chip trophy/);
   assert.match(ui, /award-chip medal/);
 });
+
+test('garage UI reads and persists Garage catalog state', () => {
+  const ui = read('scripts/ui.js');
+  [
+    'function renderGarage',
+    'function handleGarageCellTap',
+    'Garage.CATALOG',
+    'Garage.unlock',
+    'Garage.equip',
+    'V2Storage.setPlayerGarage',
+    'btn-result-garage',
+    'btn-garage-back'
+  ].forEach(pattern => assert.match(ui, new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${pattern}`));
+});

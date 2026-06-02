@@ -59,3 +59,39 @@
 .trophy-card { min-height: 96px; display: grid; place-items: center; border-radius: 16px; padding: 10px; background: rgba(255,255,255,.14); }
 .trophy-card.trophy { outline: 3px solid rgba(255, 212, 71, .8); }
 .trophy-card span { font-size: 34px; }
+.page-garage {
+  align-content: start;
+  gap: 14px;
+  background: linear-gradient(180deg, #0e385f, #134b72);
+  color: white;
+}
+.garage-wallet {
+  justify-self: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .16);
+  font-weight: 900;
+}
+.garage-grid {
+  width: min(760px, 100%);
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  gap: 10px;
+}
+.garage-cell {
+  min-height: 112px;
+  border: 0;
+  border-radius: 16px;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,.88);
+  color: var(--ink);
+  box-shadow: 0 6px 0 rgba(0,0,0,.18);
+}
+.garage-cell.locked { filter: grayscale(.35); opacity: .72; }
+.garage-cell.afford { outline: 3px solid var(--yellow); }
+.garage-cell.equipped { outline: 4px solid var(--green); }
+.garage-emoji { font-size: 36px; }
