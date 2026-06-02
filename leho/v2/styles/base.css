@@ -1,0 +1,35 @@
+:root {
+  --ink: #17324d;
+  --paper: #fff8e7;
+  --panel: rgba(255, 255, 255, 0.92);
+  --line: rgba(23, 50, 77, 0.18);
+  --yellow: #ffd447;
+  --orange: #ff8a2a;
+  --green: #18b875;
+  --blue: #1b8cff;
+  --red: #f04b3e;
+  --shadow: 0 18px 40px rgba(18, 34, 56, 0.22);
+  font-family: "Trebuchet MS", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  color: var(--ink);
+  background: #0d2442;
+  overflow-x: hidden;
+}
+button { font: inherit; cursor: pointer; }
+.app-shell { min-height: 100svh; position: relative; overflow: hidden; }
+.page { display: none; min-height: 100svh; padding: 20px; }
+.page.active { display: grid; }
+.page[aria-hidden="true"] { display: none; }
+.arcade-primary {
+  border: 0;
+  border-radius: 18px;
+  padding: 16px 28px;
+  color: #3b2400;
+  background: linear-gradient(180deg, #fff176, var(--yellow));
+  box-shadow: 0 8px 0 #b65f00, var(--shadow);
+  font-weight: 900;
+}
