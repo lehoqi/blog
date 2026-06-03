@@ -103,6 +103,21 @@ test('audio controller ducks sfx while speech is active', () => {
   assert.equal(scheduled[1].volumeScale, 1);
 });
 
+test('voice-muted speech does not duck sfx', () => {
+  const scheduled = [];
+  const speech = createSpeechFake();
+  const sfx = Sfx.createSfx({ schedule: spec => { scheduled.push(spec); return true; } });
+  const audio = AudioController.createAudioController({ speech, sfx, now: () => 1000 });
+
+  audio.toggleVoiceMuted();
+  audio.speakQueue(['不会朗读']);
+  audio.playSfx('playGatePass', 'adventure');
+
+  assert.equal(audio.isVoiceMuted(), true);
+  assert.equal(audio.isSpeaking(), false);
+  assert.equal(scheduled[0].volumeScale, 1);
+});
+
 test('sfx exposes every design sound hook and schedules theme-aware short specs', () => {
   const scheduled = [];
   const sfx = Sfx.createSfx({ schedule: spec => { scheduled.push(spec); return true; } });
@@ -189,6 +204,7 @@ Create `v2/scripts/sfx.js`:
       wave: profile.wave,
       color: profile.color,
       durationMs: shape.durationMs,
+      offsetMs: Math.max(0, Math.floor(Number(options.offsetMs) || 0)),
       gain,
       volumeScale: Math.max(0, Math.min(1, Number(options.volumeScale) || 1)),
       tones: shape.ratio.map((ratio, index) => ({
@@ -204,7 +220,7 @@ Create `v2/scripts/sfx.js`:
     if (!Ctor) return false;
     if (!scheduleWithWebAudio.ctx) scheduleWithWebAudio.ctx = new Ctor();
     const ctx = scheduleWithWebAudio.ctx;
-    const start = ctx.currentTime;
+    const start = ctx.currentTime + spec.offsetMs / 1000;
     spec.tones.forEach(tone => {
       const oscillator = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -275,8 +291,12 @@ Create `v2/scripts/audio-controller.js`:
     }
 
     function speakQueue(lines, rate) {
+      if (isVoiceMuted() || !speech || typeof speech.speakQueue !== 'function') {
+        speakingUntil = 0;
+        return;
+      }
       speakingUntil = now() + estimateSpeechMs(lines);
-      if (speech && typeof speech.speakQueue === 'function') speech.speakQueue(lines, rate);
+      speech.speakQueue(lines, rate);
     }
 
     function stopSpeech() {
@@ -576,11 +596,16 @@ const assert = require('node:assert/strict');
 const StageEffects = require('../scripts/stage-effects.js');
 
 function fakeElement(id) {
+  const style = {
+    values: {},
+    setProperty(name, value) { this.values[name] = value; this[name] = value; },
+    getPropertyValue(name) { return this.values[name] || ''; }
+  };
   return {
     id,
     textContent: '',
     innerHTML: '',
-    style: {},
+    style,
     children: [],
     dataset: {},
     className: '',
@@ -617,6 +642,7 @@ function fakeDocument() {
     'stage-energy-fill'
   ];
   required.forEach(id => { ids[id] = fakeElement(id); });
+  ids['stage-gate'].getBoundingClientRect = () => ({ left: 260, top: 80, width: 120, height: 150 });
   return {
     ids,
     getElementById(id) { return ids[id] || null; },
@@ -678,7 +704,14 @@ test('playCorrect creates answer key from source rect and schedules sfx', async 
   assert.ok(result.durationMs >= 900 && result.durationMs <= 1300);
   assert.equal(doc.ids['stage-answer-layer'].children.length, 1);
   assert.equal(doc.ids['stage-answer-layer'].children[0].textContent, '18');
-  assert.deepEqual(calls.map(call => call[0]), ['playNumberLaunch', 'playGateUnlock', 'playGatePass', 'playNodeLight']);
+  assert.equal(doc.ids['stage-answer-layer'].children[0].style.getPropertyValue('--key-dx'), '-546px');
+  assert.equal(doc.ids['stage-answer-layer'].children[0].style.getPropertyValue('--key-dy'), '-221px');
+  assert.deepEqual(calls.map(call => [call[0], call[2].offsetMs]), [
+    ['playNumberLaunch', 0],
+    ['playGateUnlock', 320],
+    ['playGatePass', 620],
+    ['playNodeLight', 900]
+  ]);
 });
 
 test('final correct uses boss shield and final gate sounds', async () => {
@@ -702,7 +735,12 @@ test('final correct uses boss shield and final gate sounds', async () => {
 
   assert.equal(result.kind, 'final');
   assert.ok(result.durationMs >= 1800 && result.durationMs <= 2200);
-  assert.deepEqual(calls.map(call => call[0]), ['playNumberLaunch', 'playShieldBreak', 'playFinalGate', 'playVictoryBurst']);
+  assert.deepEqual(calls.map(call => [call[0], call[2].offsetMs]), [
+    ['playNumberLaunch', 0],
+    ['playShieldBreak', 420],
+    ['playFinalGate', 760],
+    ['playVictoryBurst', 1220]
+  ]);
 });
 
 test('playWrong is short and does not play gate unlock', async () => {
@@ -773,6 +811,10 @@ Create `v2/scripts/stage-effects.js`:
       if (sfx && typeof sfx.playSfx === 'function') sfx.playSfx(name, theme.sfxProfile || theme.id, extra);
     }
 
+    function playTimeline(theme, events, comboTier) {
+      events.forEach(event => playSfx(event.name, theme, { comboTier, offsetMs: event.offsetMs }));
+    }
+
     function makeNode(index, currentIndex) {
       const node = documentRef.createElement('span');
       node.className = 'stage-node';
@@ -800,15 +842,29 @@ Create `v2/scripts/stage-effects.js`:
       }
     }
 
-    function addAnswerKey(answer, sourceRect, theme) {
+    function gateRect() {
+      const gate = $('stage-gate');
+      if (gate && typeof gate.getBoundingClientRect === 'function') return gate.getBoundingClientRect();
+      return { left: 0, top: 0, width: 0, height: 0 };
+    }
+
+    function addAnswerKey(answer, sourceRect, targetRect, theme) {
       const layer = $('stage-answer-layer');
       if (!layer || !documentRef || typeof documentRef.createElement !== 'function') return null;
       const key = documentRef.createElement('span');
       key.className = 'stage-answer-key';
       key.textContent = String(answer);
       key.style.setProperty ? key.style.setProperty('--answer-color', theme.answerColor) : (key.style.answerColor = theme.answerColor);
-      key.style.left = `${Math.round(sourceRect.left + sourceRect.width / 2)}px`;
-      key.style.top = `${Math.round(sourceRect.top + sourceRect.height / 2)}px`;
+      const sourceX = Math.round(sourceRect.left + sourceRect.width / 2);
+      const sourceY = Math.round(sourceRect.top + sourceRect.height / 2);
+      const targetX = Math.round(targetRect.left + targetRect.width / 2);
+      const targetY = Math.round(targetRect.top + targetRect.height / 2);
+      key.style.left = `${sourceX - 34}px`;
+      key.style.top = `${sourceY - 34}px`;
+      if (key.style.setProperty) {
+        key.style.setProperty('--key-dx', `${targetX - sourceX}px`);
+        key.style.setProperty('--key-dy', `${targetY - sourceY}px`);
+      }
       layer.appendChild(key);
       return key;
     }
@@ -817,19 +873,23 @@ Create `v2/scripts/stage-effects.js`:
       const theme = input.theme || lastTheme;
       const final = !!input.isFinal;
       const durationMs = reducedMotion() ? REDUCED_MS : (final ? FINAL_MS : (input.comboTier >= 3 ? COMBO_MS : NORMAL_MS));
-      addAnswerKey(input.answer, rectFrom(input), theme);
+      addAnswerKey(input.answer, rectFrom(input), gateRect(), theme);
       const stage = $('adventure-stage');
       if (stage) stage.classList.add(final ? 'stage-motion-final' : 'stage-motion-correct');
       if (final) {
-        playSfx('playNumberLaunch', theme, { comboTier: input.comboTier });
-        playSfx('playShieldBreak', theme, { comboTier: input.comboTier });
-        playSfx('playFinalGate', theme, { comboTier: input.comboTier });
-        playSfx('playVictoryBurst', theme, { comboTier: input.comboTier });
+        playTimeline(theme, [
+          { name: 'playNumberLaunch', offsetMs: 0 },
+          { name: 'playShieldBreak', offsetMs: 420 },
+          { name: 'playFinalGate', offsetMs: 760 },
+          { name: 'playVictoryBurst', offsetMs: 1220 }
+        ], input.comboTier);
       } else {
-        playSfx('playNumberLaunch', theme, { comboTier: input.comboTier });
-        playSfx('playGateUnlock', theme, { comboTier: input.comboTier });
-        playSfx('playGatePass', theme, { comboTier: input.comboTier });
-        playSfx('playNodeLight', theme, { comboTier: input.comboTier });
+        playTimeline(theme, [
+          { name: 'playNumberLaunch', offsetMs: 0 },
+          { name: 'playGateUnlock', offsetMs: 320 },
+          { name: 'playGatePass', offsetMs: 620 },
+          { name: 'playNodeLight', offsetMs: 900 }
+        ], input.comboTier);
       }
       await wait(durationMs);
       if (stage) stage.classList.remove('stage-motion-correct', 'stage-motion-final');
@@ -923,6 +983,7 @@ In `v2/tests/static-ui.test.js`, add:
 ```js
 test('energy gate css defines PC stage layers and precision motion', () => {
   const html = read('index.html');
+  const motion = read('styles/motion.css');
   const stageCss = read('styles/stage.css');
   const stageMotion = read('styles/stage-motion.css');
 
@@ -930,6 +991,7 @@ test('energy gate css defines PC stage layers and precision motion', () => {
   assert.match(html, /styles\/stage-motion\.css/);
   assert.match(stageCss, /\.stage-gate/);
   assert.match(stageCss, /\.stage-answer-key/);
+  assert.match(stageCss, /--key-dx/);
   assert.match(stageCss, /\.stage-boss-shield/);
   assert.match(stageCss, /\.gate-police/);
   assert.match(stageCss, /\.gate-ambulance/);
@@ -941,6 +1003,9 @@ test('energy gate css defines PC stage layers and precision motion', () => {
   assert.match(stageMotion, /@keyframes v2VehicleGatePass/);
   assert.match(stageMotion, /@keyframes v2ShieldBreak/);
   assert.match(stageMotion, /prefers-reduced-motion/);
+  assert.doesNotMatch(motion, /\.motion-correct\s+\.stage-vehicle/);
+  assert.doesNotMatch(motion, /\.motion-finisher\s+\.stage-boss/);
+  assert.doesNotMatch(motion, /\.feedback-carryBorrow\s+\.stage-vehicle/);
 });
 ```
 
@@ -1073,6 +1138,8 @@ Create the PC-focused stage styles:
   overflow: visible;
 }
 .stage-answer-key {
+  --key-dx: -42vw;
+  --key-dy: -24vh;
   position: fixed;
   z-index: 100;
   width: 68px;
@@ -1122,8 +1189,8 @@ Create motion states and keyframes:
 @keyframes v2AnswerKeyToGate {
   0% { transform: translate(0, 0) scale(.82); opacity: 0; }
   18% { opacity: 1; }
-  70% { transform: translate(-34vw, -18vh) scale(1.08); opacity: 1; }
-  100% { transform: translate(-42vw, -24vh) scale(.3); opacity: 0; }
+  70% { transform: translate(var(--key-dx, -42vw), var(--key-dy, -24vh)) scale(1.08); opacity: 1; }
+  100% { transform: translate(var(--key-dx, -42vw), var(--key-dy, -24vh)) scale(.3); opacity: 0; }
 }
 @keyframes v2GateUnlock {
   0%, 100% { transform: rotate(-8deg) scale(1); filter: drop-shadow(0 0 34px rgba(125,211,252,.75)); }
@@ -1167,7 +1234,7 @@ Create motion states and keyframes:
 }
 ```
 
-- [ ] **Step 6: Remove duplicate old stage sky visuals from `arcade.css`**
+- [ ] **Step 6: Remove duplicate old stage visuals and motion conflicts**
 
 In `v2/styles/arcade.css`, remove or neutralize the old `.stage-sky`, `.stage-sky::after`, `.stage-vehicle`, and `.stage-boss` visual rules that conflict with `stage.css`. Keep layout rules for `.adventure-stage`, `.stage-energy`, `#stage-energy-fill`, and PC grid.
 
@@ -1177,6 +1244,22 @@ The resulting old-stage block should keep only:
 .adventure-stage { position: relative; overflow: hidden; border-radius: 8px; min-height: 110px; box-shadow: var(--shadow), 0 0 42px rgba(27, 140, 255, .22); }
 .stage-energy { position: absolute; left: 16px; right: 16px; bottom: 12px; height: 12px; border-radius: 999px; background: rgba(255,255,255,.32); overflow: hidden; z-index: 9; }
 #stage-energy-fill { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #65ff7a, #fff176, #ff8a2a); }
+```
+
+In `v2/styles/motion.css`, remove or replace old selectors that animate the same stage elements:
+
+```css
+.motion-correct .stage-vehicle { ... }
+.motion-finisher .stage-boss { ... }
+.feedback-carryBorrow .stage-vehicle { ... }
+.feedback-compare .stage-route::after { ... }
+```
+
+Keep question-panel shake and equation/highlight feedback. If a question-type visual is still needed, target new non-transform properties that do not fight the gate timeline:
+
+```css
+.feedback-carryBorrow .stage-gate { filter: drop-shadow(0 0 30px rgba(255, 138, 42, .95)); }
+.feedback-compare .stage-node-track::after { content: ""; position: absolute; left: 20%; right: 20%; top: 50%; height: 4px; border-radius: 999px; background: rgba(255,255,255,.72); }
 ```
 
 - [ ] **Step 7: Run tests and CSS check**
@@ -1221,6 +1304,7 @@ test('ui wires stage effects, answer geometry, and separate audio controls', () 
   assert.match(ui, /playCorrect/);
   assert.match(ui, /playWrong/);
   assert.match(ui, /playBossIntro/);
+  assert.doesNotMatch(ui, /Promise\.all\(\[\s*root\.V2Motion\.applyMotionClass[\s\S]*stageEffects\.playCorrect/);
 });
 ```
 
@@ -1336,19 +1420,17 @@ root.V2Motion.applyMotionClass(shell, motionName === 'finisher' ? 'motion-finish
 with:
 
 ```js
-const duration = root.V2Motion.durationFor(motionName, root.V2Motion.prefersReducedMotion());
 const submittedAnswer = answerText;
 const isFinal = state.currentIndex >= state.questions.length - 1;
-Promise.all([
-  root.V2Motion.applyMotionClass(shell, motionName === 'finisher' ? 'motion-finisher' : 'motion-correct', duration),
-  stageEffects.playCorrect({
-    answer: submittedAnswer,
-    theme: activeCombo.theme,
-    comboTier: tier,
-    isFinal,
-    answerElement: $('answer-display')
-  })
-]).then(() => {
+const shellDuration = root.V2Motion.prefersReducedMotion() ? 260 : 650;
+root.V2Motion.applyMotionClass(shell, motionName === 'finisher' ? 'motion-finisher' : 'motion-correct', shellDuration);
+stageEffects.playCorrect({
+  answer: submittedAnswer,
+  theme: activeCombo.theme,
+  comboTier: tier,
+  isFinal,
+  answerElement: $('answer-display')
+}).then(() => {
   shell.classList.remove(feedbackClass);
   state = root.V2GameState.advanceAfterCorrect(state);
   answerText = '';
@@ -1497,12 +1579,15 @@ If no fixes were needed, do not create an empty commit.
 
 Spec coverage:
 
-- Digital answer key flight: Task 3 implements `answerElement/sourceRect`; Task 5 passes `answerElement`.
+- Digital answer key flight: Task 3 implements `answerElement/sourceRect`, computes the real gate target rect, and writes `--key-dx/--key-dy`; Task 5 passes `answerElement`.
 - Energy gate visual: Task 2 adds DOM/theme fields; Task 4 adds CSS/motion.
 - Boss shield finisher: Task 2 adds shield DOM/theme class; Task 3 adds final timeline; Task 4 adds shield break motion; Task 5 triggers final state.
-- SFX with speech independent mute: Task 1 implements `AudioController` and `Sfx`; Task 5 wires top button as voice-only.
+- SFX with speech independent mute: Task 1 implements `AudioController` and `Sfx`; Task 5 wires top button as voice-only, and voice-muted speech does not duck SFX.
+- SFX/action synchronization: Task 3 schedules SFX with timeline offsets for number launch, gate unlock, vehicle pass, node light, shield break, final gate, and victory burst.
 - PC-only focus: Task 4 styles PC stage without creating a mobile-specific redesign; Task 6 verifies 1280x720.
 - Reduced motion: Task 3 returns reduced durations; Task 4 includes reduced-motion CSS.
+- Old motion conflict removal: Task 4 explicitly removes conflicting `.motion-correct .stage-vehicle`, `.motion-finisher .stage-boss`, and related old selectors from `motion.css`.
+- Gameplay rhythm: Task 5 makes `StageEffects` the main correct-answer clock and keeps old shell feedback short.
 - Tests and browser verification: every implementation task has failing tests first; Task 6 covers full dry-run.
 
 Placeholder scan:
