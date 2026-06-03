@@ -121,3 +121,15 @@ test('responsive css covers required v2 viewport constraints', () => {
   assert.match(arcade, /"stage controls"/);
   assert.match(base, /min-height:\s*100svh/);
 });
+
+test('player select screen has deliberate PC arcade styling', () => {
+  const arcade = read('styles/arcade.css');
+  const motion = read('styles/motion.css');
+  assert.match(arcade, /\.page-player\s*\{/);
+  assert.match(arcade, /\.page-player::before/);
+  assert.match(arcade, /\.player-stand::after/);
+  assert.match(arcade, /#btn-open-garage::before/);
+  assert.match(arcade, /border-radius:\s*8px/);
+  assert.match(motion, /@keyframes v2PlayerPodIn/);
+  assert.match(motion, /@keyframes v2SpeedLines/);
+});

@@ -13,6 +13,38 @@
   50% { transform: translateX(10px); }
   75% { transform: translateX(-6px); }
 }
+@keyframes v2ArenaSweep {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 0 0, 180px 0, 0 148px; }
+}
+@keyframes v2TitleIgnite {
+  from { opacity: 0; transform: translateY(18px) scale(.96); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes v2PlayerPodIn {
+  from { opacity: 0; transform: translateY(34px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes v2LightRail {
+  0%, 100% { opacity: .62; transform: scaleX(.72); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+@keyframes v2GarageGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 212, 71, 0)); }
+  50% { filter: drop-shadow(0 0 22px rgba(255, 212, 71, .52)); }
+}
+@keyframes v2SpeedLines {
+  from { transform: translateX(-60px); }
+  to { transform: translateX(60px); }
+}
+@keyframes v2VehicleHover {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+@keyframes v2BossFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(7px) scale(1.04); }
+}
 .home-combo { animation: v2Pulse 2.4s ease-in-out infinite; }
 .motion-correct .stage-vehicle { animation: v2CorrectDash 1100ms cubic-bezier(.22,1,.36,1); }
 .motion-wrong .question-panel { animation: v2WrongShake 420ms ease-in-out; }

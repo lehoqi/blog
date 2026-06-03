@@ -15,15 +15,203 @@
 .home-players, .icon-actions, .page-home .arcade-primary { position: relative; z-index: 1; }
 .home-combo { font-size: clamp(54px, 12vw, 120px); filter: drop-shadow(0 14px 12px rgba(0,0,0,.28)); }
 .page-home h1 { position: relative; z-index: 1; font-size: clamp(34px, 8vw, 76px); margin: 0; }
-.player-grid { display: grid; grid-template-columns: repeat(2, minmax(130px, 260px)); gap: 18px; justify-content: center; }
-.player-stand { border: 0; border-radius: 20px; padding: 18px; background: var(--panel); box-shadow: var(--shadow); }
-.player-combo { display: block; font-size: clamp(48px, 10vw, 90px); }
+.page-player {
+  position: relative;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(22px, 4vh, 38px);
+  padding: clamp(36px, 5vw, 72px);
+  color: #f8fbff;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(27, 140, 255, .42), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(255, 212, 71, .28), transparent 22%),
+    linear-gradient(135deg, #06162b 0%, #0b2c55 48%, #06101f 100%);
+  overflow: hidden;
+}
+.page-player::before,
+.page-player::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.page-player::before {
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0 47%, rgba(255,255,255,.28) 48% 52%, transparent 53% 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 1px, transparent 1px 90px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 74px);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 76%, transparent 100%);
+  opacity: .72;
+  animation: v2ArenaSweep 9s linear infinite;
+}
+.page-player::after {
+  left: -12%;
+  right: -12%;
+  bottom: -34%;
+  height: 54%;
+  background:
+    linear-gradient(90deg, transparent 47%, rgba(255, 212, 71, .88) 49% 51%, transparent 53%),
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(3, 13, 29, .82));
+  transform: perspective(760px) rotateX(62deg);
+  filter: drop-shadow(0 -20px 54px rgba(27, 140, 255, .38));
+}
+.page-player h2 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(42px, 5.8vw, 84px);
+  line-height: .95;
+  letter-spacing: 0;
+  text-shadow:
+    0 0 18px rgba(27, 140, 255, .72),
+    0 8px 0 rgba(0, 0, 0, .28);
+  animation: v2TitleIgnite 850ms cubic-bezier(.22,1,.36,1) both;
+}
+.player-grid {
+  position: relative;
+  z-index: 1;
+  width: min(980px, 100%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: clamp(28px, 5vw, 56px);
+  justify-content: center;
+}
+.player-stand {
+  position: relative;
+  isolation: isolate;
+  min-height: 360px;
+  border: 1px solid rgba(255, 255, 255, .38);
+  border-radius: 8px;
+  padding: 34px 28px 30px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 16px;
+  color: #ffffff;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.05)),
+    radial-gradient(circle at 50% 16%, rgba(255,255,255,.34), transparent 28%),
+    rgba(8, 25, 48, .72);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, .36),
+    inset 0 1px 0 rgba(255,255,255,.58);
+  overflow: hidden;
+  transform: translateY(0);
+  animation: v2PlayerPodIn 700ms cubic-bezier(.22,1,.36,1) both;
+}
+#player-haohao { animation-delay: 90ms; }
+.player-stand::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  z-index: -1;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.22), transparent 18% 82%, rgba(255,255,255,.22)),
+    linear-gradient(180deg, rgba(255,255,255,.08), transparent);
+}
+.player-stand::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue), var(--yellow), var(--green));
+  box-shadow: 0 0 26px rgba(255, 212, 71, .9);
+  animation: v2LightRail 2.7s ease-in-out infinite;
+}
+.player-stand:hover,
+.player-stand:focus-visible {
+  transform: translateY(-8px);
+  border-color: rgba(255, 212, 71, .86);
+  box-shadow:
+    0 34px 84px rgba(0, 0, 0, .44),
+    0 0 48px rgba(255, 212, 71, .22),
+    inset 0 1px 0 rgba(255,255,255,.68);
+}
+.player-combo {
+  display: block;
+  font-size: clamp(86px, 8vw, 132px);
+  line-height: 1;
+  filter: drop-shadow(0 18px 20px rgba(0,0,0,.38));
+  transform: translateZ(0);
+}
+.player-stand strong {
+  display: block;
+  font-size: clamp(30px, 3vw, 46px);
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 0 18px rgba(27, 140, 255, .85);
+}
+#lele-stats,
+#haohao-stats {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,.36);
+  border-radius: 999px;
+  background: rgba(4, 15, 32, .52);
+  color: #dff3ff;
+  font-weight: 900;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+}
+.mini-trophies {
+  color: #aee8ff;
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 900;
+  text-shadow: 0 0 14px rgba(27, 140, 255, .75);
+}
+#btn-open-garage {
+  position: relative;
+  z-index: 1;
+  min-width: min(440px, 100%);
+  min-height: 72px;
+  border: 1px solid rgba(255, 212, 71, .78);
+  border-radius: 8px;
+  color: #fff7c4;
+  background:
+    linear-gradient(90deg, rgba(255, 212, 71, .16), rgba(27, 140, 255, .28), rgba(24, 184, 117, .16)),
+    rgba(4, 15, 32, .72);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, .35),
+    0 0 34px rgba(255, 212, 71, .22),
+    inset 0 1px 0 rgba(255,255,255,.32);
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 900;
+  animation: v2GarageGlow 2.8s ease-in-out infinite;
+}
+#btn-open-garage::before {
+  content: "🛠 ";
+}
 .page-game { grid-template-rows: auto minmax(110px, 28vh) auto auto auto; gap: 10px; background: #102c54; }
 .game-topbar { display: flex; justify-content: space-between; color: white; font-weight: 900; }
-.adventure-stage { position: relative; overflow: hidden; border-radius: 18px; min-height: 110px; box-shadow: var(--shadow); }
+.adventure-stage { position: relative; overflow: hidden; border-radius: 8px; min-height: 110px; box-shadow: var(--shadow), 0 0 42px rgba(27, 140, 255, .22); }
+.stage-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 24% 20%, rgba(255,255,255,.8), transparent 2px),
+    radial-gradient(circle at 72% 18%, rgba(255,255,255,.72), transparent 2px),
+    radial-gradient(circle at 50% 42%, rgba(255,212,71,.35), transparent 18%),
+    linear-gradient(180deg, rgba(255,255,255,.16), transparent);
+}
+.stage-sky::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: repeating-linear-gradient(110deg, transparent 0 42px, rgba(255,255,255,.18) 43px 45px);
+  animation: v2SpeedLines 1.8s linear infinite;
+  opacity: .55;
+}
 .stage-vehicle, .stage-boss { position: absolute; font-size: clamp(38px, 9vw, 88px); z-index: 3; }
-.stage-vehicle { left: 8%; bottom: 18%; }
-.stage-boss { right: 10%; top: 18%; }
+.stage-vehicle { left: 8%; bottom: 18%; animation: v2VehicleHover 2.8s ease-in-out infinite; }
+.stage-boss { right: 10%; top: 18%; animation: v2BossFloat 3.2s ease-in-out infinite; }
 .stage-energy { position: absolute; left: 16px; right: 16px; bottom: 12px; height: 12px; border-radius: 999px; background: rgba(255,255,255,.32); overflow: hidden; }
 #stage-energy-fill { display: block; width: 0%; height: 100%; background: linear-gradient(90deg, #65ff7a, #fff176, #ff8a2a); }
 .question-panel { background: var(--panel); border-radius: 18px; padding: 14px; text-align: center; box-shadow: var(--shadow); }
@@ -143,11 +331,12 @@
       "stage submit";
     gap: 14px 18px;
     padding: 28px;
+    align-content: start;
   }
   .game-topbar { grid-area: top; }
-  .adventure-stage { grid-area: stage; min-height: min(58vh, 420px); height: 100%; }
+  .adventure-stage { grid-area: stage; min-height: min(62vh, 500px); height: auto; }
   .question-panel { grid-area: question; align-self: end; }
   .numpad { grid-area: controls; grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 420px; align-self: start; }
-  .submit { grid-area: submit; grid-column: 2; justify-self: center; }
+  .submit { grid-area: submit; grid-column: 2; justify-self: center; align-self: start; }
   .stage-vehicle, .stage-boss { font-size: 96px; }
 }
