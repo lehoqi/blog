@@ -61,6 +61,8 @@
 5. 一个关卡节点点亮，能量条增加。
 6. 舞台进入下一段背景位置。
 
+这些步骤不是完全串行播放。数字飞行、门环预亮、座驾蓄力可以部分重叠；座驾穿门时同时点亮节点和推进背景。实现时以总节奏为准，普通答对动画不应因为分段相加超过 1300ms。
+
 声音节点：
 
 - 数字飞出：短促上扬音。
@@ -165,6 +167,8 @@
 | Boss 护盾破裂 | 500-750ms | 第 5 题答对 | 裂纹、碎片、压暗恢复 |
 | 终结星门 | 900-1400ms | 最后一题答对 | 本轮最强，但不拖沓 |
 
+上表是单个动作片段的预算，不代表所有片段串行相加。普通答对的完整反馈应通过时间线重叠控制在 900-1300ms；连对可放宽到 1200-1600ms；最终 Boss 终结可放宽到 1800-2200ms。
+
 减少动态效果模式下：
 
 - 停止循环背景和粒子。
@@ -173,7 +177,7 @@
 
 ## 7. 声音设计
 
-声音模块应提供一组短音效函数，而不是引入长背景音乐：
+声音模块应提供一组短音效函数，而不是引入长背景音乐。V2 现有静音按钮目前控制 `speech` 内部状态；本次实现必须把它升级为统一音频状态，避免出现“朗读静音但音效仍播放”的割裂体验。
 
 - `playNumberLaunch(theme)`
 - `playGateUnlock(theme, comboTier)`
@@ -190,8 +194,9 @@
 
 - 使用 Web Audio API 合成短音效，避免新增大体积音频素材。
 - 主题通过振荡器波形、频率、包络、滤波和噪声颜色做差异。
-- 所有音效必须受现有静音开关控制。
-- 题目朗读优先级高于音效；音效音量要低，时长要短。
+- 所有音效必须受顶部静音按钮控制。可实现为统一 `AudioController`，或让 `sfx.js` 明确接收与 `speech` 相同的 `isMuted/setMuted` 状态。
+- 题目朗读优先级高于音效；朗读播放期间应压低音效音量，或跳过非关键音效。
+- 关键音效仍可播放，但单个音效时长应控制在 450ms 内，默认音量不超过朗读音量的 45%。
 - iOS/浏览器自动播放限制下，必须在用户点击开始后才初始化音频上下文。
 
 声音风格：
@@ -210,18 +215,19 @@
 - `v2/styles/stage.css`
 - `v2/styles/stage-motion.css`
 - `v2/scripts/sfx.js`
+- `v2/scripts/audio-controller.js`，或在 `speech.js` 中扩展统一静音状态并供 `sfx.js` 读取。
 
 核心接口：
 
 ```js
 StageEffects.renderStage({ theme, vehicleEmoji, dinoEmoji, index, total, comboTier, isBoss });
-StageEffects.playCorrect({ answer, theme, comboTier, isFinal });
-StageEffects.playWrong({ theme });
+StageEffects.playCorrect({ answer, theme, comboTier, isFinal, sourceRect, answerElement });
+StageEffects.playWrong({ theme, answerElement });
 StageEffects.playBossIntro({ theme });
 StageEffects.reset();
 ```
 
-`ui.js` 只负责在答题状态变化时调用接口，不直接管理特效 DOM 的细节。
+`ui.js` 只负责在答题状态变化时调用接口，不直接管理特效 DOM 的细节。数字钥匙动画必须拿到答案显示区域的几何信息：优先传 `answerElement`，由 `stage-effects.js` 调 `getBoundingClientRect()`；测试环境或特殊场景可传 `sourceRect`。能量门目标位置由舞台模块根据当前 DOM 自己计算，不能让数字在舞台内部凭空出现。
 
 ## 9. 验收标准
 
