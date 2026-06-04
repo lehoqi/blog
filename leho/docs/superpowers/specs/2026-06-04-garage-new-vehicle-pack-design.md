@@ -29,12 +29,12 @@ Add 8 vehicles to `Garage.CATALOG`:
 |---|---|---|---|---:|
 | `car` | 🚗 | 小汽车 | 小汽车 | 18 |
 | `suv` | 🚙 | 越野车 | 越野车 | 22 |
-| `truck` | 🚚 | 货车 | 货车 | 28 |
+| `minibus` | 🚐 | 面包车 | 面包车 | 24 |
+| `pickup` | 🛻 | 皮卡车 | 皮卡车 | 28 |
+| `truck` | 🚚 | 货车 | 货车 | 30 |
 | `motorcycle` | 🏍️ | 摩托车 | 摩托车 | 35 |
+| `tram` | 🚋 | 电车 | 电车 | 40 |
 | `bullettrain` | 🚄 | 高铁 | 高铁 | 45 |
-| `speedboat` | 🚤 | 快艇 | 快艇 | 50 |
-| `airplane` | ✈️ | 飞机 | 飞机 | 70 |
-| `cruise` | 🛳️ | 邮轮 | 邮轮 | 85 |
 
 All new items use `kind: 'vehicle'`. Existing items keep their ids, emojis, names, and prices.
 
@@ -46,18 +46,28 @@ Extend `VEHICLE_FAMILY` so every new vehicle maps to an existing family:
 |---|---|
 | `car` | `everyday` |
 | `suv` | `everyday` |
+| `minibus` | `everyday` |
+| `pickup` | `everyday` |
 | `truck` | `everyday` |
-| `motorcycle` | `adventure` |
-| `bullettrain` | `adventure` |
-| `speedboat` | `adventure` |
-| `airplane` | `adventure` |
-| `cruise` | `adventure` |
+| `motorcycle` | `everyday` |
+| `tram` | `everyday` |
+| `bullettrain` | `everyday` |
 
-This keeps all vehicles on existing adventure logic paths and avoids introducing a new theme family.
+This keeps the pack on the existing "safe arrival / traffic" route and avoids mismatched "space launch / meteor" copy for boats, planes, or ships. Sea and air vehicles are deferred until a future theme can support them.
 
 ## Data Behavior
 
 Existing garage records remain valid. New vehicles are locked by default for every player because `normalize()` only guarantees each player's default vehicle and default dino badge are owned. Unlocking and equipping the new vehicles uses the existing `unlock()` and `equip()` functions.
+
+## Medal Behavior
+
+Adding vehicles must not make a child lose an already-earned collection milestone. Keep the existing `garage_master` id and label (`车库大师`) as the legacy garage completion medal, awarded when `ownedVehicleCount >= 11`. Add a new medal for the expanded garage:
+
+| id | icon | label | condition |
+|---|---|---|---|
+| `mega_garage_master` | 🏁 | 超级车库大师 | `ownsAllVehicles === true` |
+
+This makes old full-garage players keep `车库大师`, while the 19-vehicle catalog still has a new top-end target.
 
 ## Tests
 
@@ -70,10 +80,16 @@ Update `tests/garage.test.js` to assert:
 - `vehicleFamily()` returns the intended family for every new vehicle.
 - The existing loop still proves every catalog vehicle maps to a non-`general` family.
 
+Update `tests/index-adventure-flow.test.js` to assert:
+
+- `index.html` medal definitions keep `garage_master` as `ownedVehicleCount >= 11`.
+- `index.html` medal definitions include `mega_garage_master` with `ownsAllVehicles === true`.
+
 ## Acceptance Criteria
 
 1. The root garage shows 19 vehicles and 3 dino badges without changing the UI schema.
 2. New vehicles are locked until purchased, can be unlocked with enough coins, and can be equipped after ownership.
 3. Existing players keep their saved coins, owned items, and equipped items.
-4. Existing default vehicles, dino badges, and prices are unchanged.
-5. All `garage.js` tests pass.
+4. Existing players who already collected 11 vehicles still satisfy `车库大师`; collecting all 19 vehicles unlocks `超级车库大师`.
+5. Existing default vehicles, dino badges, and prices are unchanged.
+6. All `garage.js` tests pass, and static index tests cover the revised medal definitions.
