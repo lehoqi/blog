@@ -232,7 +232,7 @@ test('garage collection medals preserve legacy completion and add expanded compl
   );
   assert.match(
     medalBlock,
-    /id: 'mega_garage_master'[\s\S]*label: '超级车库大师'[\s\S]*ownsAllVehicles === true/,
+    /id: 'mega_garage_master'[\s\S]*icon: '🏁'[\s\S]*label: '超级车库大师'[\s\S]*ownsAllVehicles === true/,
     'mega_garage_master should represent expanded full garage completion'
   );
 });
