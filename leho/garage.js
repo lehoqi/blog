@@ -6,6 +6,14 @@ var CATALOG = [
   { id:'fire',         kind:'vehicle', emoji:'🚒', name:'消防车', voiceName:'消防车', price:15 },
   { id:'schoolbus',    kind:'vehicle', emoji:'🚌', name:'校车',   voiceName:'校车',   price:15 },
   { id:'taxi',         kind:'vehicle', emoji:'🚕', name:'出租车', voiceName:'出租车', price:20 },
+  { id:'car',          kind:'vehicle', emoji:'🚗', name:'小汽车', voiceName:'小汽车', price:18 },
+  { id:'suv',          kind:'vehicle', emoji:'🚙', name:'越野车', voiceName:'越野车', price:22 },
+  { id:'minibus',      kind:'vehicle', emoji:'🚐', name:'面包车', voiceName:'面包车', price:24 },
+  { id:'pickup',       kind:'vehicle', emoji:'🛻', name:'皮卡车', voiceName:'皮卡车', price:28 },
+  { id:'truck',        kind:'vehicle', emoji:'🚚', name:'货车',   voiceName:'货车',   price:30 },
+  { id:'motorcycle',   kind:'vehicle', emoji:'🏍️', name:'摩托车', voiceName:'摩托车', price:35 },
+  { id:'tram',         kind:'vehicle', emoji:'🚋', name:'电车',   voiceName:'电车',   price:40 },
+  { id:'bullettrain',  kind:'vehicle', emoji:'🚄', name:'高铁',   voiceName:'高铁',   price:45 },
   { id:'race',         kind:'vehicle', emoji:'🏎️', name:'赛车',   voiceName:'赛车',   price:25 },
   { id:'tractor',      kind:'vehicle', emoji:'🚜', name:'拖拉机', voiceName:'拖拉机', price:25 },
   { id:'heli',         kind:'vehicle', emoji:'🚁', name:'直升机', voiceName:'直升机', price:30 },
@@ -156,7 +164,9 @@ var VEHICLE_FAMILY = {
   police: 'police',
   ambulance: 'ambulance',
   fire: 'fire',
-  schoolbus: 'everyday', taxi: 'everyday', train: 'everyday', tractor: 'everyday',
+  schoolbus: 'everyday', taxi: 'everyday', car: 'everyday', suv: 'everyday',
+  minibus: 'everyday', pickup: 'everyday', truck: 'everyday', motorcycle: 'everyday',
+  tram: 'everyday', bullettrain: 'everyday', train: 'everyday', tractor: 'everyday',
   race: 'adventure', heli: 'adventure', rocket: 'adventure', ufo: 'adventure'
 };
 function vehicleFamily(vehicleId) {

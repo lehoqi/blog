@@ -15,15 +15,30 @@ test('CATALOG has unique ids and required fields', () => {
   }
 });
 
-test('CATALOG contents match spec §7', () => {
-  assert.equal(G.CATALOG.length, 14);
-  assert.equal(G.byKind('vehicle').length, 11);
+test('CATALOG contents match expanded vehicle pack spec', () => {
+  assert.equal(G.CATALOG.length, 22);
+  assert.equal(G.byKind('vehicle').length, 19);
   assert.equal(G.byKind('dino').length, 3);
   assert.equal(G.getItem('rocket').emoji, '🚀');
   assert.equal(G.getItem('rocket').price, 40);
   assert.equal(G.getItem('ufo').price, 60);
   assert.equal(G.getItem('police').emoji, '🚓');
   assert.equal(G.getItem('dragon').price, 35);
+  const newVehicles = {
+    car: ['🚗', 18],
+    suv: ['🚙', 22],
+    minibus: ['🚐', 24],
+    pickup: ['🛻', 28],
+    truck: ['🚚', 30],
+    motorcycle: ['🏍️', 35],
+    tram: ['🚋', 40],
+    bullettrain: ['🚄', 45],
+  };
+  Object.keys(newVehicles).forEach(id => {
+    const item = G.getItem(id);
+    assert.equal(item.emoji, newVehicles[id][0]);
+    assert.equal(item.price, newVehicles[id][1]);
+  });
   assert.equal(G.getItem('nope'), undefined);
 });
 
@@ -193,12 +208,20 @@ test('ownsAll true only when every catalog item of kind is owned', () => {
   assert.equal(G.ownsAll(null, 'dino'), false);
 });
 
-test('vehicleFamily maps all 11 vehicles to a family; unknown/garbage -> general', () => {
+test('vehicleFamily maps all 19 vehicles to a family; unknown/garbage -> general', () => {
   assert.equal(G.vehicleFamily('police'), 'police');
   assert.equal(G.vehicleFamily('ambulance'), 'ambulance');
   assert.equal(G.vehicleFamily('fire'), 'fire');
   assert.equal(G.vehicleFamily('schoolbus'), 'everyday');
   assert.equal(G.vehicleFamily('taxi'), 'everyday');
+  assert.equal(G.vehicleFamily('car'), 'everyday');
+  assert.equal(G.vehicleFamily('suv'), 'everyday');
+  assert.equal(G.vehicleFamily('minibus'), 'everyday');
+  assert.equal(G.vehicleFamily('pickup'), 'everyday');
+  assert.equal(G.vehicleFamily('truck'), 'everyday');
+  assert.equal(G.vehicleFamily('motorcycle'), 'everyday');
+  assert.equal(G.vehicleFamily('tram'), 'everyday');
+  assert.equal(G.vehicleFamily('bullettrain'), 'everyday');
   assert.equal(G.vehicleFamily('train'), 'everyday');
   assert.equal(G.vehicleFamily('tractor'), 'everyday');
   assert.equal(G.vehicleFamily('race'), 'adventure');
