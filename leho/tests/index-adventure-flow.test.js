@@ -223,6 +223,20 @@ test('results persist per-question-type stats and ability trophies', () => {
   ].forEach(id => assert.match(medalBlock, new RegExp(`id: '${id}'`), `missing trophy ${id}`));
 });
 
+test('garage collection medals preserve legacy completion and add expanded completion', () => {
+  const medalBlock = between('const ALL_MEDALS = [', '\n];\n\nfunction topTrophiesForPlayer');
+  assert.match(
+    medalBlock,
+    /id: 'garage_master'[\s\S]*label: '车库大师'[\s\S]*ownedVehicleCount >= 11/,
+    'garage_master should remain the legacy 11-vehicle completion medal'
+  );
+  assert.match(
+    medalBlock,
+    /id: 'mega_garage_master'[\s\S]*label: '超级车库大师'[\s\S]*ownsAllVehicles === true/,
+    'mega_garage_master should represent expanded full garage completion'
+  );
+});
+
 test('player previews surface unlocked trophies as the child-facing reward', () => {
   assert.match(html, /id="lele-preview-trophies"/);
   assert.match(html, /id="haohao-preview-trophies"/);
