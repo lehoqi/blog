@@ -25,19 +25,21 @@ test('CATALOG contents match expanded vehicle pack spec', () => {
   assert.equal(G.getItem('police').emoji, '🚓');
   assert.equal(G.getItem('dragon').price, 35);
   const newVehicles = {
-    car: ['🚗', 18],
-    suv: ['🚙', 22],
-    minibus: ['🚐', 24],
-    pickup: ['🛻', 28],
-    truck: ['🚚', 30],
-    motorcycle: ['🏍️', 35],
-    tram: ['🚋', 40],
-    bullettrain: ['🚄', 45],
+    car: ['🚗', '小汽车', '小汽车', 18],
+    suv: ['🚙', '越野车', '越野车', 22],
+    minibus: ['🚐', '面包车', '面包车', 24],
+    pickup: ['🛻', '皮卡车', '皮卡车', 28],
+    truck: ['🚚', '货车', '货车', 30],
+    motorcycle: ['🏍️', '摩托车', '摩托车', 35],
+    tram: ['🚋', '电车', '电车', 40],
+    bullettrain: ['🚄', '高铁', '高铁', 45],
   };
   Object.keys(newVehicles).forEach(id => {
     const item = G.getItem(id);
     assert.equal(item.emoji, newVehicles[id][0]);
-    assert.equal(item.price, newVehicles[id][1]);
+    assert.equal(item.name, newVehicles[id][1]);
+    assert.equal(item.voiceName, newVehicles[id][2]);
+    assert.equal(item.price, newVehicles[id][3]);
   });
   assert.equal(G.getItem('nope'), undefined);
 });
