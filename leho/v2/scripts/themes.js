@@ -61,6 +61,14 @@
     fire: 'fire',
     schoolbus: 'everyday',
     taxi: 'everyday',
+    car: 'everyday',
+    suv: 'everyday',
+    minibus: 'everyday',
+    pickup: 'everyday',
+    truck: 'everyday',
+    motorcycle: 'everyday',
+    tram: 'everyday',
+    bullettrain: 'everyday',
     train: 'everyday',
     tractor: 'everyday',
     race: 'adventure',
@@ -70,7 +78,8 @@
   };
 
   function themeForVehicleId(vehicleId) {
-    const key = VEHICLE_THEME[vehicleId] || 'adventure';
+    const family = Garage && Garage.vehicleFamily ? Garage.vehicleFamily(vehicleId) : VEHICLE_THEME[vehicleId];
+    const key = THEMES[family] ? family : 'adventure';
     return THEMES[key];
   }
 

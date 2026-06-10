@@ -251,6 +251,18 @@ test('player previews surface unlocked trophies as the child-facing reward', () 
   assert.match(previewBlock, /preview-trophies/);
 });
 
+test('player select preview refreshes equipped avatar after garage changes', () => {
+  assert.match(html, /id="lele-preview-avatar"/);
+  assert.match(html, /id="haohao-preview-avatar"/);
+  assert.match(html, /id="lele-preview-vehicle-tag"/);
+  assert.match(html, /id="haohao-preview-vehicle-tag"/);
+
+  const previewBlock = between('function updatePlayerPreview() {', '\n}\n\n// ── 编辑名字');
+  assert.match(previewBlock, /\$\(`\$\{pid\}-preview-avatar`\)\.innerHTML\s*=\s*comboAvatar\(pid\)/);
+  assert.match(previewBlock, /const vehicleItem = Garage\.getItem\(g\.equippedVehicle\)/);
+  assert.match(previewBlock, /\$\(`\$\{pid\}-preview-vehicle-tag`\)\.textContent\s*=/);
+});
+
 test('mixed question wording keeps comparison direction aligned with shown equation', () => {
   const compareBlock = between('function generateCompareQuestion()', '\nfunction generateTwoStepQuestion');
   assert.doesNotMatch(compareBlock, /校车比公交车少多少位/);

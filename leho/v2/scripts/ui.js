@@ -25,6 +25,17 @@
     return root.V2Storage.getPlayerGarage(playerId);
   }
 
+  function renderPlayerSelect() {
+    const names = root.V2Storage.loadNames();
+    Object.values(PLAYERS).forEach(player => {
+      const garage = safeGarage(player.id);
+      const combo = root.V2Themes.comboForGarageEntry(garage, player.fallbackDino);
+      $(`${player.id}-combo`).textContent = `${combo.vehicleEmoji}${combo.dinoEmoji}`;
+      const nameEl = document.querySelector(`#player-${player.id} .player-name`);
+      if (nameEl) nameEl.textContent = names[player.id] || player.name;
+    });
+  }
+
   function renderStage(combo) {
     const stage = $('adventure-stage');
     stage.className = `adventure-stage ${combo.theme.cssClass}`;
@@ -197,7 +208,7 @@
 
   function init() {
     initNumpad();
-    $('btn-start').addEventListener('click', () => setPage('page-player'));
+    $('btn-start').addEventListener('click', () => { renderPlayerSelect(); setPage('page-player'); });
     $('player-lele').addEventListener('click', () => startRound('lele'));
     $('player-haohao').addEventListener('click', () => startRound('haohao'));
     $('btn-submit').addEventListener('click', submitCurrentAnswer);
@@ -209,7 +220,7 @@
     $('btn-again').addEventListener('click', () => startRound(currentPlayerId));
     $('btn-open-garage').addEventListener('click', openGarage);
     $('btn-result-garage').addEventListener('click', openGarage);
-    $('btn-garage-back').addEventListener('click', () => setPage('page-player'));
+    $('btn-garage-back').addEventListener('click', () => { renderPlayerSelect(); setPage('page-player'); });
     $('garage-grid').addEventListener('click', event => {
       const cell = event.target.closest('[data-item]');
       if (cell) handleGarageCellTap(cell.dataset.item);
@@ -219,7 +230,7 @@
     $('btn-trophies-back').addEventListener('click', () => setPage('page-home'));
   }
 
-  root.V2UI = { setPage, initNumpad, startRound, renderQuestion, submitCurrentAnswer, renderResult, renderTrophyHall, renderGarage, handleGarageCellTap, init };
+  root.V2UI = { setPage, initNumpad, renderPlayerSelect, startRound, renderQuestion, submitCurrentAnswer, renderResult, renderTrophyHall, renderGarage, handleGarageCellTap, init };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })(typeof window !== 'undefined' ? window : globalThis);

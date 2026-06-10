@@ -2035,8 +2035,8 @@ var _hmt = _hmt || [];
     <div class="player-subtitle">点击你的头像开始答题吧！</div>
     <div class="player-choices">
       <div class="player-card lele" id="pick-lele">
-        <span class="player-avatar"><span class="combo-avatar"><span>🚓</span><span class="dino-badge">🦕</span></span></span>
-        <div class="player-vehicle-tag" style="background:#e8f5e9;color:#2e7d32;">🚓 警车迷</div>
+        <span class="player-avatar" id="lele-preview-avatar"><span class="combo-avatar"><span>🚓</span><span class="dino-badge">🦕</span></span></span>
+        <div class="player-vehicle-tag" id="lele-preview-vehicle-tag" style="background:#e8f5e9;color:#2e7d32;">🚓 警车迷</div>
         <div class="player-name-row">
           <span class="player-name" id="lele-name">乐乐</span>
           <button class="name-edit-btn" id="edit-lele" title="改名字">✏️</button>
@@ -2048,8 +2048,8 @@ var _hmt = _hmt || [];
         <button class="btn-garage" id="btn-garage-lele" type="button">🔧 我的车库</button>
       </div>
       <div class="player-card haohao" id="pick-haohao">
-        <span class="player-avatar"><span class="combo-avatar"><span>🚑</span><span class="dino-badge">🦖</span></span></span>
-        <div class="player-vehicle-tag" style="background:#e3f2fd;color:#1565c0;">🚑 急救迷</div>
+        <span class="player-avatar" id="haohao-preview-avatar"><span class="combo-avatar"><span>🚑</span><span class="dino-badge">🦖</span></span></span>
+        <div class="player-vehicle-tag" id="haohao-preview-vehicle-tag" style="background:#e3f2fd;color:#1565c0;">🚑 急救迷</div>
         <div class="player-name-row">
           <span class="player-name" id="haohao-name">昊昊</span>
           <button class="name-edit-btn" id="edit-haohao" title="改名字">✏️</button>
@@ -4941,6 +4941,10 @@ function updatePlayerPreview() {
   for (const pid of ['lele', 'haohao']) {
     const stats = getPlayerStats(pid);
     const g = getPlayerGarage(pid);
+    const e = equippedEmojis(pid);
+    const vehicleItem = Garage.getItem(g.equippedVehicle);
+    $(`${pid}-preview-avatar`).innerHTML = comboAvatar(pid);
+    $(`${pid}-preview-vehicle-tag`).textContent = `${e.vehicle} ${vehicleItem ? vehicleItem.name : '座驾'}迷`;
     $(`${pid}-name`).textContent = PLAYERS[pid].name;
     $(`${pid}-preview-stars`).textContent = `⭐ ${stats.totalStars}`;
     $(`${pid}-preview-coins`).textContent = `🪙 ${g.coins}`;

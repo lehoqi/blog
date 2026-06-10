@@ -6,6 +6,14 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
+function between(source, start, end) {
+  const from = source.indexOf(start);
+  assert.notEqual(from, -1, `Missing start marker: ${start}`);
+  const to = source.indexOf(end, from + start.length);
+  assert.notEqual(to, -1, `Missing end marker after ${start}: ${end}`);
+  return source.slice(from, to);
+}
+
 test('v2 index loads shared legacy logic before v2 modules', () => {
   const html = read('index.html');
   const order = [
@@ -109,6 +117,21 @@ test('garage UI reads and persists Garage catalog state', () => {
     'btn-result-garage',
     'btn-garage-back'
   ].forEach(pattern => assert.match(ui, new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `missing ${pattern}`));
+});
+
+test('player select combos refresh from garage before display and after garage return', () => {
+  const html = read('index.html');
+  assert.match(html, /id="lele-combo"/);
+  assert.match(html, /id="haohao-combo"/);
+
+  const ui = read('scripts/ui.js');
+  const previewBlock = between(ui, '  function renderPlayerSelect() {', '\n  }\n\n  function renderStage');
+  assert.match(previewBlock, /root\.V2Themes\.comboForGarageEntry/);
+  assert.match(previewBlock, /\$\(`\$\{player\.id\}-combo`\)\.textContent/);
+
+  const initBlock = between(ui, '  function init() {', '\n  }\n\n  root.V2UI');
+  assert.match(initBlock, /\$\('btn-start'\)\.addEventListener\('click', \(\) => \{ renderPlayerSelect\(\); setPage\('page-player'\); \}\)/);
+  assert.match(initBlock, /\$\('btn-garage-back'\)\.addEventListener\('click', \(\) => \{ renderPlayerSelect\(\); setPage\('page-player'\); \}\)/);
 });
 
 test('responsive css covers required v2 viewport constraints', () => {
