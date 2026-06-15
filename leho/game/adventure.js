@@ -1,100 +1,112 @@
 'use strict';
 
+function makeEpisodeTheme(id, name, mapEmoji, bossEmoji, bossName, sceneClass, landmarks, routeStyle, powerLabel, intro, steps, bossLine, victory) {
+  return {
+    id: id,
+    name: name,
+    mapEmoji: mapEmoji,
+    bossEmoji: bossEmoji,
+    bossName: bossName,
+    targetEmoji: '🐶',
+    fallbackColor: '#4aa3df',
+    sceneClass: sceneClass,
+    landmarks: landmarks,
+    routeStyle: routeStyle,
+    powerLabel: powerLabel,
+    sounds: { charge: 'cartoon-charge', dash: 'cartoon-dash', impact: 'cartoon-impact', arena: 'cartoon-arena', finisher: 'cartoon-finisher' },
+    introLines: [intro],
+    stepLines: steps,
+    bossLine: bossLine,
+    victoryLine: victory
+  };
+}
+
 var THEMES = {
-  police: {
-    id: 'police',
-    name: '警车追捕',
-    mapEmoji: '🏙️',
-    bossEmoji: '🚧',
-    bossName: '捣乱车',
-    targetEmoji: '🚓',
-    fallbackColor: '#1e88e5',
-    sceneClass: 'adv-scene-police',
-    landmarks: ['city-a', 'city-b', 'roadblock'],
-    routeStyle: 'city-chase',
-    powerLabel: '警灯能量',
-    sounds: { charge: 'police-charge', dash: 'police-dash', impact: 'police-impact', arena: 'police-arena', finisher: 'police-finisher' },
-    introLines: ['警车出动！追上捣乱车！'],
-    stepLines: ['追近啦！继续加速！', '警灯亮起来！', '快抓住它了！', '准备最后一击！'],
-    bossLine: '捣乱车来了！答对这一题，抓住它！',
-    victoryLine: '破案成功！太厉害了！'
-  },
-  ambulance: {
-    id: 'ambulance',
-    name: '急救救援',
-    mapEmoji: '🏥',
-    bossEmoji: '🦠',
-    bossName: '病毒云',
-    targetEmoji: '🚑',
-    fallbackColor: '#00a86b',
-    sceneClass: 'adv-scene-ambulance',
-    landmarks: ['hospital', 'medical-cross', 'green-lane'],
-    routeStyle: 'rescue-lane',
-    powerLabel: '急救能量',
-    sounds: { charge: 'ambulance-charge', dash: 'ambulance-dash', impact: 'ambulance-impact', arena: 'ambulance-arena', finisher: 'ambulance-finisher' },
-    introLines: ['救护车出发！把急救能量送到终点！'],
-    stepLines: ['急救能量更多啦！', '道路打开啦！', '快到医院啦！', '准备净化病毒云！'],
-    bossLine: '病毒云来了！答对这一题，净化它！',
-    victoryLine: '急救成功！你是小英雄！'
-  },
-  fire: {
-    id: 'fire',
-    name: '消防救援',
-    mapEmoji: '🏘️',
-    bossEmoji: '🔥',
-    bossName: '火焰怪',
-    targetEmoji: '🚒',
-    fallbackColor: '#f4511e',
-    sceneClass: 'adv-scene-fire',
-    landmarks: ['building-fire', 'hydrant', 'water-arc'],
-    routeStyle: 'fire-rescue',
-    powerLabel: '水柱能量',
-    sounds: { charge: 'fire-charge', dash: 'fire-dash', impact: 'fire-impact', arena: 'fire-arena', finisher: 'fire-finisher' },
-    introLines: ['消防车出动！答对五题，打败火焰怪！'],
-    stepLines: ['水管接好啦！', '水柱更强啦！', '火变小啦！', '准备最后灭火！'],
-    bossLine: '火焰怪来了！答对这一题，扑灭它！',
-    victoryLine: '火灭啦！救援成功！'
-  },
-  everyday: {
-    id: 'everyday',
-    name: '安全到站',
-    mapEmoji: '🛣️',
-    bossEmoji: '🚦',
-    bossName: '大堵车',
-    targetEmoji: '🚌',
-    fallbackColor: '#ffb300',
-    sceneClass: 'adv-scene-everyday',
-    landmarks: ['bus-stop', 'crosswalk', 'traffic-sign'],
-    routeStyle: 'station-road',
-    powerLabel: '到站能量',
-    sounds: { charge: 'everyday-charge', dash: 'everyday-dash', impact: 'everyday-impact', arena: 'everyday-arena', finisher: 'everyday-finisher' },
-    introLines: ['安全出发！答对五题，冲破大堵车！'],
-    stepLines: ['第一站到了！', '乘客星星跳起来！', '路障被推开啦！', '准备安全到站！'],
-    bossLine: '大堵车来了！答对这一题，冲过去！',
-    victoryLine: '安全到站！棒极了！'
-  },
-  adventure: {
-    id: 'adventure',
-    name: '太空探险',
-    mapEmoji: '🌌',
-    bossEmoji: '☄️',
-    bossName: '大陨石',
-    targetEmoji: '🚀',
-    fallbackColor: '#7c4dff',
-    sceneClass: 'adv-scene-adventure',
-    landmarks: ['star-gate', 'meteor-a', 'orbit-line'],
-    routeStyle: 'space-orbit',
-    powerLabel: '发射能量',
-    sounds: { charge: 'adventure-charge', dash: 'adventure-dash', impact: 'adventure-impact', arena: 'adventure-arena', finisher: 'adventure-finisher' },
-    introLines: ['准备发射！答对五题，冲过陨石区！'],
-    stepLines: ['火箭加速啦！', '星星轨道亮起来！', '快穿过陨石区啦！', '准备最后发射！'],
-    bossLine: '大陨石来了！答对这一题，冲破它！',
-    victoryLine: '抵达终点！超厉害！'
-  }
+  livingRoom: makeEpisodeTheme(
+    'livingRoom',
+    '客厅积木游戏',
+    '🧸',
+    '🧺',
+    '乱糟糟玩具篮',
+    'cartoon-scene-living-room',
+    ['blocks', 'sofa', 'toy-basket'],
+    'living-room-path',
+    '游戏能量',
+    '客厅积木游戏开始！听清楚题目，一起搭高高。',
+    ['积木搭高啦！', '玩具跳起来啦！', '沙发城堡快完成啦！', '准备整理玩具篮！'],
+    '乱糟糟玩具篮来了！答对这一题，把玩具整理好！',
+    '客厅整理好啦，游戏成功！'
+  ),
+  backyard: makeEpisodeTheme(
+    'backyard',
+    '后院气球游戏',
+    '🎈',
+    '🌬️',
+    '调皮大风',
+    'cartoon-scene-backyard',
+    ['balloons', 'picnic', 'kite'],
+    'backyard-path',
+    '气球能量',
+    '后院气球游戏开始！认真听题，气球就不会飞走。',
+    ['气球升起来啦！', '草地亮起来啦！', '风筝飞起来啦！', '准备挡住调皮大风！'],
+    '调皮大风来了！答对这一题，气球就安全啦！',
+    '气球都安全啦，后院游戏成功！'
+  ),
+  park: makeEpisodeTheme(
+    'park',
+    '公园小路游戏',
+    '🛝',
+    '🕳️',
+    '小泥坑',
+    'cartoon-scene-park',
+    ['slide', 'tree', 'scooter'],
+    'park-path',
+    '公园能量',
+    '公园小路出发！一起数清楚。',
+    ['滑梯亮起来啦！', '树叶跳舞啦！', '小车滑过去啦！', '准备跨过小泥坑！'],
+    '小泥坑挡住路了！答对这一题，就能跨过去！',
+    '顺利穿过公园小路！'
+  ),
+  kitchen: makeEpisodeTheme(
+    'kitchen',
+    '厨房饼干游戏',
+    '🍪',
+    '🥣',
+    '大面糊碗',
+    'cartoon-scene-kitchen',
+    ['cookies', 'milk', 'mixing-bowl'],
+    'kitchen-path',
+    '饼干能量',
+    '厨房饼干游戏开始！听听盘子里有多少。',
+    ['饼干香起来啦！', '杯子排好队啦！', '盘子转起来啦！', '准备搅好大面糊！'],
+    '大面糊碗来了！答对这一题，把饼干做好！',
+    '饼干烤好啦，厨房游戏成功！'
+  ),
+  bedroom: makeEpisodeTheme(
+    'bedroom',
+    '睡前星星游戏',
+    '⭐',
+    '🌙',
+    '困困月亮',
+    'cartoon-scene-bedroom',
+    ['stars', 'lamp', 'book'],
+    'bedroom-path',
+    '星星能量',
+    '睡前星星游戏开始！慢慢听，认真算。',
+    ['星星贴好啦！', '小灯亮起来啦！', '故事书打开啦！', '准备和困困月亮说晚安！'],
+    '困困月亮来了！答对这一题，就能说晚安！',
+    '星星都亮啦，晚安游戏成功！'
+  )
 };
 
+THEMES.police = THEMES.livingRoom;
+THEMES.ambulance = THEMES.backyard;
+THEMES.fire = THEMES.kitchen;
+THEMES.everyday = THEMES.park;
+THEMES.adventure = THEMES.bedroom;
+
 function getTheme(family) {
-  return THEMES[family] || THEMES.adventure;
+  return THEMES[family] || THEMES.livingRoom;
 }
 
 function createRun(family, total) {
