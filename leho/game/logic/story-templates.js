@@ -12,7 +12,7 @@
         scene: 'livingRoom',
         noun: '积木',
         unit: '块',
-        story: (a, b) => `蓝蓝先搭了 ${a} 块积木，橙橙又递来 ${b} 块，`,
+        story: (a, b) => `布鲁伊先搭了 ${a} 块积木，宾果又递来 ${b} 块，`,
         question: '现在一共有多少块积木？'
       },
       {
@@ -35,21 +35,21 @@
         scene: 'livingRoom',
         noun: '积木',
         unit: '块',
-        story: (a, b) => `蓝蓝有 ${a} 块积木，收进玩具箱 ${b} 块，`,
+        story: (a, b) => `布鲁伊有 ${a} 块积木，收进玩具箱 ${b} 块，`,
         question: '外面还剩多少块积木？'
       },
       {
         scene: 'kitchen',
         noun: '饼干',
         unit: '块',
-        story: (a, b) => `盘子里有 ${a} 块饼干，橙橙吃掉 ${b} 块，`,
+        story: (a, b) => `盘子里有 ${a} 块饼干，宾果吃掉 ${b} 块，`,
         question: '盘子里还剩多少块饼干？'
       },
       {
         scene: 'bedroom',
         noun: '星星贴纸',
         unit: '张',
-        story: (a, b) => `床头有 ${a} 张星星贴纸，蓝蓝贴到本子上 ${b} 张，`,
+        story: (a, b) => `床头有 ${a} 张星星贴纸，布鲁伊贴到本子上 ${b} 张，`,
         question: '床头还剩多少张星星贴纸？'
       }
     ],
@@ -58,15 +58,15 @@
         scene: 'park',
         noun: '小石子',
         unit: '颗',
-        story: (a, b) => `蓝蓝捡了 ${a} 颗小石子，橙橙捡了 ${b} 颗小石子，`,
-        question: '蓝蓝比橙橙多多少颗小石子？'
+        story: (a, b) => `布鲁伊捡了 ${a} 颗小石子，宾果捡了 ${b} 颗小石子，`,
+        question: '布鲁伊比宾果多多少颗小石子？'
       },
       {
         scene: 'bedroom',
         noun: '星星贴纸',
         unit: '张',
-        story: (a, b) => `蓝蓝有 ${a} 张星星贴纸，橙橙有 ${b} 张星星贴纸，`,
-        question: '蓝蓝比橙橙多多少张星星贴纸？'
+        story: (a, b) => `布鲁伊有 ${a} 张星星贴纸，宾果有 ${b} 张星星贴纸，`,
+        question: '布鲁伊比宾果多多少张星星贴纸？'
       }
     ]
   };
@@ -81,8 +81,8 @@
         const total = a + b;
         return {
           answer: b,
-          story: `蓝蓝先搭了 ${a} 块积木，橙橙又递来一些，合起来是 ${total} 块，`,
-          question: '橙橙递来多少块积木？',
+          story: `布鲁伊先搭了 ${a} 块积木，宾果又递来一些，合起来是 ${total} 块，`,
+          question: '宾果递来多少块积木？',
           equationParts: [a, '+', '?', '=', total],
           readEquation: `${spokenNumber(a)} 加几等于 ${spokenNumber(total)}？`,
           intent: 'missing-addend'
@@ -98,7 +98,7 @@
         const original = removed + left;
         return {
           answer: original,
-          story: `盘子里原来有一些饼干，橙橙吃掉 ${removed} 块后，还剩 ${left} 块，`,
+          story: `盘子里原来有一些饼干，宾果吃掉 ${removed} 块后，还剩 ${left} 块，`,
           question: '盘子里原来有多少块饼干？',
           equationParts: ['?', '-', removed, '=', left],
           readEquation: `几减 ${spokenNumber(removed)} 等于 ${spokenNumber(left)}？`,
@@ -115,8 +115,8 @@
         const left = original - removed;
         return {
           answer: removed,
-          story: `蓝蓝有 ${original} 张星星贴纸，贴到本子上一些后，还剩 ${left} 张，`,
-          question: '蓝蓝贴到本子上多少张星星贴纸？',
+          story: `布鲁伊有 ${original} 张星星贴纸，贴到本子上一些后，还剩 ${left} 张，`,
+          question: '布鲁伊贴到本子上多少张星星贴纸？',
           equationParts: [original, '-', '?', '=', left],
           readEquation: `${spokenNumber(original)} 减几等于 ${spokenNumber(left)}？`,
           intent: 'missing-subtrahend'
@@ -147,7 +147,7 @@
       mode: 'twoStepSubtractAdd',
       build: (a, b, c) => ({
         answer: a - b + c,
-        story: `盘子里有 ${a} 块饼干，橙橙吃掉 ${b} 块，妈妈又放上 ${c} 块，`,
+        story: `盘子里有 ${a} 块饼干，宾果吃掉 ${b} 块，妈妈又放上 ${c} 块，`,
         question: '盘子里现在有多少块饼干？',
         equationParts: [a, '-', b, '+', c, '='],
         readEquation: `${spokenNumber(a)} 减 ${spokenNumber(b)} 再加 ${spokenNumber(c)} 等于多少？`,

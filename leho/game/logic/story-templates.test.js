@@ -58,7 +58,7 @@ test('validator rejects mismatched story semantics', () => {
     intent: 'remaining',
     answer: 7,
     equationParts: [3, '+', 4, '='],
-    story: '蓝蓝有 3 块积木，又拿来 4 块，',
+    story: '布鲁伊有 3 块积木，又拿来 4 块，',
     question: '还剩多少块？',
     readEquation: '三加四等于多少？',
     unit: '块',

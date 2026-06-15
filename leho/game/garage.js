@@ -20,8 +20,8 @@ var CATALOG = [
   { id:'train',        kind:'vehicle', emoji:'🛏️', name:'小床',     voiceName:'小床',     price:30 },
   { id:'rocket',       kind:'vehicle', emoji:'🌙', name:'月亮灯',   voiceName:'月亮灯',   price:40 },
   { id:'ufo',          kind:'vehicle', emoji:'✨', name:'闪闪星河', voiceName:'闪闪星河', price:60 },
-  { id:'brontosaurus', kind:'dino',    emoji:'🐶', name:'蓝色小狗装', voiceName:'蓝色小狗装', price:15 },
-  { id:'trex',         kind:'dino',    emoji:'🧡', name:'橙色小狗装', voiceName:'橙色小狗装', price:15 },
+  { id:'brontosaurus', kind:'dino',    emoji:'🐶', name:'布鲁伊小狗装', voiceName:'布鲁伊小狗装', price:15 },
+  { id:'trex',         kind:'dino',    emoji:'🧡', name:'宾果小狗装', voiceName:'宾果小狗装', price:15 },
   { id:'dragon',       kind:'dino',    emoji:'🌟', name:'星星披风',   voiceName:'星星披风',   price:35 }
 ];
 

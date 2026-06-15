@@ -7,21 +7,21 @@
   const CHARACTERS = {
     lele: {
       id: 'lele',
-      name: '蓝蓝',
+      name: '布鲁伊',
       color: '#4aa3df',
       colorDeep: '#1665a8',
       patch: '#8ed1ff',
       accent: '#ffd166',
-      voiceName: '蓝蓝'
+      voiceName: '布鲁伊'
     },
     haohao: {
       id: 'haohao',
-      name: '橙橙',
+      name: '宾果',
       color: '#f5a14a',
       colorDeep: '#c45b1c',
       patch: '#ffd39a',
       accent: '#5fb7e8',
-      voiceName: '橙橙'
+      voiceName: '宾果'
     }
   };
 
@@ -138,7 +138,7 @@
   function voiceLine(key, playerId) {
     const c = character(playerId);
     const lines = {
-      homeIntro: '蓝蓝和橙橙准备玩数学游戏啦。点开始，我们一起听题。',
+      homeIntro: '布鲁伊和宾果准备玩数学游戏啦。点开始，我们一起听题。',
       playerPrompt: '谁来玩？点一下你的角色。',
       selected: `${c.voiceName}出发！认真听题，慢慢算。`,
       correct: '答对啦！太棒了！',

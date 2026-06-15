@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>蓝蓝橙橙数学游戏</title>
+  <title>布鲁伊和宾果数学游戏</title>
   <script>
 var _hmt = _hmt || [];
 (function() {
@@ -2292,18 +2292,18 @@ var _hmt = _hmt || [];
   <div class="page active" id="start-page">
     <div class="dino-hero-row">
       <div class="dino-hero">
-        <span class="cartoon-dog cartoon-dog-lele" aria-label="蓝蓝" role="img" style="--dog-main:#4aa3df;--dog-deep:#1665a8;--dog-patch:#8ed1ff;--dog-accent:#ffd166;">
+        <span class="cartoon-dog cartoon-dog-lele" aria-label="布鲁伊" role="img" style="--dog-main:#4aa3df;--dog-deep:#1665a8;--dog-patch:#8ed1ff;--dog-accent:#ffd166;">
           <span class="dog-art"><span class="dog-tail"></span><span class="dog-body"></span><span class="dog-head"><span class="dog-ear dog-ear-left"></span><span class="dog-ear dog-ear-right"></span><span class="dog-face-patch"></span><span class="dog-eye dog-eye-left"></span><span class="dog-eye dog-eye-right"></span><span class="dog-muzzle"></span><span class="dog-nose"></span></span></span>
         </span>
       </div>
       <span class="dino-hero-vs">+</span>
       <div class="dino-hero-2">
-        <span class="cartoon-dog cartoon-dog-haohao" aria-label="橙橙" role="img" style="--dog-main:#f5a14a;--dog-deep:#c45b1c;--dog-patch:#ffd39a;--dog-accent:#5fb7e8;">
+        <span class="cartoon-dog cartoon-dog-haohao" aria-label="宾果" role="img" style="--dog-main:#f5a14a;--dog-deep:#c45b1c;--dog-patch:#ffd39a;--dog-accent:#5fb7e8;">
           <span class="dog-art"><span class="dog-tail"></span><span class="dog-body"></span><span class="dog-head"><span class="dog-ear dog-ear-left"></span><span class="dog-ear dog-ear-right"></span><span class="dog-face-patch"></span><span class="dog-eye dog-eye-left"></span><span class="dog-eye dog-eye-right"></span><span class="dog-muzzle"></span><span class="dog-nose"></span></span></span>
         </span>
       </div>
     </div>
-    <div class="title-main">蓝蓝橙橙数学游戏</div>
+    <div class="title-main">布鲁伊和宾果数学游戏</div>
     <div class="title-sub">听故事，数一数，玩一集家庭小动画</div>
     <div class="stars-row">🧱🎈🍪⭐🛝</div>
     <button class="btn-start" id="btn-start">开始游戏！</button>
@@ -2339,7 +2339,7 @@ var _hmt = _hmt || [];
         <span class="player-avatar" id="lele-preview-avatar">🐶</span>
         <div class="player-vehicle-tag" id="lele-preview-vehicle-tag" style="background:#e3f4ff;color:#1665a8;">🧱 积木游戏</div>
         <div class="player-name-row">
-          <span class="player-name" id="lele-name">蓝蓝</span>
+          <span class="player-name" id="lele-name">布鲁伊</span>
           <button class="name-edit-btn" id="edit-lele" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
@@ -2352,12 +2352,12 @@ var _hmt = _hmt || [];
         <span class="player-avatar" id="haohao-preview-avatar">🐶</span>
         <div class="player-vehicle-tag" id="haohao-preview-vehicle-tag" style="background:#fff0d8;color:#c45b1c;">🎈 气球游戏</div>
         <div class="player-name-row">
-          <span class="player-name" id="haohao-name">橙橙</span>
+          <span class="player-name" id="haohao-name">宾果</span>
           <button class="name-edit-btn" id="edit-haohao" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="haohao-preview-stars">⭐ 0</div>
         <div class="player-coins" id="haohao-preview-coins">🪙 0</div>
-        <div class="player-rank-badge" id="haohao-preview-title">急救新手</div>
+        <div class="player-rank-badge" id="haohao-preview-title">气球新手</div>
         <div class="player-trophy-strip empty" id="haohao-preview-trophies">还没有奖杯</div>
         <button class="btn-garage" id="btn-garage-haohao" type="button">🧸 游戏柜</button>
       </div>
@@ -2450,7 +2450,7 @@ var _hmt = _hmt || [];
   <div class="page" id="garage-page">
     <div class="garage-head">
       <span class="garage-avatar" id="garage-avatar">🐶🧸</span>
-      <div class="garage-title"><span id="garage-name">蓝蓝</span>的游戏柜</div>
+      <div class="garage-title"><span id="garage-name">布鲁伊</span>的游戏柜</div>
       <div class="garage-coins">🪙 <span id="garage-coins">0</span></div>
     </div>
     <div class="garage-section-title">🧸 游戏道具</div>
@@ -2506,7 +2506,7 @@ function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) 
 
 // ── 玩家配置 ──
 const NAMES_KEY = 'dino_math_names';
-const DEFAULT_NAMES = { lele: '蓝蓝', haohao: '橙橙' };
+const DEFAULT_NAMES = { lele: '布鲁伊', haohao: '宾果' };
 
 function loadNames() {
   try {
@@ -2540,8 +2540,8 @@ function saveSpeakEquation(on) { saveBoolSetting(SPEAK_EQUATION_KEY, on); }
 
 const savedNames = loadNames();
 const PLAYERS = {
-  lele:   { name: savedNames.lele,   avatar: '🐶', vehicle: '🧱', vehicleName: '蓝色小狗', preferTag: 'livingRoom', color: '#1665a8', colorLight: '#e3f4ff' },
-  haohao: { name: savedNames.haohao, avatar: '🐶', vehicle: '🎈', vehicleName: '橙色小狗', preferTag: 'backyard',   color: '#c45b1c', colorLight: '#fff0d8' }
+  lele:   { name: savedNames.lele,   avatar: '🐶', vehicle: '🧱', vehicleName: '布鲁伊小狗', preferTag: 'livingRoom', color: '#1665a8', colorLight: '#e3f4ff' },
+  haohao: { name: savedNames.haohao, avatar: '🐶', vehicle: '🎈', vehicleName: '宾果小狗', preferTag: 'backyard',   color: '#c45b1c', colorLight: '#fff0d8' }
 };
 
 function equippedEmojis(playerId) {
@@ -2934,73 +2934,73 @@ function playStart() {
 // ── 题目生成 ──
 // 每条故事自带完整提问语，量词与场景严格匹配
 const STORIES_ADD = [
-  (a,b) => ({ text: `蓝蓝找到了 ${a} 颗星星，又找到 ${b} 颗，`, q: '一共找到多少颗？' }),
+  (a,b) => ({ text: `布鲁伊找到了 ${a} 颗星星，又找到 ${b} 颗，`, q: '一共找到多少颗？' }),
   (a,b) => ({ text: `妈妈摆好 ${a} 个杯子，又摆好 ${b} 个，`, q: '现在一共有多少个杯子？' }),
-  (a,b) => ({ text: `蓝蓝摘了 ${a} 个苹果，又摘了 ${b} 个，`, q: '一共摘了多少个？' }),
+  (a,b) => ({ text: `布鲁伊摘了 ${a} 个苹果，又摘了 ${b} 个，`, q: '一共摘了多少个？' }),
   (a,b) => ({ text: `森林里有 ${a} 只小鸟，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
-  (a,b) => ({ text: `蓝蓝有 ${a} 块饼干，橙橙又给了 ${b} 块，`, q: '现在一共有多少块？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 块饼干，宾果又给了 ${b} 块，`, q: '现在一共有多少块？' }),
   (a,b) => ({ text: `草地上有 ${a} 只蝴蝶，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
   (a,b) => ({ text: `小兔子拔了 ${a} 根胡萝卜，又拔了 ${b} 根，`, q: '一共拔了多少根？' }),
-  (a,b) => ({ text: `玩具篮里有 ${a} 块积木，蓝蓝又放进 ${b} 块，`, q: '现在一共有多少块积木？' }),
-  (a,b) => ({ text: `蓝蓝画了 ${a} 幅画，又画了 ${b} 幅，`, q: '一共画了多少幅？' }),
+  (a,b) => ({ text: `玩具篮里有 ${a} 块积木，布鲁伊又放进 ${b} 块，`, q: '现在一共有多少块积木？' }),
+  (a,b) => ({ text: `布鲁伊画了 ${a} 幅画，又画了 ${b} 幅，`, q: '一共画了多少幅？' }),
   (a,b) => ({ text: `花园里开了 ${a} 朵花，又开了 ${b} 朵，`, q: '现在一共有多少朵？' }),
   (a,b) => ({ text: `客厅地毯上有 ${a} 个抱枕，爸爸又抱来 ${b} 个，`, q: '地毯上一共有多少个抱枕？', tag: 'police' }),
-  (a,b) => ({ text: `蓝蓝摆好 ${a} 本图画书，橙橙又摆好 ${b} 本，`, q: '一共摆好多少本图画书？', tag: 'police' }),
+  (a,b) => ({ text: `布鲁伊摆好 ${a} 本图画书，宾果又摆好 ${b} 本，`, q: '一共摆好多少本图画书？', tag: 'police' }),
   (a,b) => ({ text: `沙发旁有 ${a} 个玩具，妈妈又放来 ${b} 个，`, q: '现在一共有多少个玩具？', tag: 'police' }),
-  (a,b) => ({ text: `后院有 ${a} 个泡泡，橙橙又吹出 ${b} 个，`, q: '后院一共有多少个泡泡？', tag: 'ambulance' }),
-  (a,b) => ({ text: `草地上有 ${a} 个粉笔圆圈，蓝蓝又画了 ${b} 个，`, q: '现在一共有多少个圆圈？', tag: 'ambulance' }),
+  (a,b) => ({ text: `后院有 ${a} 个泡泡，宾果又吹出 ${b} 个，`, q: '后院一共有多少个泡泡？', tag: 'ambulance' }),
+  (a,b) => ({ text: `草地上有 ${a} 个粉笔圆圈，布鲁伊又画了 ${b} 个，`, q: '现在一共有多少个圆圈？', tag: 'ambulance' }),
   (a,b) => ({ text: `厨房盘子里有 ${a} 块饼干，爸爸又放上 ${b} 块，`, q: '盘子里一共有多少块饼干？', tag: 'fire' }),
   (a,b) => ({ text: `桌上有 ${a} 根胡萝卜条，妈妈又切了 ${b} 根，`, q: '桌上一共有多少根胡萝卜条？', tag: 'fire' }),
-  (a,b) => ({ text: `厨房柜台有 ${a} 个小碗，橙橙又拿来 ${b} 个，`, q: '柜台上一共有多少个小碗？', tag: 'fire' }),
-  (a,b) => ({ text: `蓝蓝先摆好 ${a} 把勺子，又摆好 ${b} 把，`, q: '一共摆好多少把勺子？', tag: 'fire' }),
+  (a,b) => ({ text: `厨房柜台有 ${a} 个小碗，宾果又拿来 ${b} 个，`, q: '柜台上一共有多少个小碗？', tag: 'fire' }),
+  (a,b) => ({ text: `布鲁伊先摆好 ${a} 把勺子，又摆好 ${b} 把，`, q: '一共摆好多少把勺子？', tag: 'fire' }),
   (a,b) => ({ text: `餐盘里有 ${a} 个小松饼，妈妈又加了 ${b} 个，`, q: '餐盘里一共有多少个小松饼？', tag: 'fire' }),
   (a,b) => ({ text: `厨房桌边先来了 ${a} 个小帮手，又来了 ${b} 个，`, q: '一共有多少个小帮手？', tag: 'fire' }),
   (a,b) => ({ text: `公园草地上有 ${a} 片叶子，又飘来 ${b} 片，`, q: '草地上一共有多少片叶子？', tag: 'everyday' }),
-  (a,b) => ({ text: `沙坑里有 ${a} 个小铲子，橙橙又拿来 ${b} 个，`, q: '沙坑里一共有多少个小铲子？', tag: 'everyday' }),
-  (a,b) => ({ text: `秋千旁有 ${a} 朵小花，蓝蓝又发现 ${b} 朵，`, q: '一共有多少朵小花？', tag: 'everyday' }),
+  (a,b) => ({ text: `沙坑里有 ${a} 个小铲子，宾果又拿来 ${b} 个，`, q: '沙坑里一共有多少个小铲子？', tag: 'everyday' }),
+  (a,b) => ({ text: `秋千旁有 ${a} 朵小花，布鲁伊又发现 ${b} 朵，`, q: '一共有多少朵小花？', tag: 'everyday' }),
   (a,b) => ({ text: `野餐垫上有 ${a} 个苹果，妈妈又放了 ${b} 个，`, q: '野餐垫上一共有多少个苹果？', tag: 'everyday' }),
   (a,b) => ({ text: `公园长椅旁先来了 ${a} 个朋友，又来了 ${b} 个，`, q: '长椅旁一共有多少个朋友？', tag: 'everyday' }),
   (a,b) => ({ text: `草地上先有 ${a} 个气球，又系上 ${b} 个，`, q: '草地上一共有多少个气球？', tag: 'everyday' }),
   (a,b) => ({ text: `睡前天空灯亮了 ${a} 颗星星，又亮了 ${b} 颗，`, q: '一共亮了多少颗星星？', tag: 'adventure' }),
-  (a,b) => ({ text: `床边有 ${a} 个星星贴纸，蓝蓝又贴上 ${b} 个，`, q: '床边一共有多少个星星贴纸？', tag: 'adventure' }),
-  (a,b) => ({ text: `梦境毯子上有 ${a} 颗小月亮，橙橙又找到 ${b} 颗，`, q: '一共有多少颗小月亮？', tag: 'adventure' }),
+  (a,b) => ({ text: `床边有 ${a} 个星星贴纸，布鲁伊又贴上 ${b} 个，`, q: '床边一共有多少个星星贴纸？', tag: 'adventure' }),
+  (a,b) => ({ text: `梦境毯子上有 ${a} 颗小月亮，宾果又找到 ${b} 颗，`, q: '一共有多少颗小月亮？', tag: 'adventure' }),
   (a,b) => ({ text: `枕头堡里有 ${a} 个软枕头，爸爸又递来 ${b} 个，`, q: '枕头堡里一共有多少个软枕头？', tag: 'adventure' }),
   (a,b) => ({ text: `床头书架有 ${a} 张星空卡片，又放上 ${b} 张，`, q: '书架上一共有多少张星空卡片？', tag: 'adventure' }),
   (a,b) => ({ text: `小夜灯旁有 ${a} 个梦泡泡，又冒出 ${b} 个，`, q: '一共有多少个梦泡泡？', tag: 'adventure' }),
 ];
 const STORIES_SUB = [
-  (a,b) => ({ text: `蓝蓝有 ${a} 颗星星，送给橙橙 ${b} 颗，`, q: '还剩多少颗？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 颗星星，送给宾果 ${b} 颗，`, q: '还剩多少颗？' }),
   (a,b) => ({ text: `树上有 ${a} 个果子，掉了 ${b} 个，`, q: '树上还剩多少个？' }),
-  (a,b) => ({ text: `蓝蓝有 ${a} 块糖，吃掉了 ${b} 块，`, q: '还剩多少块？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 块糖，吃掉了 ${b} 块，`, q: '还剩多少块？' }),
   (a,b) => ({ text: `池塘里有 ${a} 只青蛙，跳走了 ${b} 只，`, q: '池塘里还剩多少只？' }),
-  (a,b) => ({ text: `蓝蓝有 ${a} 朵花，送给妈妈 ${b} 朵，`, q: '还剩多少朵？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 朵花，送给妈妈 ${b} 朵，`, q: '还剩多少朵？' }),
   (a,b) => ({ text: `盘子里有 ${a} 个草莓，小猫吃了 ${b} 个，`, q: '盘子里还剩多少个？' }),
-  (a,b) => ({ text: `蓝蓝有 ${a} 支蜡笔，借给橙橙 ${b} 支，`, q: '还剩多少支？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 支蜡笔，借给宾果 ${b} 支，`, q: '还剩多少支？' }),
   (a,b) => ({ text: `天上有 ${a} 个气球，飞走了 ${b} 个，`, q: '还剩多少个？' }),
-  (a,b) => ({ text: `书架上有 ${a} 本书，蓝蓝拿走了 ${b} 本，`, q: '书架上还剩多少本？' }),
+  (a,b) => ({ text: `书架上有 ${a} 本书，布鲁伊拿走了 ${b} 本，`, q: '书架上还剩多少本？' }),
   (a,b) => ({ text: `小鸭子有 ${a} 条小鱼，吃掉了 ${b} 条，`, q: '还剩多少条？' }),
-  (a,b) => ({ text: `客厅地毯上有 ${a} 块积木，蓝蓝收进盒子 ${b} 块，`, q: '地毯上还剩多少块积木？', tag: 'police' }),
-  (a,b) => ({ text: `蓝蓝有 ${a} 张贴纸，送给橙橙 ${b} 张，`, q: '蓝蓝还剩多少张贴纸？', tag: 'police' }),
+  (a,b) => ({ text: `客厅地毯上有 ${a} 块积木，布鲁伊收进盒子 ${b} 块，`, q: '地毯上还剩多少块积木？', tag: 'police' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 张贴纸，送给宾果 ${b} 张，`, q: '布鲁伊还剩多少张贴纸？', tag: 'police' }),
   (a,b) => ({ text: `沙发上有 ${a} 个抱枕，妈妈拿走 ${b} 个，`, q: '沙发上还剩多少个抱枕？', tag: 'police' }),
   (a,b) => ({ text: `后院有 ${a} 个泡泡，啪地破了 ${b} 个，`, q: '后院还剩多少个泡泡？', tag: 'ambulance' }),
   (a,b) => ({ text: `草地上有 ${a} 个粉笔星星，被脚步擦掉 ${b} 个，`, q: '草地上还剩多少个粉笔星星？', tag: 'ambulance' }),
-  (a,b) => ({ text: `盘子里有 ${a} 块饼干，橙橙吃掉 ${b} 块，`, q: '盘子里还剩多少块饼干？', tag: 'fire' }),
-  (a,b) => ({ text: `桌上有 ${a} 根胡萝卜条，蓝蓝拿走 ${b} 根，`, q: '桌上还剩多少根胡萝卜条？', tag: 'fire' }),
+  (a,b) => ({ text: `盘子里有 ${a} 块饼干，宾果吃掉 ${b} 块，`, q: '盘子里还剩多少块饼干？', tag: 'fire' }),
+  (a,b) => ({ text: `桌上有 ${a} 根胡萝卜条，布鲁伊拿走 ${b} 根，`, q: '桌上还剩多少根胡萝卜条？', tag: 'fire' }),
   (a,b) => ({ text: `厨房柜台有 ${a} 个小碗，妈妈收走 ${b} 个，`, q: '柜台上还剩多少个小碗？', tag: 'fire' }),
-  (a,b) => ({ text: `蓝蓝摆了 ${a} 把勺子，爸爸拿走 ${b} 把，`, q: '桌上还剩多少把勺子？', tag: 'fire' }),
+  (a,b) => ({ text: `布鲁伊摆了 ${a} 把勺子，爸爸拿走 ${b} 把，`, q: '桌上还剩多少把勺子？', tag: 'fire' }),
   (a,b) => ({ text: `餐盘里有 ${a} 个小松饼，被吃掉 ${b} 个，`, q: '餐盘里还剩多少个小松饼？', tag: 'fire' }),
   (a,b) => ({ text: `厨房桌边有 ${a} 个小帮手，休息去了 ${b} 个，`, q: '桌边还剩多少个小帮手？', tag: 'fire' }),
   (a,b) => ({ text: `公园草地上有 ${a} 片叶子，风吹走 ${b} 片，`, q: '草地上还剩多少片叶子？', tag: 'everyday' }),
   (a,b) => ({ text: `沙坑里有 ${a} 个小铲子，收回袋子 ${b} 个，`, q: '沙坑里还剩多少个小铲子？', tag: 'everyday' }),
-  (a,b) => ({ text: `秋千旁有 ${a} 朵小花，蓝蓝摘走 ${b} 朵，`, q: '秋千旁还剩多少朵小花？', tag: 'everyday' }),
+  (a,b) => ({ text: `秋千旁有 ${a} 朵小花，布鲁伊摘走 ${b} 朵，`, q: '秋千旁还剩多少朵小花？', tag: 'everyday' }),
   (a,b) => ({ text: `野餐垫上有 ${a} 个苹果，大家吃掉 ${b} 个，`, q: '野餐垫上还剩多少个苹果？', tag: 'everyday' }),
   (a,b) => ({ text: `长椅旁有 ${a} 个朋友，先回家 ${b} 个，`, q: '长椅旁还剩多少个朋友？', tag: 'everyday' }),
   (a,b) => ({ text: `草地上有 ${a} 个气球，飞走 ${b} 个，`, q: '草地上还剩多少个气球？', tag: 'everyday' }),
   (a,b) => ({ text: `睡前天空灯亮着 ${a} 颗星星，关掉 ${b} 颗，`, q: '还亮着多少颗星星？', tag: 'adventure' }),
-  (a,b) => ({ text: `床边有 ${a} 个星星贴纸，橙橙揭下 ${b} 个，`, q: '床边还剩多少个星星贴纸？', tag: 'adventure' }),
+  (a,b) => ({ text: `床边有 ${a} 个星星贴纸，宾果揭下 ${b} 个，`, q: '床边还剩多少个星星贴纸？', tag: 'adventure' }),
   (a,b) => ({ text: `梦境毯子上有 ${a} 颗小月亮，藏起来 ${b} 颗，`, q: '毯子上还剩多少颗小月亮？', tag: 'adventure' }),
   (a,b) => ({ text: `枕头堡里有 ${a} 个软枕头，爸爸拿走 ${b} 个，`, q: '枕头堡里还剩多少个软枕头？', tag: 'adventure' }),
-  (a,b) => ({ text: `床头书架有 ${a} 张星空卡片，蓝蓝拿走 ${b} 张，`, q: '书架上还剩多少张星空卡片？', tag: 'adventure' }),
+  (a,b) => ({ text: `床头书架有 ${a} 张星空卡片，布鲁伊拿走 ${b} 张，`, q: '书架上还剩多少张星空卡片？', tag: 'adventure' }),
   (a,b) => ({ text: `小夜灯旁有 ${a} 个梦泡泡，飘走 ${b} 个，`, q: '还剩多少个梦泡泡？', tag: 'adventure' }),
 ];
 function pickStory(pool, preferTag) {
@@ -3199,7 +3199,7 @@ function generateMissingQuestion() {
   if (mode === 0) {
     const a = randInt(3, 9), b = randInt(3, 9), total = a + b;
     return attachEquation(
-      { a, b, op:'+', answer:a, story:`蓝蓝先有一些星星，又找到 ${b} 颗，合起来是 ${total} 颗，`, question:'蓝蓝一开始有多少颗？', tag: currentFamily() || 'general', type:'missing' },
+      { a, b, op:'+', answer:a, story:`布鲁伊先有一些星星，又找到 ${b} 颗，合起来是 ${total} 颗，`, question:'布鲁伊一开始有多少颗？', tag: currentFamily() || 'general', type:'missing' },
       ['?', '+', b, '=', total],
       `几加 ${b} 等于 ${total}？`
     );
@@ -3207,7 +3207,7 @@ function generateMissingQuestion() {
   if (mode === 1) {
     const a = randInt(3, 9), b = randInt(3, 9), total = a + b;
     return attachEquation(
-      { a, b, op:'+', answer:b, story:`蓝蓝先有 ${a} 颗星星，又找到一些，合起来是 ${total} 颗，`, question:'后来又找到多少颗？', tag: currentFamily() || 'general', type:'missing' },
+      { a, b, op:'+', answer:b, story:`布鲁伊先有 ${a} 颗星星，又找到一些，合起来是 ${total} 颗，`, question:'后来又找到多少颗？', tag: currentFamily() || 'general', type:'missing' },
       [a, '+', '?', '=', total],
       `${a} 加几等于 ${total}？`
     );
@@ -3215,14 +3215,14 @@ function generateMissingQuestion() {
   if (mode === 2) {
     const a = randInt(11, 20), b = randInt(2, 9), left = a - b;
     return attachEquation(
-      { a, b, op:'-', answer:a, story:`救援车上原来有一些急救包，用掉 ${b} 个后还剩 ${left} 个，`, question:'原来有多少个急救包？', tag: currentFamily() || 'general', type:'missing' },
+      { a, b, op:'-', answer:a, story:`玩具篮里原来有一些积木，收进盒子 ${b} 块后还剩 ${left} 块，`, question:'玩具篮里原来有多少块积木？', tag: currentFamily() || 'general', type:'missing' },
       ['?', '-', b, '=', left],
       `几减 ${b} 等于 ${left}？`
     );
   }
   const a = randInt(11, 20), answer = randInt(2, 9), left = a - answer;
   return attachEquation(
-    { a, b: answer, op:'-', answer, story:`蓝蓝有 ${a} 颗星星，送出去一些后还剩 ${left} 颗，`, question:'蓝蓝送出去了多少颗？', tag: currentFamily() || 'general', type:'missing' },
+    { a, b: answer, op:'-', answer, story:`布鲁伊有 ${a} 颗星星，送出去一些后还剩 ${left} 颗，`, question:'布鲁伊送出去了多少颗？', tag: currentFamily() || 'general', type:'missing' },
     [a, '-', '?', '=', left],
     `${a} 减几等于 ${left}？`
   );
@@ -3233,13 +3233,13 @@ function generateCompareQuestion() {
   const askMore = Math.random() < 0.75;
   if (askMore) {
     return attachEquation(
-      { a: high, b: low, op:'-', answer: high - low, story:`蓝蓝有 ${high} 颗星星，橙橙有 ${low} 颗，`, question:'蓝蓝比橙橙多多少颗？', tag: currentFamily() || 'general', type:'compare' },
+      { a: high, b: low, op:'-', answer: high - low, story:`布鲁伊有 ${high} 颗星星，宾果有 ${low} 颗，`, question:'布鲁伊比宾果多多少颗？', tag: currentFamily() || 'general', type:'compare' },
       [high, '-', low, '='],
       `${high} 减 ${low} 等于多少？`
     );
   }
   return attachEquation(
-    { a: high, b: low, op:'-', answer: high - low, story:`校车上有 ${low} 位小朋友，公交车上有 ${high} 位小朋友，`, question:'公交车比校车多多少位？', tag: currentFamily() || 'general', type:'compare' },
+    { a: high, b: low, op:'-', answer: high - low, story:`宾果捡了 ${low} 颗小石子，布鲁伊捡了 ${high} 颗小石子，`, question:'布鲁伊比宾果多多少颗小石子？', tag: currentFamily() || 'general', type:'compare' },
     [high, '-', low, '='],
     `${high} 减 ${low} 等于多少？`
   );
@@ -3250,7 +3250,7 @@ function generateTwoStepQuestion() {
     const b = randInt(2, Math.min(8, 20 - a));
     const c = randInt(1, Math.min(9, a + b - 1));
     return attachEquation(
-      { a, b, c, op:'+-', answer:a + b - c, story:`蓝蓝先收集 ${a} 颗星星，又收集 ${b} 颗，后来送给橙橙 ${c} 颗，`, question:'现在还剩多少颗？', tag: currentFamily() || 'general', type:'twoStep' },
+      { a, b, c, op:'+-', answer:a + b - c, story:`布鲁伊先收集 ${a} 颗星星，又收集 ${b} 颗，后来送给宾果 ${c} 颗，`, question:'现在还剩多少颗？', tag: currentFamily() || 'general', type:'twoStep' },
       [a, '+', b, '-', c, '='],
       `${a} 加 ${b} 再减 ${c} 等于多少？`
     );
@@ -3259,7 +3259,7 @@ function generateTwoStepQuestion() {
   const b = randInt(1, Math.min(9, a - 1));
   const c = randInt(1, Math.min(9, 30 - (a - b)));
   return attachEquation(
-    { a, b, c, op:'-+', answer:a - b + c, story:`火箭带了 ${a} 桶燃料，飞行用掉 ${b} 桶，又补充 ${c} 桶，`, question:'现在有多少桶燃料？', tag: currentFamily() || 'general', type:'twoStep' },
+    { a, b, c, op:'-+', answer:a - b + c, story:`床边有 ${a} 张星星贴纸，布鲁伊贴到本子上 ${b} 张，宾果又拿来 ${c} 张，`, question:'床边现在有多少张星星贴纸？', tag: currentFamily() || 'general', type:'twoStep' },
     [a, '-', b, '+', c, '='],
     `${a} 减 ${b} 再加 ${c} 等于多少？`
   );
@@ -3379,16 +3379,16 @@ function startFireworks(duration = 2200) {
 
 // ── 庆祝动画 ──
 const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🐶'];
-const CELEBRATE_POLICE    = ['🚓 警笛响起！嘀嘟嘀嘟～','🚓 破案成功！太厉害了！','🚓 警长出击！答对啦！'];
-const CELEBRATE_AMBULANCE = ['🚑 急救成功！你是小英雄！','🚑 嘀嘟嘀嘟～救到啦！','🚑 急救达人！太棒了！'];
-const CELEBRATE_FIRE      = ['🚒 火灭啦！你是消防小英雄！','🚒 救援成功！太勇敢了！','🚒 呜哇——救到啦！太棒了！'];
-const CELEBRATE_EVERYDAY  = ['🚌 安全到站！棒极了！','🚕 一路顺风！真厉害！','🚂 呜——准点出发！太棒了！'];
-const CELEBRATE_ADVENTURE = ['🚀 发射成功！冲出大气层！','🏎️ 冲线第一！太快啦！','🛸 探索成功！你是小宇航员！'];
+const CELEBRATE_POLICE    = ['🧱 积木啪嗒啪嗒！','🛋️ 沙发城堡完成啦！','🧺 玩具收好啦！'];
+const CELEBRATE_AMBULANCE = ['🎈 气球嘭嘭飞起来！','🪁 风筝飞高啦！','🌿 后院亮起来啦！'];
+const CELEBRATE_FIRE      = ['🍪 饼干叮叮出炉啦！','🥣 面糊搅好啦！','🍽️ 小盘子转起来啦！'];
+const CELEBRATE_EVERYDAY  = ['🛝 滑梯亮起来啦！','🌳 树叶跳舞啦！','🛴 小车滑过去啦！'];
+const CELEBRATE_ADVENTURE = ['⭐ 星星亮起来啦！','🌙 月亮说晚安啦！','📘 故事书打开啦！'];
 const CELEBRATE_BY_FAMILY = {
   police: CELEBRATE_POLICE, ambulance: CELEBRATE_AMBULANCE,
   fire: CELEBRATE_FIRE, everyday: CELEBRATE_EVERYDAY, adventure: CELEBRATE_ADVENTURE
 };
-const RUSH_TEXT = { fire: '🚒 火灭啦！救援成功！', everyday: '🚌 安全到站！', adventure: '🚀 抵达终点！超厉害！' };
+const RUSH_TEXT = { fire: '🍪 饼干做好啦！', everyday: '🛝 公园小路通过啦！', adventure: '⭐ 星星亮起来啦！' };
 const SFX_BY_FAMILY = { fire: playFireBell, everyday: playEverydayHorn, adventure: playAdventureWhoosh };
 
 function showCelebrate(cb) {
@@ -4341,7 +4341,7 @@ function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
   const C1 = type === 'police' ? [244,67,54] : [244,67,54];
   const C2 = type === 'police' ? [21,101,192] : [255,255,255];
   const GOLD = [255,235,59];
-  const rushText = opts.text || (type === 'police' ? '🚓 破案成功！' : '🚑 急救成功！');
+  const rushText = opts.text || (type === 'police' ? '🧱 客厅整理好啦！' : '🎈 气球安全啦！');
   const glow = type === 'police' ? 'rgba(21,101,192,0.9)' : 'rgba(244,67,54,0.9)';
 
   const DUR = 3800;
@@ -5061,9 +5061,9 @@ function showResult() {
   starsStr = '⭐'.repeat(starCount);
 
   if      (score === totalQ) { msg = '满分！你是数学小天才！🏆'; }
-  else if (starCount >= 4)   { msg = '太厉害了！蓝蓝和橙橙都跳起来啦！🌟'; }
+  else if (starCount >= 4)   { msg = '太厉害了！布鲁伊和宾果都跳起来啦！🌟'; }
   else if (starCount >= 3)   { msg = '做得不错！继续加油！💪'; }
-  else if (starCount >= 2)   { msg = '蓝蓝为你鼓掌！再来一次吧！👏'; }
+  else if (starCount >= 2)   { msg = '布鲁伊为你鼓掌！再来一次吧！👏'; }
   else                       { msg = '没关系，多听几遍就会变厉害！🐶'; }
 
   const starsEl = $('result-stars');
@@ -5192,29 +5192,29 @@ const ALL_MEDALS = [
   { id: 'streak3',      icon: '🔥', label: '三连满分',    check: st => st.streak >= 3 },
   { id: 'streak5',      icon: '🔥', label: '五连满分',    check: st => st.streak >= 5 },
   { id: 'perfect5',     icon: '🏆', label: '满分5次',     check: st => st.perfectGames >= 5 },
-  { id: 'police_10',    icon: '🚓', label: '小小警长',    check: st => st.totalTagScores && st.totalTagScores.police >= 10 },
-  { id: 'police_30',    icon: '🚔', label: '金牌警探',    check: st => st.totalTagScores && st.totalTagScores.police >= 30 },
-  { id: 'ambulance_10', icon: '🚑', label: '急救先锋',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 10 },
-  { id: 'ambulance_30', icon: '🏥', label: '金牌医生',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 30 },
+  { id: 'police_10',    icon: '🧱', label: '积木队长',    check: st => st.totalTagScores && st.totalTagScores.police >= 10 },
+  { id: 'police_30',    icon: '🛋️', label: '城堡高手',    check: st => st.totalTagScores && st.totalTagScores.police >= 30 },
+  { id: 'ambulance_10', icon: '🎈', label: '气球先锋',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 10 },
+  { id: 'ambulance_30', icon: '🪁', label: '风筝高手',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 30 },
   { id: 'fifty_games',  icon: '🏅', label: '五十次挑战',  check: st => st.games >= 50 },
   { id: 'stars_200',    icon: '💫', label: '200颗星星',   check: st => st.totalStars >= 200 },
   { id: 'perfect_10',   icon: '👑', label: '满分十次',    check: st => st.perfectGames >= 10 },
   { id: 'streak7',      icon: '☄️', label: '七连满分',    check: st => st.streak >= 7 },
-  { id: 'police_50',    icon: '🎖️', label: '警界传奇',    check: st => st.totalTagScores && st.totalTagScores.police >= 50 },
-  { id: 'ambulance_50', icon: '🦸', label: '急救传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
+  { id: 'police_50',    icon: '🧺', label: '客厅传奇',    check: st => st.totalTagScores && st.totalTagScores.police >= 50 },
+  { id: 'ambulance_50', icon: '🌿', label: '后院传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
   { id: 'first_unlock', icon: '🔓', label: '第一次解锁',  check: st => st.ownedTotal > 2 },
-  { id: 'collector_5',  icon: '🚙', label: '小小收藏家',  check: st => st.ownedVehicleCount >= 5 },
+  { id: 'collector_5',  icon: '🧸', label: '小小收藏家',  check: st => st.ownedVehicleCount >= 5 },
   { id: 'garage_master',icon: '🏰', label: '游戏柜大师',    check: st => st.ownedVehicleCount >= 11 },
   { id: 'mega_garage_master', icon: '🏁', label: '超级游戏柜大师', check: st => st.ownsAllVehicles === true },
-  { id: 'dragon_rider', icon: '🐲', label: '驯龙高手',    check: st => st.ownsDragon === true },
+  { id: 'dragon_rider', icon: '🌟', label: '星星披风王',  check: st => st.ownsDragon === true },
   { id: 'coin_saver_50',icon: '🪙', label: '小财主',      check: st => st.lifetimeCoins >= 50 },
   { id: 'coin_saver_150', icon: '💰', label: '大富翁',     check: st => st.lifetimeCoins >= 150 },
-  { id: 'fire_10',      icon: '🚒', label: '消防小英雄',  check: st => st.totalTagScores && st.totalTagScores.fire >= 10 },
-  { id: 'fire_30',      icon: '🧯', label: '烈焰克星',    check: st => st.totalTagScores && st.totalTagScores.fire >= 30 },
-  { id: 'everyday_10',  icon: '🚌', label: '出行小达人',  check: st => st.totalTagScores && st.totalTagScores.everyday >= 10 },
-  { id: 'everyday_30',  icon: '🎫', label: '金牌司机',    check: st => st.totalTagScores && st.totalTagScores.everyday >= 30 },
-  { id: 'adventure_10', icon: '🏁', label: '勇敢探险家',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 10 },
-  { id: 'adventure_30', icon: '🛰️', label: '太空英雄',    check: st => st.totalTagScores && st.totalTagScores.adventure >= 30 },
+  { id: 'fire_10',      icon: '🍪', label: '饼干小帮手',  check: st => st.totalTagScores && st.totalTagScores.fire >= 10 },
+  { id: 'fire_30',      icon: '🥣', label: '面糊高手',    check: st => st.totalTagScores && st.totalTagScores.fire >= 30 },
+  { id: 'everyday_10',  icon: '🛝', label: '公园小达人',  check: st => st.totalTagScores && st.totalTagScores.everyday >= 10 },
+  { id: 'everyday_30',  icon: '🌳', label: '小路高手',    check: st => st.totalTagScores && st.totalTagScores.everyday >= 30 },
+  { id: 'adventure_10', icon: '⭐', label: '星星探险家',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 10 },
+  { id: 'adventure_30', icon: '🌙', label: '睡前英雄',    check: st => st.totalTagScores && st.totalTagScores.adventure >= 30 },
 ];
 
 function topTrophiesForPlayer(playerId) {
