@@ -2209,9 +2209,9 @@ var _hmt = _hmt || [];
         </div>
         <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
         <div class="player-coins" id="lele-preview-coins">🪙 0</div>
-        <div class="player-rank-badge" id="lele-preview-title">警车新手</div>
+        <div class="player-rank-badge" id="lele-preview-title">积木新手</div>
         <div class="player-trophy-strip empty" id="lele-preview-trophies">还没有奖杯</div>
-        <button class="btn-garage" id="btn-garage-lele" type="button">🔧 我的车库</button>
+        <button class="btn-garage" id="btn-garage-lele" type="button">🧸 游戏柜</button>
       </div>
       <div class="player-card haohao" id="pick-haohao">
         <span class="player-avatar" id="haohao-preview-avatar">🐶</span>
@@ -2224,7 +2224,7 @@ var _hmt = _hmt || [];
         <div class="player-coins" id="haohao-preview-coins">🪙 0</div>
         <div class="player-rank-badge" id="haohao-preview-title">急救新手</div>
         <div class="player-trophy-strip empty" id="haohao-preview-trophies">还没有奖杯</div>
-        <button class="btn-garage" id="btn-garage-haohao" type="button">🔧 我的车库</button>
+        <button class="btn-garage" id="btn-garage-haohao" type="button">🧸 游戏柜</button>
       </div>
     </div>
     <button class="btn-leaderboard" id="btn-lb-player" style="margin-top:8px;">🏆 排行榜</button>
@@ -2306,7 +2306,7 @@ var _hmt = _hmt || [];
     <div class="result-btns">
       <button class="btn-restart" id="btn-restart">再来一次！🐶</button>
       <button class="btn-leaderboard" id="btn-lb-result">🏆 排行榜</button>
-      <button class="btn-garage" id="btn-garage-result" type="button">🔧 去车库</button>
+      <button class="btn-garage" id="btn-garage-result" type="button">🧸 去游戏柜</button>
       <button class="btn-back-home" id="btn-back-result">🏠 回首页</button>
     </div>
   </div>
@@ -2315,10 +2315,10 @@ var _hmt = _hmt || [];
   <div class="page" id="garage-page">
     <div class="garage-head">
       <span class="garage-avatar" id="garage-avatar">🐶🧸</span>
-      <div class="garage-title"><span id="garage-name">乐乐</span>的车库</div>
+      <div class="garage-title"><span id="garage-name">蓝蓝</span>的游戏柜</div>
       <div class="garage-coins">🪙 <span id="garage-coins">0</span></div>
     </div>
-    <div class="garage-section-title">🚗 座驾</div>
+    <div class="garage-section-title">🧸 游戏道具</div>
     <div class="garage-grid" id="garage-grid-vehicle"></div>
     <div class="garage-section-title">🐶 角色装扮</div>
     <div class="garage-grid" id="garage-grid-dino"></div>
@@ -5069,8 +5069,8 @@ const ALL_MEDALS = [
   { id: 'ambulance_50', icon: '🦸', label: '急救传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
   { id: 'first_unlock', icon: '🔓', label: '第一次解锁',  check: st => st.ownedTotal > 2 },
   { id: 'collector_5',  icon: '🚙', label: '小小收藏家',  check: st => st.ownedVehicleCount >= 5 },
-  { id: 'garage_master',icon: '🏰', label: '车库大师',    check: st => st.ownedVehicleCount >= 11 },
-  { id: 'mega_garage_master', icon: '🏁', label: '超级车库大师', check: st => st.ownsAllVehicles === true },
+  { id: 'garage_master',icon: '🏰', label: '游戏柜大师',    check: st => st.ownedVehicleCount >= 11 },
+  { id: 'mega_garage_master', icon: '🏁', label: '超级游戏柜大师', check: st => st.ownsAllVehicles === true },
   { id: 'dragon_rider', icon: '🐲', label: '驯龙高手',    check: st => st.ownsDragon === true },
   { id: 'coin_saver_50',icon: '🪙', label: '小财主',      check: st => st.lifetimeCoins >= 50 },
   { id: 'coin_saver_150', icon: '💰', label: '大富翁',     check: st => st.lifetimeCoins >= 150 },
@@ -5219,7 +5219,7 @@ function updatePlayerPreview() {
     const e = equippedEmojis(pid);
     const vehicleItem = Garage.getItem(g.equippedVehicle);
     $(`${pid}-preview-avatar`).innerHTML = comboAvatar(pid);
-    $(`${pid}-preview-vehicle-tag`).textContent = `${e.vehicle} ${vehicleItem ? vehicleItem.name : '座驾'}迷`;
+    $(`${pid}-preview-vehicle-tag`).textContent = `${e.vehicle} ${vehicleItem ? vehicleItem.name : '游戏道具'}迷`;
     $(`${pid}-name`).textContent = PLAYERS[pid].name;
     $(`${pid}-preview-stars`).textContent = `⭐ ${stats.totalStars}`;
     $(`${pid}-preview-coins`).textContent = `🪙 ${g.coins}`;
@@ -5278,6 +5278,7 @@ function openSettings() {
   $('chk-show-equation').checked = loadShowEquation();
   $('chk-speak-equation').checked = loadSpeakEquation();
   showPage('settings-page');
+  speak('这里是设置。可以打开或关闭算式显示，也可以打开或关闭算式朗读。');
 }
 
 // ── 游戏启动 ──
@@ -5362,6 +5363,12 @@ $('btn-restart').addEventListener('click', () => {
 $('btn-back-result').addEventListener('click', () => {
   updatePlayerPreview();
   showPage('player-page');
+  speakQueue(Garage.vEnterPlayer(
+    PLAYERS.lele.name,
+    getPlayerGarage('lele').coins,
+    PLAYERS.haohao.name,
+    getPlayerGarage('haohao').coins
+  ));
 });
 
 let currentGaragePlayer = null;
@@ -5379,8 +5386,8 @@ function renderGarage() {
     const equipped = Garage.isEquipped(g, it.id);
     const afford = Garage.canAfford(g, it.id);
     let cls = 'garage-cell', state, lock = '';
-    if (equipped) { cls += ' owned equipped'; state = '✓ 正在开'; }
-    else if (owned) { cls += ' owned'; state = '点我换上'; }
+    if (equipped) { cls += ' owned equipped'; state = '✓ 正在用'; }
+    else if (owned) { cls += ' owned'; state = '点我使用'; }
     else {
       cls += ' locked';
       lock = '<span class="gc-lock">🔒</span>';
@@ -5562,12 +5569,17 @@ $('btn-settings-home').addEventListener('click', () => {
 $('btn-back-settings').addEventListener('click', () => {
   playClick();
   showPage('start-page');
+  speak('回到首页。点开始游戏，就可以继续玩。');
 });
 $('chk-show-equation').addEventListener('change', () => {
-  saveShowEquation($('chk-show-equation').checked);
+  const on = $('chk-show-equation').checked;
+  saveShowEquation(on);
+  speak(on ? '已经打开算式显示。' : '已经关闭算式显示。题目还会继续朗读。');
 });
 $('chk-speak-equation').addEventListener('change', () => {
-  saveSpeakEquation($('chk-speak-equation').checked);
+  const on = $('chk-speak-equation').checked;
+  saveSpeakEquation(on);
+  speak(on ? '已经打开算式朗读。' : '已经关闭算式朗读。故事和问题还会继续朗读。');
 });
 
 $('btn-reread').addEventListener('click', () => {
@@ -5591,6 +5603,12 @@ $('btn-back-garage').addEventListener('click', () => {
   if (_unlockCleanup) { _unlockCleanup(); _unlockCleanup = null; }
   updatePlayerPreview();
   showPage('player-page');
+  speakQueue(Garage.vEnterPlayer(
+    PLAYERS.lele.name,
+    getPlayerGarage('lele').coins,
+    PLAYERS.haohao.name,
+    getPlayerGarage('haohao').coins
+  ));
 });
 
 $('btn-clear-data').addEventListener('click', () => {

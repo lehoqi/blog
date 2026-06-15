@@ -1,28 +1,28 @@
 'use strict';
 
 var CATALOG = [
-  { id:'police',       kind:'vehicle', emoji:'🚓', name:'警车',   voiceName:'警车',   price:15 },
-  { id:'ambulance',    kind:'vehicle', emoji:'🚑', name:'救护车', voiceName:'救护车', price:15 },
-  { id:'fire',         kind:'vehicle', emoji:'🚒', name:'消防车', voiceName:'消防车', price:15 },
-  { id:'schoolbus',    kind:'vehicle', emoji:'🚌', name:'校车',   voiceName:'校车',   price:15 },
-  { id:'taxi',         kind:'vehicle', emoji:'🚕', name:'出租车', voiceName:'出租车', price:20 },
-  { id:'car',          kind:'vehicle', emoji:'🚗', name:'小汽车', voiceName:'小汽车', price:18 },
-  { id:'suv',          kind:'vehicle', emoji:'🚙', name:'越野车', voiceName:'越野车', price:22 },
-  { id:'minibus',      kind:'vehicle', emoji:'🚐', name:'面包车', voiceName:'面包车', price:24 },
-  { id:'pickup',       kind:'vehicle', emoji:'🛻', name:'皮卡车', voiceName:'皮卡车', price:28 },
-  { id:'truck',        kind:'vehicle', emoji:'🚚', name:'货车',   voiceName:'货车',   price:30 },
-  { id:'motorcycle',   kind:'vehicle', emoji:'🏍️', name:'摩托车', voiceName:'摩托车', price:35 },
-  { id:'tram',         kind:'vehicle', emoji:'🚋', name:'电车',   voiceName:'电车',   price:40 },
-  { id:'bullettrain',  kind:'vehicle', emoji:'🚄', name:'高铁',   voiceName:'高铁',   price:45 },
-  { id:'race',         kind:'vehicle', emoji:'🏎️', name:'赛车',   voiceName:'赛车',   price:25 },
-  { id:'tractor',      kind:'vehicle', emoji:'🚜', name:'拖拉机', voiceName:'拖拉机', price:25 },
-  { id:'heli',         kind:'vehicle', emoji:'🚁', name:'直升机', voiceName:'直升机', price:30 },
-  { id:'train',        kind:'vehicle', emoji:'🚂', name:'火车',   voiceName:'火车',   price:30 },
-  { id:'rocket',       kind:'vehicle', emoji:'🚀', name:'火箭',   voiceName:'火箭',   price:40 },
-  { id:'ufo',          kind:'vehicle', emoji:'🛸', name:'飞碟',   voiceName:'飞碟',   price:60 },
-  { id:'brontosaurus', kind:'dino',    emoji:'🦕', name:'长脖子龙', voiceName:'长脖子龙', price:15 },
-  { id:'trex',         kind:'dino',    emoji:'🦖', name:'霸王龙', voiceName:'霸王龙', price:15 },
-  { id:'dragon',       kind:'dino',    emoji:'🐉', name:'巨龙',   voiceName:'巨龙',   price:35 }
+  { id:'police',       kind:'vehicle', emoji:'🧱', name:'积木箱',   voiceName:'积木箱',   price:15 },
+  { id:'ambulance',    kind:'vehicle', emoji:'🎈', name:'气球篮',   voiceName:'气球篮',   price:15 },
+  { id:'fire',         kind:'vehicle', emoji:'🍪', name:'饼干盘',   voiceName:'饼干盘',   price:15 },
+  { id:'schoolbus',    kind:'vehicle', emoji:'🛝', name:'小滑梯',   voiceName:'小滑梯',   price:15 },
+  { id:'taxi',         kind:'vehicle', emoji:'🪁', name:'风筝',     voiceName:'风筝',     price:20 },
+  { id:'car',          kind:'vehicle', emoji:'🛋️', name:'沙发城堡', voiceName:'沙发城堡', price:18 },
+  { id:'suv',          kind:'vehicle', emoji:'🧺', name:'玩具篮',   voiceName:'玩具篮',   price:22 },
+  { id:'minibus',      kind:'vehicle', emoji:'📘', name:'故事书',   voiceName:'故事书',   price:24 },
+  { id:'pickup',       kind:'vehicle', emoji:'💡', name:'小夜灯',   voiceName:'小夜灯',   price:28 },
+  { id:'truck',        kind:'vehicle', emoji:'🥣', name:'面糊碗',   voiceName:'面糊碗',   price:30 },
+  { id:'motorcycle',   kind:'vehicle', emoji:'🛴', name:'小滑板车', voiceName:'小滑板车', price:35 },
+  { id:'tram',         kind:'vehicle', emoji:'🍽️', name:'小盘子',   voiceName:'小盘子',   price:40 },
+  { id:'bullettrain',  kind:'vehicle', emoji:'⭐', name:'星星贴纸', voiceName:'星星贴纸', price:45 },
+  { id:'race',         kind:'vehicle', emoji:'🧸', name:'小玩偶',   voiceName:'小玩偶',   price:25 },
+  { id:'tractor',      kind:'vehicle', emoji:'🌿', name:'草地毯',   voiceName:'草地毯',   price:25 },
+  { id:'heli',         kind:'vehicle', emoji:'🌳', name:'小树屋',   voiceName:'小树屋',   price:30 },
+  { id:'train',        kind:'vehicle', emoji:'🛏️', name:'小床',     voiceName:'小床',     price:30 },
+  { id:'rocket',       kind:'vehicle', emoji:'🌙', name:'月亮灯',   voiceName:'月亮灯',   price:40 },
+  { id:'ufo',          kind:'vehicle', emoji:'✨', name:'闪闪星河', voiceName:'闪闪星河', price:60 },
+  { id:'brontosaurus', kind:'dino',    emoji:'🐶', name:'蓝色小狗装', voiceName:'蓝色小狗装', price:15 },
+  { id:'trex',         kind:'dino',    emoji:'🧡', name:'橙色小狗装', voiceName:'橙色小狗装', price:15 },
+  { id:'dragon',       kind:'dino',    emoji:'🌟', name:'星星披风',   voiceName:'星星披风',   price:35 }
 ];
 
 var _byId = {};
@@ -118,17 +118,17 @@ function equip(entry, id) {
 }
 
 function vEnterPlayer(leleName, leleCoins, haohaoName, haohaoCoins) {
-  return ['谁来挑战？点击你的头像吧！',
+  return ['谁来玩数学游戏？点一下你的角色吧！',
           leleName + '有 ' + leleCoins + ' 个金币',
           haohaoName + '有 ' + haohaoCoins + ' 个金币'];
 }
-function vOpenGarage(name, coins) { return '这是' + name + '的车库，你有 ' + coins + ' 个金币，快来挑一辆车吧！'; }
-function vInUse(vn)  { return '你正在开' + vn + '，真酷！'; }
-function vOwned(vn)  { return '这是' + vn + '，点一下就能开它！'; }
+function vOpenGarage(name, coins) { return '这是' + name + '的游戏柜，你有 ' + coins + ' 个金币，快来挑一个道具或装扮吧！'; }
+function vInUse(vn)  { return '你正在用' + vn + '，真棒！'; }
+function vOwned(vn)  { return '这是' + vn + '，点一下就能换上！'; }
 function vAffordPrompt(vn, price) { return vn + '，要 ' + price + ' 个金币，你够啦，再点一下就解锁！'; }
 function vNotAfford(vn, price, lack) { return vn + '要 ' + price + ' 个金币，你还差 ' + lack + ' 个，再答对几题就能买啦！'; }
 function vUnlocked(vn)  { return '太棒了！' + vn + '是你的啦！'; }
-function vEquipped(vn)  { return '换好啦！现在开' + vn + '！呜——'; }
+function vEquipped(vn)  { return '换好啦！现在用' + vn + '玩游戏！'; }
 function vResultCoins(n) { return '这一局你赚了 ' + n + ' 个金币！'; }
 
 function lifetimeCoins(records) {
