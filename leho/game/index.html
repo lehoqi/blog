@@ -2693,6 +2693,7 @@ function bindAudioUnlock() {
 }
 bindAudioUnlock();
 function playTone(freq, type, duration, gain, delay = 0) {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const startAt = ctx.currentTime + delay;
     const osc = ctx.createOscillator();
@@ -2706,16 +2707,93 @@ function playTone(freq, type, duration, gain, delay = 0) {
     osc.stop(startAt + duration);
   });
 }
+function playToyClick() {
+  if (voiceMuted) return;
+  playTone(980, 'triangle', 0.045, 0.10);
+  playTone(1480, 'sine', 0.055, 0.055, 0.025);
+}
+function playBoing(freq = 260, delay = 0) {
+  if (voiceMuted) return;
+  withAudioCtx(ctx => {
+    const startAt = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, startAt);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.9, startAt + 0.07);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.74, startAt + 0.22);
+    g.gain.setValueAtTime(0.16, startAt);
+    g.gain.exponentialRampToValueAtTime(0.001, startAt + 0.28);
+    osc.start(startAt);
+    osc.stop(startAt + 0.30);
+  });
+}
+function playXylophoneRun(base = 523, count = 4, delay = 0) {
+  if (voiceMuted) return;
+  const ratios = [1, 1.25, 1.5, 2, 2.5, 3];
+  for (let i = 0; i < count; i++) {
+    playTone(base * ratios[i % ratios.length], 'sine', 0.14, 0.14, delay + i * 0.075);
+    playTone(base * ratios[i % ratios.length] * 2.01, 'triangle', 0.08, 0.045, delay + i * 0.075 + 0.012);
+  }
+}
+function playCartoonCorrect(streak = 1) {
+  if (voiceMuted) return;
+  const s = Math.max(1, Math.min(5, Math.floor(Number(streak) || 1)));
+  playXylophoneRun(520 + s * 28, 4 + Math.min(2, s), 0);
+  playBoing(240 + s * 32, 0.04);
+  if (s >= 2) {
+    playTone(1240 + s * 90, 'triangle', 0.08, 0.08, 0.25);
+    playTone(1580 + s * 90, 'sine', 0.08, 0.06, 0.31);
+  }
+  if (s >= 4) {
+    playTone(220, 'sawtooth', 0.16, 0.045, 0.02);
+    playTone(1760, 'square', 0.06, 0.04, 0.42);
+  }
+}
+function playCartoonWrong() {
+  if (voiceMuted) return;
+  withAudioCtx(ctx => {
+    const startAt = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(420, startAt);
+    osc.frequency.exponentialRampToValueAtTime(190, startAt + 0.28);
+    g.gain.setValueAtTime(0.13, startAt);
+    g.gain.exponentialRampToValueAtTime(0.001, startAt + 0.34);
+    osc.start(startAt);
+    osc.stop(startAt + 0.36);
+  });
+}
+function playCartoonHint() {
+  if (voiceMuted) return;
+  playTone(740, 'sine', 0.08, 0.08);
+  playTone(988, 'sine', 0.09, 0.07, 0.09);
+}
+function playCartoonFinale(streak = 1) {
+  if (voiceMuted) return;
+  const s = Math.max(1, Math.min(5, Math.floor(Number(streak) || 1)));
+  playBoing(220 + s * 26, 0);
+  playXylophoneRun(392, 7, 0.04);
+  playTone(130, 'sine', 0.22, 0.08, 0.02);
+  [0.18, 0.25, 0.33, 0.42, 0.52].forEach((d, i) => {
+    playTone(1100 + i * 170, i % 2 ? 'triangle' : 'square', 0.055, 0.055, d);
+  });
+}
 function playCorrect() {
-  [523,659,784,1047].forEach((f,i) => playTone(f,'sine',0.25,0.4,i*0.1));
+  playCartoonCorrect(correctStreak || 1);
 }
 function playWrong() {
-  playTone(220,'sawtooth',0.3,0.35);
-  playTone(165,'sawtooth',0.3,0.25,0.18);
+  playCartoonWrong();
 }
-function playClick() { playTone(880,'sine',0.07,0.18); }
+function playClick() { playToyClick(); }
 function playStart() {
-  [392,523,659,784].forEach((f,i) => playTone(f,'sine',0.2,0.35,i*0.08));
+  playXylophoneRun(392, 5, 0);
+  playBoing(260, 0.22);
 }
 
 // ── 题目生成 ──
@@ -3705,6 +3783,7 @@ function createFinisherStars(container, count) {
 function showBossFinisher(theme, vehicleEmoji, dinoEmoji, streak, done) {
   const finish = onceDone(done);
   const comboTier = adventureComboTier(streak);
+  playCartoonFinale(streak);
   playBossHitSound(theme.id);
   playAdventureCinematicSound(theme.id, streak);
   playAdventureComboSurge(theme.id, streak);
@@ -3859,6 +3938,7 @@ function updatePlayerIndicator() {
 }
 
 function playPoliceSiren() {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const now = ctx.currentTime;
     const dur = 2.8;
@@ -3894,6 +3974,7 @@ function playPoliceSiren() {
 }
 
 function playFireBell() {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const now = ctx.currentTime, dur = 1.6;
     const g = ctx.createGain(); g.connect(ctx.destination);
@@ -3908,6 +3989,7 @@ function playFireBell() {
   });
 }
 function playEverydayHorn() {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const now = ctx.currentTime;
     function beep(t, f, d) {
@@ -3922,6 +4004,7 @@ function playEverydayHorn() {
   });
 }
 function playAdventureWhoosh() {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const now = ctx.currentTime, dur = 1.8;
     const g = ctx.createGain(); g.connect(ctx.destination);
@@ -3943,6 +4026,7 @@ function playAdventureWhoosh() {
   });
 }
 function playAmbulanceSiren() {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const now = ctx.currentTime;
     const dur = 3.0;
@@ -3979,6 +4063,7 @@ function playAmbulanceSiren() {
 }
 
 function playNoiseBurst(duration, gainValue, delay = 0) {
+  if (voiceMuted) return;
   withAudioCtx(ctx => {
     const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -4698,9 +4783,11 @@ function submitAnswer() {
     } else if (wrongCount === 2) {
       const hintRange = answerHintRange(q);
       fb.textContent = `${pName} 提示：答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`;
+      playCartoonHint();
       speak(`提示一下，答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`);
     } else {
       fb.textContent = `${pName} 正确答案是 ${q.answer}，再试一次！`;
+      playCartoonHint();
       speak(`正确答案是 ${q.answer}，再试一次，你可以的！`);
     }
   }
