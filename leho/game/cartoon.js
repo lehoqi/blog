@@ -118,6 +118,7 @@
     const c = character(id);
     return [
       `<span class="cartoon-dog cartoon-dog-${c.id}" aria-label="${c.name}" role="img" style="--dog-main:${c.color};--dog-deep:${c.colorDeep};--dog-patch:${c.patch};--dog-accent:${c.accent};">`,
+      '<span class="dog-art">',
       '<span class="dog-tail"></span>',
       '<span class="dog-body"></span>',
       '<span class="dog-head">',
@@ -128,6 +129,7 @@
       '<span class="dog-eye dog-eye-right"></span>',
       '<span class="dog-muzzle"></span>',
       '<span class="dog-nose"></span>',
+      '</span>',
       '</span>',
       '</span>'
     ].join('');

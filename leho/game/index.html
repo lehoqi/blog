@@ -247,15 +247,24 @@ var _hmt = _hmt || [];
       --dog-deep: #1665a8;
       --dog-patch: #8ed1ff;
       --dog-accent: #ffd166;
+      --dog-scale: 1;
       position: relative;
       display: inline-block;
-      width: 84px;
-      height: 88px;
+      width: calc(84px * var(--dog-scale));
+      height: calc(88px * var(--dog-scale));
       vertical-align: middle;
       filter: drop-shadow(0 7px 10px rgba(26, 63, 93, 0.25));
       animation: dogFloat 2.2s ease-in-out infinite;
     }
     .cartoon-dog * { position: absolute; display: block; }
+    .dog-art {
+      left: 0;
+      top: 0;
+      width: 84px;
+      height: 88px;
+      transform: scale(var(--dog-scale));
+      transform-origin: top left;
+    }
     .dog-body {
       left: 22px; bottom: 3px;
       width: 42px; height: 42px;
@@ -320,14 +329,14 @@ var _hmt = _hmt || [];
     .cartoon-dog-haohao .dog-body {
       background: linear-gradient(160deg, var(--dog-main), var(--dog-deep));
     }
-    .player-avatar .cartoon-dog { width: 92px; height: 94px; }
+    .player-avatar .cartoon-dog { --dog-scale: 1.08; }
     .dino-hero .cartoon-dog,
-    .dino-hero-2 .cartoon-dog { width: 118px; height: 118px; }
-    .adventure-vehicle .cartoon-dog { width: 64px; height: 68px; }
+    .dino-hero-2 .cartoon-dog { --dog-scale: 1.34; }
+    .adventure-vehicle .cartoon-dog { --dog-scale: 0.76; }
     .tower-dino .cartoon-dog,
     .lb-avatar .cartoon-dog,
     .pk-avatar .cartoon-dog,
-    .result-dino .cartoon-dog { width: 72px; height: 76px; }
+    .result-dino .cartoon-dog { --dog-scale: 0.86; }
     @keyframes dogFloat {
       0%,100% { transform: translateY(0) rotate(-1deg); }
       50% { transform: translateY(-8px) rotate(2deg); }
@@ -1448,8 +1457,7 @@ var _hmt = _hmt || [];
         align-items: center;
       }
       #quiz-page .player-indicator .cartoon-dog {
-        width: 44px;
-        height: 46px;
+        --dog-scale: 0.52;
       }
       #quiz-page .progress-bar-wrap { height: 18px; }
       #quiz-page .progress-label { font-size: 0.9rem; }
@@ -1477,8 +1485,7 @@ var _hmt = _hmt || [];
         font-size: 0.78rem;
       }
       #quiz-page .adventure-vehicle .cartoon-dog {
-        width: 56px;
-        height: 59px;
+        --dog-scale: 0.66;
       }
       #quiz-page .adventure-boss { font-size: 40px; }
       #quiz-page .quiz-body {
@@ -1498,8 +1505,7 @@ var _hmt = _hmt || [];
         line-height: 1;
       }
       #quiz-page .dino-small .cartoon-dog {
-        width: 46px;
-        height: 48px;
+        --dog-scale: 0.55;
       }
       #quiz-page .question-story {
         font-size: 0.92rem;
@@ -2002,15 +2008,13 @@ var _hmt = _hmt || [];
         align-items: center;
       }
       #quiz-page .player-indicator .cartoon-dog {
-        width: 44px;
-        height: 46px;
+        --dog-scale: 0.52;
       }
       .quiz-body { gap: 10px; }
       .question-card { padding: 18px 14px 14px; border-radius: 20px; }
       .dino-small { font-size: 24px; height: 46px; line-height: 1; margin-bottom: 2px; }
       .dino-small .cartoon-dog {
-        width: 42px;
-        height: 44px;
+        --dog-scale: 0.5;
       }
       .question-story { font-size: 0.9rem; margin-bottom: 10px; }
       .question-text { font-size: 2.4rem; letter-spacing: 2px; }
@@ -2046,7 +2050,7 @@ var _hmt = _hmt || [];
       .adventure-scene { height: 86px; border-radius: 14px; }
       .adventure-landmark { width: 26px; height: 40px; bottom: 34px; }
       .adventure-vehicle { font-size: 34px; }
-      .adventure-vehicle .cartoon-dog { width: 52px; height: 55px; }
+      .adventure-vehicle .cartoon-dog { --dog-scale: 0.62; }
       .adventure-boss { font-size: 36px; }
       .adv-dot { width: 24px; height: 24px; font-size: 0.78rem; box-shadow: 0 0 0 3px rgba(255,255,255,0.42), 0 0 16px rgba(250,204,21,0.70); }
       .adventure-power { left: 12px; right: 12px; bottom: 7px; height: 9px; }
@@ -2289,13 +2293,13 @@ var _hmt = _hmt || [];
     <div class="dino-hero-row">
       <div class="dino-hero">
         <span class="cartoon-dog cartoon-dog-lele" aria-label="蓝蓝" role="img" style="--dog-main:#4aa3df;--dog-deep:#1665a8;--dog-patch:#8ed1ff;--dog-accent:#ffd166;">
-          <span class="dog-tail"></span><span class="dog-body"></span><span class="dog-head"><span class="dog-ear dog-ear-left"></span><span class="dog-ear dog-ear-right"></span><span class="dog-face-patch"></span><span class="dog-eye dog-eye-left"></span><span class="dog-eye dog-eye-right"></span><span class="dog-muzzle"></span><span class="dog-nose"></span></span>
+          <span class="dog-art"><span class="dog-tail"></span><span class="dog-body"></span><span class="dog-head"><span class="dog-ear dog-ear-left"></span><span class="dog-ear dog-ear-right"></span><span class="dog-face-patch"></span><span class="dog-eye dog-eye-left"></span><span class="dog-eye dog-eye-right"></span><span class="dog-muzzle"></span><span class="dog-nose"></span></span></span>
         </span>
       </div>
       <span class="dino-hero-vs">+</span>
       <div class="dino-hero-2">
         <span class="cartoon-dog cartoon-dog-haohao" aria-label="橙橙" role="img" style="--dog-main:#f5a14a;--dog-deep:#c45b1c;--dog-patch:#ffd39a;--dog-accent:#5fb7e8;">
-          <span class="dog-tail"></span><span class="dog-body"></span><span class="dog-head"><span class="dog-ear dog-ear-left"></span><span class="dog-ear dog-ear-right"></span><span class="dog-face-patch"></span><span class="dog-eye dog-eye-left"></span><span class="dog-eye dog-eye-right"></span><span class="dog-muzzle"></span><span class="dog-nose"></span></span>
+          <span class="dog-art"><span class="dog-tail"></span><span class="dog-body"></span><span class="dog-head"><span class="dog-ear dog-ear-left"></span><span class="dog-ear dog-ear-right"></span><span class="dog-face-patch"></span><span class="dog-eye dog-eye-left"></span><span class="dog-eye dog-eye-right"></span><span class="dog-muzzle"></span><span class="dog-nose"></span></span></span>
         </span>
       </div>
     </div>
