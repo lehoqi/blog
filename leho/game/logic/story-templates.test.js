@@ -67,3 +67,38 @@ test('validator rejects mismatched story semantics', () => {
   const result = StoryTemplates.validateQuestion(bad);
   assert.equal(result.ok, false);
 });
+
+test('validator rejects arithmetic answer mismatches', () => {
+  const q = StoryTemplates.makeQuestionFromTemplate('addition', { a: 4, b: 5, templateIndex: 0 });
+  const bad = { ...q, answer: 8 };
+  const result = StoryTemplates.validateQuestion(bad);
+  assert.equal(result.ok, false);
+});
+
+test('missing questions expose the unknown and preserve semantic intent', () => {
+  const q = StoryTemplates.generateQuestion({
+    type: 'missing',
+    family: 'livingRoom',
+    rand: fixedRand([0.1, 0.4, 0.7, 0.2, 0.8])
+  });
+
+  assert.equal(q.type, 'missing');
+  assert.equal(StoryTemplates.validateQuestion(q).ok, true);
+  assert.equal(q.equationParts.includes('?'), true);
+  assert.match(q.question, /多少|几/);
+  assert.match(q.readEquation, /几|多少/);
+});
+
+test('two step questions keep both operations in story, equation, and answer', () => {
+  const q = StoryTemplates.generateQuestion({
+    type: 'twoStep',
+    family: 'backyard',
+    rand: fixedRand([0.2, 0.5, 0.1, 0.8, 0.3])
+  });
+
+  assert.equal(q.type, 'twoStep');
+  assert.equal(StoryTemplates.validateQuestion(q).ok, true);
+  assert.equal(q.equationParts.filter(part => part === '+' || part === '-').length, 2);
+  assert.match(q.story + q.question, /又|后来|再/);
+  assert.match(q.readEquation, /再/);
+});
