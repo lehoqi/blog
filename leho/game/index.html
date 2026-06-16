@@ -27,18 +27,27 @@ var _hmt = _hmt || [];
       --bg:     #e8f5e9;
       --card:   #ffffff;
       --text:   #1b5e20;
-      --shadow: 0 8px 24px rgba(0,0,0,0.15);
+      --ink-soft: #416247;
+      --surface: rgba(255,255,255,0.86);
+      --surface-strong: rgba(255,255,255,0.96);
+      --surface-border: rgba(255,255,255,0.68);
+      --shadow: 0 18px 50px rgba(50, 92, 70, 0.16);
+      --stage-shadow: 0 22px 60px rgba(30, 80, 100, 0.20), inset 0 1px 0 rgba(255,255,255,0.48);
       --player-color: #4caf50;
     }
 
     body {
       font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(139,211,255,0.52), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(255,222,122,0.46), transparent 26%),
+        linear-gradient(180deg, #eaf9ff 0%, #edf8e8 56%, #cdeec8 100%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: clamp(14px, 3vh, 30px) 0;
       overflow-x: hidden;
       overflow-y: auto;
       position: relative;
@@ -48,9 +57,21 @@ var _hmt = _hmt || [];
       content: '';
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      height: 120px;
-      background: linear-gradient(to top, #a5d6a7, transparent);
+      height: 180px;
+      background:
+        linear-gradient(to top, rgba(94, 174, 103, 0.42), transparent),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0 2px, transparent 2px 28px);
       z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(120deg, rgba(255,255,255,0.30), rgba(255,255,255,0) 34%),
+        radial-gradient(circle at 50% 100%, rgba(72, 187, 120, 0.16), transparent 42%);
     }
 
     .cloud {
@@ -84,7 +105,7 @@ var _hmt = _hmt || [];
     #app {
       position: relative;
       z-index: 1;
-      width: min(520px, 95vw);
+      width: min(760px, 95vw);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -165,47 +186,49 @@ var _hmt = _hmt || [];
     .btn-start:active { animation: none; transform: translateY(4px) scale(0.96); box-shadow: 0 2px 0 #2e7d32; }
 
     /* ===== 选择玩家页 ===== */
-    #player-page { gap: 20px; text-align: center; }
+    #player-page { gap: 22px; text-align: center; }
     .player-title { font-size: 1.8rem; font-weight: 900; color: var(--text); }
     .player-subtitle { font-size: 1.1rem; color: #558b2f; font-weight: 600; }
     .player-choices {
-      display: flex; gap: 24px; justify-content: center;
+      display: flex; gap: 28px; justify-content: center;
       flex-wrap: wrap;
+      width: 100%;
     }
     .player-card {
-      background: var(--card);
-      border-radius: 28px;
-      padding: 28px 24px 20px;
-      box-shadow: var(--shadow);
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,252,247,0.92));
+      border-radius: 20px;
+      padding: 30px 26px 22px;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
-      width: 200px;
+      width: min(244px, calc(50% - 16px));
+      min-width: 210px;
       text-align: center;
-      border: 4px solid transparent;
+      border: 1px solid var(--surface-border);
       position: relative;
       overflow: hidden;
     }
     .player-card:hover {
       transform: translateY(-8px) scale(1.04);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 26px 56px rgba(42, 89, 79, 0.22);
     }
     .player-card:active {
       transform: translateY(2px) scale(0.97);
     }
-    .player-card.lele { border-color: #66bb6a; }
+    .player-card.lele { outline: 3px solid rgba(102,187,106,0.24); }
     .player-card.lele::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0; height: 6px;
       background: linear-gradient(90deg, #66bb6a, #a5d6a7);
     }
-    .player-card.haohao { border-color: #42a5f5; }
+    .player-card.haohao { outline: 3px solid rgba(66,165,245,0.22); }
     .player-card.haohao::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0; height: 6px;
       background: linear-gradient(90deg, #42a5f5, #90caf9);
     }
     .player-avatar {
-      font-size: 72px; display: block; margin-bottom: 8px;
+      font-size: 78px; display: block; margin-bottom: 10px;
       animation: dinoFloat 2s ease-in-out infinite;
     }
     .player-card.haohao .player-avatar { animation-delay: -1s; }
@@ -325,6 +348,25 @@ var _hmt = _hmt || [];
       border-radius: 50%;
       background: #102232;
     }
+    .cartoon-dog-prop,
+    .cartoon-dog-costume {
+      z-index: 9;
+      line-height: 1;
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+      filter: drop-shadow(0 2px 2px rgba(16,34,50,0.32));
+    }
+    .cartoon-dog-prop {
+      right: -5px;
+      bottom: 0;
+      font-size: 24px;
+      transform: rotate(8deg);
+    }
+    .cartoon-dog-costume {
+      left: 26px;
+      top: -17px;
+      font-size: 23px;
+      transform: rotate(-7deg);
+    }
     .cartoon-dog-haohao .dog-head,
     .cartoon-dog-haohao .dog-body {
       background: linear-gradient(160deg, var(--dog-main), var(--dog-deep));
@@ -387,17 +429,18 @@ var _hmt = _hmt || [];
     .btn-leaderboard:active { transform: translateY(3px) scale(0.96); box-shadow: 0 2px 0 #ff8f00; }
 
     /* ===== 题目页 ===== */
-    #quiz-page { gap: 20px; }
+    #quiz-page { gap: 16px; }
     .quiz-body {
       width: 100%;
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
     }
 
     .player-indicator {
       display: flex; align-items: center; gap: 10px;
-      background: var(--card); border-radius: 20px; padding: 8px 18px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.88); border-radius: 18px; padding: 9px 20px;
+      box-shadow: 0 10px 26px rgba(34, 90, 80, 0.12), inset 0 1px 0 rgba(255,255,255,0.82);
       font-weight: 800; font-size: 1.1rem;
+      border: 1px solid rgba(255,255,255,0.75);
       border-left: 5px solid var(--player-color);
     }
     .player-indicator .pi-avatar { font-size: 1.6rem; }
@@ -408,11 +451,12 @@ var _hmt = _hmt || [];
 
     .progress-bar-wrap {
       width: 100%;
-      background: #c8e6c9;
+      background: rgba(255,255,255,0.54);
       border-radius: 20px;
       height: 22px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: inset 0 2px 5px rgba(54, 94, 63, 0.14), 0 6px 18px rgba(76,175,80,0.12);
       position: relative;
+      border: 1px solid rgba(255,255,255,0.72);
     }
     .progress-bar-fill {
       height: 100%;
@@ -435,26 +479,27 @@ var _hmt = _hmt || [];
     }
 
     .progress-label {
-      font-size: 1rem; color: #558b2f; font-weight: 700; align-self: flex-end;
+      font-size: 1rem; color: var(--ink-soft); font-weight: 800; align-self: flex-end;
     }
 
     .adventure-hud {
       width: 100%;
-      background: rgba(255,255,255,0.94);
-      border: 3px solid rgba(76,175,80,0.18);
-      border-radius: 20px;
-      padding: 10px 12px 12px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
-      margin-bottom: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(242,250,245,0.88));
+      border: 1px solid var(--surface-border);
+      border-radius: 18px;
+      padding: 14px 14px 13px;
+      box-shadow: var(--stage-shadow);
+      margin-bottom: 4px;
       overflow: hidden;
+      backdrop-filter: blur(10px);
     }
     .adventure-scene {
       position: relative;
-      height: 132px;
-      border-radius: 18px;
+      height: clamp(150px, 23vh, 220px);
+      border-radius: 14px;
       overflow: hidden;
       background: linear-gradient(180deg, #38bdf8 0%, #bfdbfe 42%, #22c55e 43%, #047857 100%);
-      box-shadow: inset 0 -34px 36px rgba(0,0,0,0.20);
+      box-shadow: inset 0 -42px 48px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.55);
       isolation: isolate;
     }
     .adventure-scene::before {
@@ -488,9 +533,9 @@ var _hmt = _hmt || [];
     .adventure-map {
       position: absolute;
       z-index: 3;
-      left: 13px;
-      top: 13px;
-      font-size: 30px;
+      left: 16px;
+      top: 15px;
+      font-size: 34px;
       line-height: 1;
       filter: drop-shadow(0 3px 4px rgba(0,0,0,0.26));
     }
@@ -499,9 +544,9 @@ var _hmt = _hmt || [];
     }
     .adventure-landmark {
       position: absolute;
-      bottom: 42px;
-      width: 36px;
-      height: 58px;
+      bottom: 48px;
+      width: 42px;
+      height: 68px;
       border-radius: 8px 8px 0 0;
       background: rgba(51,65,85,0.92);
       box-shadow: inset 0 0 0 2px rgba(255,255,255,0.16), 0 8px 14px rgba(0,0,0,0.22);
@@ -552,6 +597,43 @@ var _hmt = _hmt || [];
     .landmark-meteor-a::after { content: "☄️"; top: -24px; }
     .landmark-orbit-line { width: 68px; height: 30px; bottom: 58px; border: 5px solid rgba(34,211,238,0.84); border-left-color: transparent; border-right-color: transparent; border-radius: 50%; background: transparent; box-shadow: 0 0 22px rgba(34,211,238,0.82); }
     .landmark-orbit-line::after { content: "🛰️"; top: -24px; }
+    .landmark-crane { background: linear-gradient(180deg, #facc15, #b45309); }
+    .landmark-crane::after { content: "🏗️"; top: -24px; }
+    .landmark-tractor { background: linear-gradient(180deg, #84cc16, #166534); }
+    .landmark-tractor::after { content: "🚜"; top: -23px; }
+    .landmark-brick-wall { width: 56px; height: 34px; bottom: 50px; border-radius: 6px; background: repeating-linear-gradient(0deg, #b45309 0 8px, #7c2d12 8px 10px), repeating-linear-gradient(90deg, transparent 0 16px, rgba(255,255,255,0.22) 16px 18px); }
+    .landmark-brick-wall::after { content: "🧱"; top: -24px; }
+    .landmark-race-car { width: 58px; height: 34px; bottom: 52px; border-radius: 18px 22px 10px 10px; background: linear-gradient(180deg, #ef4444, #7f1d1d); }
+    .landmark-race-car::after { content: "🏎️"; top: -24px; }
+    .landmark-finish-flag { width: 28px; height: 66px; border-radius: 3px; background: linear-gradient(180deg, #111827, #374151); }
+    .landmark-finish-flag::after { content: "🏁"; top: -24px; }
+    .landmark-traffic-light { width: 32px; height: 68px; border-radius: 16px; background: linear-gradient(180deg, #1f2937, #020617); }
+    .landmark-traffic-light::before { inset: 8px 9px; border-radius: 999px; background: radial-gradient(circle at 50% 20%, #ef4444 0 5px, transparent 6px), radial-gradient(circle at 50% 50%, #facc15 0 5px, transparent 6px), radial-gradient(circle at 50% 80%, #22c55e 0 5px, transparent 6px); }
+    .landmark-traffic-light::after { content: "🚦"; top: -24px; }
+    .landmark-tire { width: 46px; height: 46px; bottom: 53px; border-radius: 50%; background: radial-gradient(circle, transparent 0 28%, #9ca3af 29% 42%, #111827 43%); }
+    .landmark-tire::after { content: "🛞"; top: -24px; }
+    .landmark-dino { background: linear-gradient(180deg, #22c55e, #14532d); }
+    .landmark-dino::after { content: "🦖"; top: -25px; }
+    .landmark-fossil { width: 48px; height: 34px; bottom: 54px; border-radius: 50%; background: radial-gradient(circle, #fef3c7, #ca8a04); }
+    .landmark-fossil::after { content: "🦴"; top: -24px; }
+    .landmark-pickaxe { width: 40px; height: 54px; border-radius: 8px; background: linear-gradient(180deg, #78716c, #292524); }
+    .landmark-pickaxe::after { content: "⛏️"; top: -24px; }
+    .landmark-robot { background: linear-gradient(180deg, #93c5fd, #1d4ed8); }
+    .landmark-robot::after { content: "🤖"; top: -24px; }
+    .landmark-gear { width: 50px; height: 50px; bottom: 52px; border-radius: 50%; background: conic-gradient(#94a3b8 0 12%, #334155 12% 20%, #94a3b8 20% 32%, #334155 32% 40%, #94a3b8 40% 52%, #334155 52% 60%, #94a3b8 60% 72%, #334155 72% 80%, #94a3b8 80% 92%, #334155 92%); }
+    .landmark-gear::after { content: "⚙️"; top: -24px; }
+    .landmark-battery { width: 42px; height: 56px; border-radius: 8px; background: linear-gradient(180deg, #bef264, #16a34a); box-shadow: 0 0 24px rgba(132,204,22,0.72); }
+    .landmark-battery::after { content: "🔋"; top: -24px; }
+    .landmark-toolbox { background: linear-gradient(180deg, #f97316, #7c2d12); }
+    .landmark-toolbox::after { content: "🧰"; top: -24px; }
+    .landmark-rocket { width: 42px; height: 72px; border-radius: 50% 50% 14px 14px; background: linear-gradient(180deg, #f8fafc, #ef4444 58%, #1d4ed8); }
+    .landmark-rocket::after { content: "🚀"; top: -28px; }
+    .landmark-planet { width: 52px; height: 52px; bottom: 52px; border-radius: 50%; background: radial-gradient(circle at 34% 30%, #fde68a, #f97316 58%, #7c2d12); box-shadow: 0 0 26px rgba(251,146,60,0.66); }
+    .landmark-planet::after { content: "🪐"; top: -24px; }
+    .landmark-satellite { width: 58px; height: 34px; bottom: 58px; border-radius: 10px; background: linear-gradient(90deg, #38bdf8, #e0f2fe, #38bdf8); box-shadow: 0 0 24px rgba(56,189,248,0.72); }
+    .landmark-satellite::after { content: "🛰️"; top: -24px; }
+    .landmark-star { width: 38px; height: 38px; bottom: 64px; border-radius: 50%; background: radial-gradient(circle, #fff7ad, #facc15 62%, transparent 63%); box-shadow: 0 0 24px rgba(250,204,21,0.9); }
+    .landmark-star::after { content: "⭐"; top: -24px; }
     .adventure-landmark:nth-child(1) { left: 18%; transform: scale(0.78); }
     .adventure-landmark:nth-child(2) { left: 37%; transform: scale(1.05); }
     .adventure-landmark:nth-child(3) { left: 61%; transform: scale(0.86); }
@@ -606,6 +688,34 @@ var _hmt = _hmt || [];
       background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #fde047);
       box-shadow: 0 0 26px rgba(168,85,247,0.94), 0 0 46px rgba(34,211,238,0.76);
     }
+    .adventure-scene[data-route-style="construction-run"] .adv-route-beam {
+      top: 74%;
+      height: 16px;
+      transform: rotate(-6deg);
+      background: repeating-linear-gradient(90deg, #111827 0 18px, #facc15 18px 30px, #111827 30px 48px);
+      box-shadow: 0 0 22px rgba(250,204,21,0.9), 0 0 36px rgba(249,115,22,0.58);
+    }
+    .adventure-scene[data-route-style="race-track"] .adv-route-beam {
+      top: 72%;
+      height: 18px;
+      transform: rotate(-4deg);
+      background: repeating-linear-gradient(90deg, #020617 0 30px, #f8fafc 30px 42px, #020617 42px 72px);
+      box-shadow: 0 0 24px rgba(248,250,252,0.9), 0 0 42px rgba(239,68,68,0.62);
+    }
+    .adventure-scene[data-route-style="dino-trail"] .adv-route-beam {
+      top: 71%;
+      height: 15px;
+      transform: rotate(-9deg);
+      background: linear-gradient(90deg, #78350f, #facc15 26%, #22c55e 58%, #166534);
+      box-shadow: 0 0 24px rgba(34,197,94,0.82), 0 0 36px rgba(250,204,21,0.55);
+    }
+    .adventure-scene[data-route-style="robot-line"] .adv-route-beam {
+      top: 70%;
+      height: 13px;
+      transform: rotate(-5deg);
+      background: repeating-linear-gradient(90deg, #0f172a 0 18px, #22d3ee 18px 28px, #a3e635 28px 38px, #0f172a 38px 58px);
+      box-shadow: 0 0 28px rgba(34,211,238,0.9), 0 0 44px rgba(163,230,53,0.62);
+    }
     .adventure-track {
       position: absolute;
       inset: 0;
@@ -614,15 +724,15 @@ var _hmt = _hmt || [];
     .adv-dot {
       position: absolute;
       z-index: 4;
-      width: 30px;
-      height: 30px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       background: radial-gradient(circle, #fff7ad, #f59e0b);
       color: #7c2d12;
       font-weight: 1000;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       box-shadow: 0 0 0 4px rgba(255,255,255,0.44), 0 0 22px rgba(250,204,21,0.78);
     }
     .adv-dot[data-step="0"] { left: 7%; top: 70%; }
@@ -644,13 +754,13 @@ var _hmt = _hmt || [];
     .adventure-vehicle {
       left: 7%;
       top: 50%;
-      font-size: 48px;
+      font-size: 56px;
       transform: translate(-50%, -50%);
     }
     .adventure-boss {
       right: 6%;
       top: 40%;
-      font-size: 50px;
+      font-size: 58px;
       transform: translate(50%, -50%);
       animation: advBossBreathe 1.6s ease-in-out infinite;
     }
@@ -679,53 +789,202 @@ var _hmt = _hmt || [];
       transition: width 0.55s cubic-bezier(.34,1.56,.64,1);
     }
     .adventure-title {
-      margin-top: 5px;
-      font-size: 0.9rem;
+      margin-top: 8px;
+      font-size: 0.98rem;
       font-weight: 900;
-      color: var(--text);
+      color: var(--ink-soft);
       text-align: center;
     }
+    .dialogue-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .dialogue-bubble {
+      --dialogue-glow: #38bdf8;
+      --dialogue-panel: rgba(255,255,255,0.84);
+      position: absolute;
+      min-width: 170px;
+      max-width: 310px;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 12px 9px 9px;
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.94), rgba(255,255,255,0.62)),
+        radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--dialogue-glow), transparent 62%), transparent 58%);
+      border: 2px solid color-mix(in srgb, var(--dialogue-glow), white 35%);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,0.34),
+        0 10px 22px rgba(15,23,42,0.24),
+        0 0 24px color-mix(in srgb, var(--dialogue-glow), transparent 45%);
+      color: #0f2f4f;
+      transform-origin: center bottom;
+      animation: dialoguePop 3.9s cubic-bezier(.16,.84,.22,1) both;
+      backdrop-filter: blur(10px) saturate(1.35);
+    }
+    .dialogue-bubble::before {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 11px;
+      background: linear-gradient(110deg, transparent 0 18%, rgba(255,255,255,0.74) 33%, transparent 48%);
+      transform: translateX(-130%);
+      animation: dialogueScan 1.55s ease-out 0.12s both;
+      pointer-events: none;
+    }
+    .dialogue-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -9px;
+      width: 18px;
+      height: 18px;
+      transform: rotate(45deg);
+      background: var(--dialogue-panel);
+      border-right: 2px solid color-mix(in srgb, var(--dialogue-glow), white 35%);
+      border-bottom: 2px solid color-mix(in srgb, var(--dialogue-glow), white 35%);
+    }
+    .dialogue-bubble.lele {
+      left: 14px;
+      top: 13px;
+      --dialogue-glow: #38bdf8;
+      --dialogue-panel: rgba(219,242,255,0.86);
+    }
+    .dialogue-bubble.lele::after { left: 34px; }
+    .dialogue-bubble.haohao {
+      right: 14px;
+      top: 13px;
+      --dialogue-glow: #fb923c;
+      --dialogue-panel: rgba(255,235,199,0.86);
+      animation-delay: 110ms;
+    }
+    .dialogue-bubble.haohao::after { right: 34px; }
+    .dialogue-bubble.boss {
+      right: 18px;
+      top: 73px;
+      --dialogue-glow: #ef4444;
+      --dialogue-panel: rgba(255,226,226,0.9);
+      color: #5f1111;
+      animation-delay: 60ms;
+    }
+    .dialogue-bubble.boss::after { right: 42px; }
+    .dialogue-portrait {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 26%, #fff, color-mix(in srgb, var(--dialogue-glow), white 58%));
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 0 14px color-mix(in srgb, var(--dialogue-glow), transparent 35%);
+      font-size: 24px;
+      line-height: 1;
+    }
+    .dialogue-copy {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+    .dialogue-speaker {
+      font-size: 0.68rem;
+      font-weight: 1000;
+      letter-spacing: 0;
+      color: color-mix(in srgb, var(--dialogue-glow), #0f172a 44%);
+      text-transform: uppercase;
+    }
+    .dialogue-text {
+      font-size: 0.92rem;
+      font-weight: 1000;
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+    .dialogue-bubble:nth-child(2):not(.boss) { top: 72px; }
+    @keyframes dialoguePop {
+      0% { opacity: 0; transform: translateY(14px) scale(0.78) rotate(-2deg); filter: brightness(1.6); }
+      12% { opacity: 1; transform: translateY(-3px) scale(1.04) rotate(1deg); }
+      22% { transform: translateY(0) scale(1) rotate(0); }
+      78% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-12px) scale(0.92); filter: brightness(1.1); }
+    }
+    @keyframes dialogueScan {
+      0% { transform: translateX(-130%); opacity: 0; }
+      18% { opacity: 1; }
+      100% { transform: translateX(130%); opacity: 0; }
+    }
+    @media (max-width: 700px) {
+      .dialogue-bubble {
+        min-width: 118px;
+        max-width: 43%;
+        grid-template-columns: 30px 1fr;
+        gap: 6px;
+        padding: 7px 8px 7px 7px;
+        border-radius: 12px;
+      }
+      .dialogue-portrait {
+        width: 30px;
+        height: 30px;
+        font-size: 19px;
+      }
+      .dialogue-speaker { font-size: 0.58rem; }
+      .dialogue-text { font-size: 0.74rem; }
+      .dialogue-bubble.lele { left: 8px; top: 8px; }
+      .dialogue-bubble.haohao { right: 8px; top: 8px; }
+      .dialogue-bubble.boss { right: 9px; top: 48px; }
+      .dialogue-bubble:nth-child(2):not(.boss) { top: 56px; }
+    }
     .adv-scene-police {
-      background: radial-gradient(circle at 82% 16%, rgba(255,236,104,0.92), transparent 15%), linear-gradient(180deg, #38bdf8 0%, #bfdbfe 42%, #334155 43%, #111827 100%);
+      background: radial-gradient(circle at 82% 16%, rgba(255,236,104,0.92), transparent 15%), linear-gradient(180deg, #60a5fa 0%, #bfdbfe 39%, #f59e0b 40%, #78350f 100%);
     }
     .adv-scene-ambulance {
-      background: radial-gradient(circle at 20% 18%, rgba(187,247,208,0.92), transparent 16%), linear-gradient(180deg, #bae6fd 0%, #e0f2fe 42%, #10b981 43%, #047857 100%);
+      background: radial-gradient(circle at 20% 18%, rgba(254,240,138,0.94), transparent 16%), linear-gradient(180deg, #7dd3fc 0%, #dbeafe 38%, #1f2937 39%, #020617 100%);
     }
     .adv-scene-fire {
-      background: radial-gradient(circle at 80% 32%, rgba(251,146,60,0.82), transparent 18%), linear-gradient(180deg, #fef3c7 0%, #fed7aa 42%, #7f1d1d 43%, #1f2937 100%);
+      background: radial-gradient(circle at 80% 32%, rgba(163,230,53,0.74), transparent 18%), linear-gradient(180deg, #cffafe 0%, #dbeafe 40%, #1e3a8a 41%, #0f172a 100%);
     }
     .adv-scene-everyday {
-      background: radial-gradient(circle at 76% 18%, rgba(254,240,138,0.95), transparent 15%), linear-gradient(180deg, #93c5fd 0%, #dbeafe 42%, #22c55e 43%, #166534 100%);
+      background: radial-gradient(circle at 76% 18%, rgba(254,240,138,0.92), transparent 15%), linear-gradient(180deg, #93c5fd 0%, #dbeafe 39%, #84cc16 40%, #78350f 100%);
     }
     .adv-scene-adventure {
       background: radial-gradient(circle at 72% 28%, rgba(168,85,247,0.70), transparent 22%), radial-gradient(circle at 20% 16%, rgba(34,211,238,0.60), transparent 16%), linear-gradient(180deg, #0f172a 0%, #1e1b4b 58%, #312e81 100%);
     }
     .cartoon-scene-living-room {
       background:
-        radial-gradient(circle at 18% 18%, rgba(255,255,255,0.8), transparent 0 10%),
-        linear-gradient(180deg, #8bd3ff 0%, #c8ecff 42%, #ffd88a 43%, #f5a45d 100%);
+        repeating-linear-gradient(135deg, rgba(17,24,39,0.28) 0 12px, rgba(250,204,21,0.35) 12px 24px, transparent 24px 42px),
+        radial-gradient(circle at 18% 18%, rgba(255,255,255,0.82), transparent 0 10%),
+        linear-gradient(180deg, #7dd3fc 0%, #dbeafe 39%, #f59e0b 40%, #92400e 100%);
     }
     .cartoon-scene-backyard {
       background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.82) 0 12px, transparent 12px 34px),
         radial-gradient(circle at 78% 16%, rgba(255,236,130,0.94), transparent 0 13%),
-        linear-gradient(180deg, #8bd3ff 0%, #d8f4ff 45%, #8bd46a 46%, #2f9c55 100%);
+        linear-gradient(180deg, #7dd3fc 0%, #dbeafe 38%, #1f2937 39%, #020617 100%);
     }
     .cartoon-scene-park {
       background:
-        radial-gradient(circle at 18% 24%, rgba(133,214,114,0.7), transparent 0 16%),
-        linear-gradient(180deg, #9fdcff 0%, #e3f7ff 43%, #7ad36c 44%, #2f8d53 100%);
+        radial-gradient(circle at 18% 24%, rgba(34,197,94,0.66), transparent 0 16%),
+        radial-gradient(circle at 72% 42%, rgba(254,215,170,0.72), transparent 0 12%),
+        linear-gradient(180deg, #8bd3ff 0%, #d8f4ff 39%, #84cc16 40%, #78350f 100%);
     }
     .cartoon-scene-kitchen {
       background:
-        radial-gradient(circle at 76% 18%, rgba(255,239,177,0.9), transparent 0 15%),
-        linear-gradient(180deg, #ffe9b8 0%, #fff4d7 42%, #84c7df 43%, #4b9abd 100%);
+        linear-gradient(90deg, rgba(34,211,238,0.28) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(163,230,53,0.24) 1px, transparent 1px),
+        radial-gradient(circle at 76% 18%, rgba(187,247,208,0.86), transparent 0 15%),
+        linear-gradient(180deg, #cffafe 0%, #dbeafe 39%, #1d4ed8 40%, #0f172a 100%);
+      background-size: 28px 28px, 28px 28px, auto, auto;
     }
     .cartoon-scene-bedroom {
       background:
-        radial-gradient(circle at 76% 16%, rgba(255,247,185,0.95), transparent 0 12%),
+        radial-gradient(circle at 76% 16%, rgba(255,247,185,0.95), transparent 0 11%),
+        radial-gradient(circle at 16% 58%, rgba(239,68,68,0.62), transparent 0 11%),
         radial-gradient(circle at 28% 20%, rgba(255,255,255,0.72) 0 4px, transparent 5px),
         radial-gradient(circle at 52% 28%, rgba(255,255,255,0.58) 0 3px, transparent 4px),
-        linear-gradient(180deg, #3b62c4 0%, #7b8fe6 45%, #9b78d6 46%, #5a3f9f 100%);
+        linear-gradient(180deg, #0f172a 0%, #1e1b4b 56%, #312e81 100%);
     }
     .cartoon-prop {
       display: flex;
@@ -905,6 +1164,24 @@ var _hmt = _hmt || [];
       transform: rotate(-14deg) scaleX(0.2);
       background: linear-gradient(90deg, rgba(255,255,255,0), #22d3ee, #a78bfa, #f472b6, #fde047);
       box-shadow: 0 0 34px rgba(168,85,247,1), 0 0 86px rgba(34,211,238,0.92);
+    }
+    .adv-cinematic[data-cinematic-route="construction-run"] .adv-cinematic-route {
+      background: repeating-linear-gradient(90deg, rgba(17,24,39,0.04) 0 28px, #facc15 28px 44px, #111827 44px 72px);
+      box-shadow: 0 0 34px rgba(250,204,21,1), 0 0 82px rgba(249,115,22,0.78);
+    }
+    .adv-cinematic[data-cinematic-route="race-track"] .adv-cinematic-route {
+      top: 60%;
+      transform: rotate(-5deg) scaleX(0.2);
+      background: repeating-linear-gradient(90deg, rgba(2,6,23,0) 0 18px, #f8fafc 18px 32px, #020617 32px 66px);
+      box-shadow: 0 0 36px rgba(248,250,252,1), 0 0 86px rgba(239,68,68,0.82);
+    }
+    .adv-cinematic[data-cinematic-route="dino-trail"] .adv-cinematic-route {
+      background: linear-gradient(90deg, rgba(255,255,255,0), #78350f 12%, #facc15 34%, #22c55e 66%, #dcfce7);
+      box-shadow: 0 0 34px rgba(34,197,94,1), 0 0 76px rgba(250,204,21,0.76);
+    }
+    .adv-cinematic[data-cinematic-route="robot-line"] .adv-cinematic-route {
+      background: repeating-linear-gradient(90deg, rgba(15,23,42,0) 0 20px, #22d3ee 20px 36px, #a3e635 36px 48px, #0f172a 48px 76px);
+      box-shadow: 0 0 36px rgba(34,211,238,1), 0 0 82px rgba(163,230,53,0.82);
     }
     .adv-cinematic-vehicle {
       z-index: 6;
@@ -1293,11 +1570,11 @@ var _hmt = _hmt || [];
     }
 
     .score-badge {
-      position: absolute; top: -10px; right: 0;
+      position: absolute; top: -12px; right: 18px;
       background: var(--yellow); color: #5d4037;
-      border-radius: 20px; padding: 4px 14px;
+      border-radius: 999px; padding: 5px 15px;
       font-size: 1rem; font-weight: 900;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 18px rgba(177, 109, 0, 0.20), inset 0 1px 0 rgba(255,255,255,0.6);
     }
     .score-badge.score-pop {
       animation: scorePop 0.35s cubic-bezier(.34,1.56,.64,1);
@@ -1310,23 +1587,30 @@ var _hmt = _hmt || [];
 
     .question-card {
       position: relative; width: 100%;
-      background: var(--card); border-radius: 28px;
-      padding: 28px 24px 22px;
-      box-shadow: var(--shadow); text-align: center;
+      background: linear-gradient(180deg, var(--surface-strong), rgba(255,255,255,0.90));
+      border-radius: 18px;
+      padding: 30px 28px 24px;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.86);
+      border: 1px solid var(--surface-border);
+      text-align: center;
+      backdrop-filter: blur(8px);
     }
 
     .dino-small {
-      font-size: 32px;
-      display: block; margin-bottom: 4px;
+      font-size: 34px;
+      display: block; margin-bottom: 8px;
       animation: dinoFloat 2s ease-in-out infinite;
     }
     .question-story {
-      font-size: 1rem; color: #795548; font-weight: 600;
-      margin-bottom: 16px; min-height: 28px;
+      font-size: 1.05rem; color: #66513e; font-weight: 700;
+      line-height: 1.45;
+      margin: 0 auto 18px;
+      min-height: 32px;
+      max-width: 32em;
     }
     .question-text {
-      font-size: 3.2rem; font-weight: 900;
-      color: var(--text); letter-spacing: 4px; margin-bottom: 8px;
+      font-size: clamp(3rem, 7vw, 4rem); font-weight: 900;
+      color: var(--text); letter-spacing: 3px; margin-bottom: 10px;
     }
     .question-text .op { color: var(--orange); }
     .question-text .eq { color: var(--purple); }
@@ -1345,14 +1629,14 @@ var _hmt = _hmt || [];
 
     .quiz-progress-row {
       width: 100%; display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 4px; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 0; gap: 12px; flex-wrap: wrap;
     }
     .btn-reread {
       flex-shrink: 0; font-size: 0.85rem; font-weight: 800;
-      padding: 6px 12px; border-radius: 16px;
-      border: 2px solid #90caf9; background: #fff;
+      padding: 7px 14px; border-radius: 999px;
+      border: 1px solid rgba(144,202,249,0.88); background: rgba(255,255,255,0.9);
       color: var(--blue); cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      box-shadow: 0 8px 18px rgba(33,150,243,0.12);
       transition: transform 0.12s;
     }
     .btn-reread:hover { background: #e3f2fd; }
@@ -1385,10 +1669,10 @@ var _hmt = _hmt || [];
     }
 
     .answer-input-display {
-      font-size: 3rem; font-weight: 900; color: var(--blue);
-      min-height: 60px;
+      font-size: 3.1rem; font-weight: 900; color: var(--blue);
+      min-height: 64px;
       border-bottom: 4px dashed #90caf9;
-      width: 130px; margin: 0 auto 8px;
+      width: 140px; margin: 0 auto 10px;
       display: flex; align-items: center; justify-content: center;
       border-radius: 8px;
     }
@@ -1417,15 +1701,21 @@ var _hmt = _hmt || [];
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.72);
+      box-shadow: 0 16px 36px rgba(68, 105, 68, 0.14), inset 0 1px 0 rgba(255,255,255,0.82);
+      backdrop-filter: blur(8px);
     }
     .numpad-btn {
       background: linear-gradient(135deg, #fff9c4, #fff176);
-      border: 3px solid #f9a825; border-radius: 16px;
+      border: 2px solid #f9a825; border-radius: 14px;
       font-size: 1.8rem; font-weight: 900; color: #e65100;
-      padding: 14px 0; cursor: pointer;
-      box-shadow: 0 5px 0 #f57f17;
-      transition: background 0.1s;
+      padding: 15px 0; cursor: pointer;
+      box-shadow: 0 4px 0 #f57f17, 0 8px 18px rgba(245,127,23,0.14);
+      transition: transform 0.1s, background 0.1s, box-shadow 0.1s;
       user-select: none; -webkit-tap-highlight-color: transparent;
     }
     .numpad-btn:hover {
@@ -1444,10 +1734,10 @@ var _hmt = _hmt || [];
     }
 
     @media (min-width: 560px) and (min-height: 620px) {
-      #app { width: min(680px, 95vw); }
+      #app { width: min(960px, 96vw); }
       #quiz-page { gap: 10px; }
       #quiz-page .player-indicator {
-        padding: 6px 16px;
+        padding: 7px 18px;
         font-size: 1rem;
         border-radius: 18px;
       }
@@ -1462,80 +1752,82 @@ var _hmt = _hmt || [];
       #quiz-page .progress-bar-wrap { height: 18px; }
       #quiz-page .progress-label { font-size: 0.9rem; }
       #quiz-page .adventure-hud {
-        padding: 8px 10px 9px;
-        margin-bottom: 0;
-        border-radius: 17px;
+        padding: 12px 13px 11px;
+        margin-bottom: 2px;
+        border-radius: 18px;
       }
       #quiz-page .adventure-scene {
-        height: 108px;
-        border-radius: 15px;
+        height: clamp(172px, 25vh, 238px);
+        border-radius: 14px;
       }
       #quiz-page .adventure-title {
-        margin-top: 4px;
-        font-size: 0.84rem;
+        margin-top: 6px;
+        font-size: 0.92rem;
       }
       #quiz-page .adventure-landmark {
-        width: 28px;
-        height: 44px;
-        bottom: 34px;
+        width: 40px;
+        height: 64px;
+        bottom: 48px;
       }
       #quiz-page .adv-dot {
-        width: 25px;
-        height: 25px;
-        font-size: 0.78rem;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
       }
       #quiz-page .adventure-vehicle .cartoon-dog {
-        --dog-scale: 0.66;
+        --dog-scale: 0.82;
       }
-      #quiz-page .adventure-boss { font-size: 40px; }
+      #quiz-page .adventure-vehicle { font-size: 58px; }
+      #quiz-page .adventure-boss { font-size: 56px; }
       #quiz-page .quiz-body {
         flex-direction: row;
         align-items: stretch;
-        gap: 12px;
+        gap: 16px;
       }
       #quiz-page .question-card {
-        flex: 1;
+        flex: 1 1 0;
         min-width: 0;
-        padding: 18px 16px 14px;
-        border-radius: 22px;
+        padding: 19px 22px 16px;
+        border-radius: 18px;
       }
       #quiz-page .dino-small {
-        height: 50px;
-        margin-bottom: 2px;
+        height: 48px;
+        margin-bottom: 4px;
         line-height: 1;
       }
       #quiz-page .dino-small .cartoon-dog {
-        --dog-scale: 0.55;
+        --dog-scale: 0.56;
       }
       #quiz-page .question-story {
-        font-size: 0.92rem;
-        line-height: 1.35;
+        font-size: 0.94rem;
+        line-height: 1.34;
         margin-bottom: 8px;
-        min-height: 24px;
+        min-height: 28px;
       }
       #quiz-page .question-text {
-        font-size: 2.5rem;
+        font-size: clamp(2.65rem, 4.5vw, 3.3rem);
         letter-spacing: 2px;
         margin-bottom: 4px;
       }
       #quiz-page .answer-input-display {
-        font-size: 2rem;
-        min-height: 44px;
-        width: 96px;
-        margin-bottom: 4px;
+        font-size: 2.2rem;
+        min-height: 46px;
+        width: 106px;
+        margin-bottom: 6px;
       }
       #quiz-page .feedback-msg {
         font-size: 0.95rem;
-        min-height: 24px;
+        min-height: 22px;
       }
       #quiz-page .numpad {
-        width: 240px;
+        width: clamp(252px, 28vw, 300px);
         flex-shrink: 0;
         align-self: center;
-        gap: 6px;
+        gap: 8px;
+        padding: 9px;
       }
       #quiz-page .numpad-btn {
-        font-size: 1.45rem;
+        font-size: 1.48rem;
         padding: 9px 0;
         border-radius: 12px;
         border-width: 2px;
@@ -1991,16 +2283,24 @@ var _hmt = _hmt || [];
 
     /* ===== 小屏响应式 ===== */
     @media (max-width: 420px) {
+      body {
+        justify-content: flex-start;
+        padding: 10px 0 12px;
+      }
       .title { font-size: 2rem; }
       .title-sub { font-size: 0.95rem; }
       .dino-hero-row { font-size: 52px; gap: 6px; }
       .dino-hero-vs { font-size: 0.8rem; padding: 3px 10px; }
       .btn-start { font-size: 1.3rem; padding: 14px 40px; }
 
-      #quiz-page { gap: 10px; }
+      #app { width: min(390px, 94vw); }
+      #quiz-page { gap: 8px; }
+      #player-page { gap: 12px; }
+      .player-title { font-size: 1.55rem; }
+      .player-subtitle { font-size: 0.95rem; }
       #quiz-page .player-indicator {
-        padding: 6px 14px;
-        font-size: 1rem;
+        padding: 5px 12px;
+        font-size: 0.94rem;
       }
       #quiz-page .player-indicator .pi-avatar {
         line-height: 1;
@@ -2010,26 +2310,37 @@ var _hmt = _hmt || [];
       #quiz-page .player-indicator .cartoon-dog {
         --dog-scale: 0.52;
       }
-      .quiz-body { gap: 10px; }
-      .question-card { padding: 18px 14px 14px; border-radius: 20px; }
-      .dino-small { font-size: 24px; height: 46px; line-height: 1; margin-bottom: 2px; }
+      .progress-bar-wrap { height: 15px; }
+      .quiz-progress-row { gap: 8px; }
+      .quiz-body { gap: 9px; }
+      .question-card { padding: 12px 13px 10px; border-radius: 16px; }
+      .dino-small { font-size: 22px; height: 38px; line-height: 1; margin-bottom: 1px; }
       .dino-small .cartoon-dog {
-        --dog-scale: 0.5;
+        --dog-scale: 0.42;
       }
-      .question-story { font-size: 0.9rem; margin-bottom: 10px; }
-      .question-text { font-size: 2.4rem; letter-spacing: 2px; }
-      .answer-input-display { font-size: 2.2rem; min-height: 46px; width: 100px; }
-      .feedback-msg { font-size: 0.95rem; }
+      .question-story { font-size: 0.86rem; line-height: 1.28; margin-bottom: 6px; min-height: 24px; }
+      .question-text { font-size: 2.15rem; letter-spacing: 2px; margin-bottom: 2px; }
+      .answer-input-display { font-size: 2rem; min-height: 40px; width: 94px; margin-bottom: 3px; }
+      .feedback-msg { font-size: 0.9rem; min-height: 20px; }
       .score-badge { font-size: 0.85rem; padding: 3px 10px; }
 
-      .numpad { gap: 6px; }
-      .numpad-btn { font-size: 1.4rem; padding: 10px 0; border-radius: 12px; border-width: 2px; box-shadow: 0 3px 0 #f57f17; }
+      .numpad { gap: 6px; padding: 7px; border-radius: 16px; }
+      .numpad-btn { font-size: 1.28rem; padding: 7px 0; border-radius: 11px; border-width: 2px; box-shadow: 0 3px 0 #f57f17; }
       .numpad-btn.del-btn { font-size: 1.1rem; box-shadow: 0 3px 0 #bf360c; }
       .numpad-btn.ok-btn  { font-size: 1.1rem; box-shadow: 0 3px 0 #1b5e20; }
 
-      .player-card { padding: 18px 10px; border-radius: 20px; }
+      .player-choices { gap: 14px; }
+      .player-card { width: min(100%, 280px); min-width: 0; padding: 11px 12px 10px; border-radius: 18px; }
       .player-card .player-avatar { font-size: 52px; }
+      .player-card .cartoon-dog { --dog-scale: 0.72; }
       .player-name { font-size: 1.1rem; }
+      .player-vehicle-tag { font-size: 0.76rem; margin-bottom: 2px; }
+      .player-total-stars,
+      .player-coins { font-size: 0.9rem; }
+      .player-rank-badge { font-size: 0.78rem; padding: 2px 9px; margin-top: 4px; }
+      .player-trophy-strip { min-height: 22px; margin-top: 4px; font-size: 1rem; }
+      .player-trophy-strip.empty { display: none; }
+      .btn-garage { margin-top: 6px; margin-bottom: 2px; padding: 7px 14px; font-size: 0.88rem; }
 
       .result-title { font-size: 1.8rem; }
       .result-stars { font-size: 2.2rem; }
@@ -2046,15 +2357,16 @@ var _hmt = _hmt || [];
       .progress-bar-wrap { height: 18px; }
       .progress-dino { font-size: 16px; right: -10px; }
       .progress-label { font-size: 0.85rem; }
-      .adventure-hud { padding: 8px 9px 9px; margin-bottom: 8px; border-radius: 16px; }
-      .adventure-scene { height: 86px; border-radius: 14px; }
+      .adventure-hud { padding: 9px 9px 8px; margin-bottom: 4px; border-radius: 16px; }
+      .adventure-scene { height: clamp(122px, 18vh, 145px); border-radius: 13px; }
       .adventure-landmark { width: 26px; height: 40px; bottom: 34px; }
-      .adventure-vehicle { font-size: 34px; }
-      .adventure-vehicle .cartoon-dog { --dog-scale: 0.62; }
-      .adventure-boss { font-size: 36px; }
-      .adv-dot { width: 24px; height: 24px; font-size: 0.78rem; box-shadow: 0 0 0 3px rgba(255,255,255,0.42), 0 0 16px rgba(250,204,21,0.70); }
+      .adventure-map { font-size: 26px; left: 10px; top: 10px; }
+      .adventure-vehicle { font-size: 36px; }
+      .adventure-vehicle .cartoon-dog { --dog-scale: 0.6; }
+      .adventure-boss { font-size: 38px; }
+      .adv-dot { width: 23px; height: 23px; font-size: 0.72rem; box-shadow: 0 0 0 3px rgba(255,255,255,0.42), 0 0 16px rgba(250,204,21,0.70); }
       .adventure-power { left: 12px; right: 12px; bottom: 7px; height: 9px; }
-      .adventure-title { font-size: 0.82rem; margin-top: 4px; }
+      .adventure-title { font-size: 0.78rem; margin-top: 3px; }
 
       .btn-next-q { font-size: 0.95rem; padding: 7px 22px; }
     }
@@ -2095,11 +2407,11 @@ var _hmt = _hmt || [];
       .question-text { font-size: 2.4rem; margin-bottom: 4px; }
       .answer-input-display { min-height: 42px; margin-bottom: 4px; }
       .numpad-btn { padding: 8px 0; }
-      .adventure-hud { padding: 8px 10px 9px; margin-bottom: 8px; border-radius: 16px; }
-      .adventure-scene { height: 82px; border-radius: 14px; }
-      .adventure-landmark { width: 25px; height: 38px; bottom: 32px; }
-      .adventure-vehicle { font-size: 34px; }
-      .adventure-boss { font-size: 36px; }
+      .adventure-hud { padding: 9px 10px 9px; margin-bottom: 6px; border-radius: 16px; }
+      .adventure-scene { height: clamp(124px, 22vh, 158px); border-radius: 13px; }
+      .adventure-landmark { width: 28px; height: 42px; bottom: 34px; }
+      .adventure-vehicle { font-size: 40px; }
+      .adventure-boss { font-size: 42px; }
       .adv-dot { width: 24px; height: 24px; font-size: 0.78rem; box-shadow: 0 0 0 3px rgba(255,255,255,0.42), 0 0 16px rgba(250,204,21,0.70); }
       .adventure-power { left: 12px; right: 12px; bottom: 7px; height: 9px; }
       .adventure-title { font-size: 0.82rem; margin-top: 4px; }
@@ -2133,6 +2445,16 @@ var _hmt = _hmt || [];
       .progress-bar-wrap { height: 14px; }
       .progress-dino { font-size: 13px; right: -8px; }
       .progress-label { font-size: 0.75rem; }
+      .adventure-hud { padding: 7px 8px 7px; margin-bottom: 4px; border-radius: 14px; }
+      .adventure-scene { height: 96px; border-radius: 12px; }
+      .adventure-title { font-size: 0.76rem; margin-top: 3px; }
+      .adventure-map { font-size: 24px; left: 10px; top: 10px; }
+      .adventure-landmark { width: 25px; height: 38px; bottom: 30px; }
+      .adventure-vehicle { font-size: 34px; }
+      .adventure-vehicle .cartoon-dog { --dog-scale: 0.58; }
+      .adventure-boss { font-size: 34px; }
+      .adv-dot { width: 23px; height: 23px; font-size: 0.72rem; }
+      .adventure-power { left: 10px; right: 10px; bottom: 6px; height: 8px; }
 
       .quiz-body {
         flex-direction: row;
@@ -2198,6 +2520,8 @@ var _hmt = _hmt || [];
       .player-card .player-avatar { font-size: 36px; }
       .question-text { font-size: 1.6rem; }
       .answer-input-display { font-size: 1.5rem; min-height: 32px; width: 70px; }
+      .adventure-scene { height: 78px; }
+      .adventure-title { display: none; }
       .numpad { width: 190px; gap: 4px; }
       .numpad-btn { font-size: 1rem; padding: 5px 0; }
     }
@@ -2304,8 +2628,8 @@ var _hmt = _hmt || [];
       </div>
     </div>
     <div class="title-main">布鲁伊和宾果数学游戏</div>
-    <div class="title-sub">听故事，数一数，玩一集家庭小动画</div>
-    <div class="stars-row">🧱🎈🍪⭐🛝</div>
+    <div class="title-sub">听故事，数一数，冲进酷炫闯关动画</div>
+    <div class="stars-row">🚜🏎️🦖🤖🚀</div>
     <button class="btn-start" id="btn-start">开始游戏！</button>
     <div class="start-secondary-row">
       <button type="button" class="btn-leaderboard" id="btn-settings-home">⚙️ 设置</button>
@@ -2337,27 +2661,27 @@ var _hmt = _hmt || [];
     <div class="player-choices">
       <div class="player-card lele" id="pick-lele">
         <span class="player-avatar" id="lele-preview-avatar">🐶</span>
-        <div class="player-vehicle-tag" id="lele-preview-vehicle-tag" style="background:#e3f4ff;color:#1665a8;">🧱 积木游戏</div>
+        <div class="player-vehicle-tag" id="lele-preview-vehicle-tag" style="background:#e3f4ff;color:#1665a8;">🚜 工程任务</div>
         <div class="player-name-row">
           <span class="player-name" id="lele-name">布鲁伊</span>
           <button class="name-edit-btn" id="edit-lele" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="lele-preview-stars">⭐ 0</div>
         <div class="player-coins" id="lele-preview-coins">🪙 0</div>
-        <div class="player-rank-badge" id="lele-preview-title">积木新手</div>
+        <div class="player-rank-badge" id="lele-preview-title">工程新手</div>
         <div class="player-trophy-strip empty" id="lele-preview-trophies">还没有奖杯</div>
         <button class="btn-garage" id="btn-garage-lele" type="button">🧸 游戏柜</button>
       </div>
       <div class="player-card haohao" id="pick-haohao">
         <span class="player-avatar" id="haohao-preview-avatar">🐶</span>
-        <div class="player-vehicle-tag" id="haohao-preview-vehicle-tag" style="background:#fff0d8;color:#c45b1c;">🎈 气球游戏</div>
+        <div class="player-vehicle-tag" id="haohao-preview-vehicle-tag" style="background:#fff0d8;color:#c45b1c;">🏎️ 赛车任务</div>
         <div class="player-name-row">
           <span class="player-name" id="haohao-name">宾果</span>
           <button class="name-edit-btn" id="edit-haohao" title="改名字">✏️</button>
         </div>
         <div class="player-total-stars" id="haohao-preview-stars">⭐ 0</div>
         <div class="player-coins" id="haohao-preview-coins">🪙 0</div>
-        <div class="player-rank-badge" id="haohao-preview-title">气球新手</div>
+        <div class="player-rank-badge" id="haohao-preview-title">赛车新手</div>
         <div class="player-trophy-strip empty" id="haohao-preview-trophies">还没有奖杯</div>
         <button class="btn-garage" id="btn-garage-haohao" type="button">🧸 游戏柜</button>
       </div>
@@ -2397,6 +2721,7 @@ var _hmt = _hmt || [];
         </div>
         <span class="adventure-vehicle" id="adventure-vehicle">🚀</span>
         <span class="adventure-boss" id="adventure-boss">☄️</span>
+        <div class="dialogue-layer" id="dialogue-layer" aria-live="polite"></div>
         <div class="adventure-effects" id="adventure-effects" aria-hidden="true"></div>
         <div class="adventure-power" id="adventure-power" aria-hidden="true">
           <span class="adventure-power-fill" id="adventure-power-fill"></span>
@@ -2495,11 +2820,12 @@ var _hmt = _hmt || [];
 
 </div>
 
-<script src="logic/question-mix.js"></script>
-<script src="logic/story-templates.js"></script>
-<script src="garage.js"></script>
-<script src="cartoon.js"></script>
-<script src="adventure.js"></script>
+<script src="logic/question-mix.js?v=20260616-action2"></script>
+<script src="logic/story-templates.js?v=20260616-action2"></script>
+<script src="garage.js?v=20260616-action2"></script>
+<script src="cartoon.js?v=20260616-action2"></script>
+<script src="adventure.js?v=20260616-action2"></script>
+<script src="dialogue.js?v=20260616-dialogue1"></script>
 <script>
 const $ = id => document.getElementById(id);
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -2540,8 +2866,8 @@ function saveSpeakEquation(on) { saveBoolSetting(SPEAK_EQUATION_KEY, on); }
 
 const savedNames = loadNames();
 const PLAYERS = {
-  lele:   { name: savedNames.lele,   avatar: '🐶', vehicle: '🧱', vehicleName: '布鲁伊小狗', preferTag: 'livingRoom', color: '#1665a8', colorLight: '#e3f4ff' },
-  haohao: { name: savedNames.haohao, avatar: '🐶', vehicle: '🎈', vehicleName: '宾果小狗', preferTag: 'backyard',   color: '#c45b1c', colorLight: '#fff0d8' }
+  lele:   { name: savedNames.lele,   avatar: '🐶', vehicle: '🚜', vehicleName: '布鲁伊工程车', preferTag: 'livingRoom', color: '#1665a8', colorLight: '#e3f4ff' },
+  haohao: { name: savedNames.haohao, avatar: '🐶', vehicle: '🏎️', vehicleName: '宾果赛车',   preferTag: 'backyard',   color: '#c45b1c', colorLight: '#fff0d8' }
 };
 
 function equippedEmojis(playerId) {
@@ -2553,9 +2879,32 @@ function equippedEmojis(playerId) {
     return { vehicle: v ? v.emoji : fb.vehicle, dino: d ? d.emoji : fb.dino };
   } catch (e) { if (typeof console !== 'undefined') console.warn('[equippedEmojis] fallback:', e); return fb; }
 }
+function equippedItems(playerId) {
+  const e = equippedEmojis(playerId);
+  const fallback = {
+    vehicle: { emoji: e.vehicle, name: '游戏道具' },
+    costume: { emoji: e.dino, name: '小狗装' }
+  };
+  try {
+    const g = getPlayerGarage(playerId);
+    const vehicleItem = Garage.getItem(g.equippedVehicle);
+    const costumeItem = Garage.getItem(g.equippedDino);
+    return {
+      vehicle: vehicleItem
+        ? { emoji: vehicleItem.emoji, name: vehicleItem.voiceName || vehicleItem.name }
+        : fallback.vehicle,
+      costume: costumeItem
+        ? { emoji: costumeItem.emoji, name: costumeItem.voiceName || costumeItem.name }
+        : fallback.costume
+    };
+  } catch (e) {
+    if (typeof console !== 'undefined') console.warn('[equippedItems] fallback:', e);
+    return fallback;
+  }
+}
 function comboAvatar(playerId) {
   if (!PLAYERS[playerId]) return '🐶';
-  if (window.Cartoon && typeof Cartoon.characterMarkup === 'function') return Cartoon.characterMarkup(playerId);
+  if (window.Cartoon && typeof Cartoon.characterMarkup === 'function') return Cartoon.characterMarkup(playerId, equippedItems(playerId));
   const e = equippedEmojis(playerId);
   return `<span class="combo-avatar"><span>${e.vehicle}</span><span class="dino-badge">${e.dino}</span></span>`;
 }
@@ -2646,12 +2995,12 @@ function scoreToStarCount(score, total) {
 
 // ── 称号系统 ──
 const TITLES = {
-  police:    ['🧱 积木新手', '🧱 小小搭建师', '🧱 客厅队长', '🧱 积木高手', '🧱 城堡大师', '🧱 家庭游戏王'],
-  ambulance: ['🎈 气球新手', '🎈 后院小帮手', '🎈 气球队长', '🎈 后院高手', '🎈 游戏英雄', '🎈 家庭游戏王'],
+  police:    ['🚜 工程新手', '🏗️ 小小工程师', '🚧 工地队长', '🧱 开路高手', '🏗️ 工程大师', '🚜 工地指挥官'],
+  ambulance: ['🏎️ 赛车新手', '🏁 小小车手', '🚦 赛道队长', '🏎️ 弯道高手', '🏁 冲线冠军', '🏎️ 赛道之王'],
   default:   ['🌱 数学新手', '🐶 勇敢小玩家', '⭐ 进步之星', '💡 聪明小将', '🔥 算数达人', '👑 数学大王'],
-  fire:      ['🍪 饼干新手', '🍪 厨房小帮手', '🍪 饼干队长', '🍪 厨房高手', '🍪 游戏英雄', '🍪 家庭游戏王'],
-  everyday:  ['🛝 公园新手', '🛝 小路玩家', '🛝 公园队长', '🛝 小路高手', '🛝 游戏英雄', '🛝 家庭游戏王'],
-  adventure: ['⭐ 星星新手', '⭐ 睡前玩家', '⭐ 星星队长', '⭐ 星星高手', '⭐ 游戏英雄', '⭐ 家庭游戏王']
+  fire:      ['🤖 机器人新手', '🔋 能量小帮手', '⚙️ 机械队长', '🤖 维修高手', '🔋 能量大师', '🤖 机器人指挥官'],
+  everyday:  ['🦖 恐龙新手', '🦴 化石小侦探', '⛏️ 探险队长', '🦖 化石高手', '🦴 恐龙博士', '🦖 探险之王'],
+  adventure: ['🚀 火箭新手', '🛰️ 太空小队员', '🪐 轨道队长', '🚀 发射高手', '☄️ 陨石闪避王', '🚀 太空指挥官']
 };
 function getTitle(stats, playerId) {
   const s = stats.totalStars;
@@ -2934,74 +3283,74 @@ function playStart() {
 // ── 题目生成 ──
 // 每条故事自带完整提问语，量词与场景严格匹配
 const STORIES_ADD = [
-  (a,b) => ({ text: `布鲁伊找到了 ${a} 颗星星，又找到 ${b} 颗，`, q: '一共找到多少颗？' }),
-  (a,b) => ({ text: `妈妈摆好 ${a} 个杯子，又摆好 ${b} 个，`, q: '现在一共有多少个杯子？' }),
-  (a,b) => ({ text: `布鲁伊摘了 ${a} 个苹果，又摘了 ${b} 个，`, q: '一共摘了多少个？' }),
-  (a,b) => ({ text: `森林里有 ${a} 只小鸟，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
-  (a,b) => ({ text: `布鲁伊有 ${a} 块饼干，宾果又给了 ${b} 块，`, q: '现在一共有多少块？' }),
-  (a,b) => ({ text: `草地上有 ${a} 只蝴蝶，又飞来了 ${b} 只，`, q: '现在一共有多少只？' }),
-  (a,b) => ({ text: `小兔子拔了 ${a} 根胡萝卜，又拔了 ${b} 根，`, q: '一共拔了多少根？' }),
-  (a,b) => ({ text: `玩具篮里有 ${a} 块积木，布鲁伊又放进 ${b} 块，`, q: '现在一共有多少块积木？' }),
-  (a,b) => ({ text: `布鲁伊画了 ${a} 幅画，又画了 ${b} 幅，`, q: '一共画了多少幅？' }),
-  (a,b) => ({ text: `花园里开了 ${a} 朵花，又开了 ${b} 朵，`, q: '现在一共有多少朵？' }),
-  (a,b) => ({ text: `客厅地毯上有 ${a} 个抱枕，爸爸又抱来 ${b} 个，`, q: '地毯上一共有多少个抱枕？', tag: 'police' }),
-  (a,b) => ({ text: `布鲁伊摆好 ${a} 本图画书，宾果又摆好 ${b} 本，`, q: '一共摆好多少本图画书？', tag: 'police' }),
-  (a,b) => ({ text: `沙发旁有 ${a} 个玩具，妈妈又放来 ${b} 个，`, q: '现在一共有多少个玩具？', tag: 'police' }),
-  (a,b) => ({ text: `后院有 ${a} 个泡泡，宾果又吹出 ${b} 个，`, q: '后院一共有多少个泡泡？', tag: 'ambulance' }),
-  (a,b) => ({ text: `草地上有 ${a} 个粉笔圆圈，布鲁伊又画了 ${b} 个，`, q: '现在一共有多少个圆圈？', tag: 'ambulance' }),
-  (a,b) => ({ text: `厨房盘子里有 ${a} 块饼干，爸爸又放上 ${b} 块，`, q: '盘子里一共有多少块饼干？', tag: 'fire' }),
-  (a,b) => ({ text: `桌上有 ${a} 根胡萝卜条，妈妈又切了 ${b} 根，`, q: '桌上一共有多少根胡萝卜条？', tag: 'fire' }),
-  (a,b) => ({ text: `厨房柜台有 ${a} 个小碗，宾果又拿来 ${b} 个，`, q: '柜台上一共有多少个小碗？', tag: 'fire' }),
-  (a,b) => ({ text: `布鲁伊先摆好 ${a} 把勺子，又摆好 ${b} 把，`, q: '一共摆好多少把勺子？', tag: 'fire' }),
-  (a,b) => ({ text: `餐盘里有 ${a} 个小松饼，妈妈又加了 ${b} 个，`, q: '餐盘里一共有多少个小松饼？', tag: 'fire' }),
-  (a,b) => ({ text: `厨房桌边先来了 ${a} 个小帮手，又来了 ${b} 个，`, q: '一共有多少个小帮手？', tag: 'fire' }),
-  (a,b) => ({ text: `公园草地上有 ${a} 片叶子，又飘来 ${b} 片，`, q: '草地上一共有多少片叶子？', tag: 'everyday' }),
-  (a,b) => ({ text: `沙坑里有 ${a} 个小铲子，宾果又拿来 ${b} 个，`, q: '沙坑里一共有多少个小铲子？', tag: 'everyday' }),
-  (a,b) => ({ text: `秋千旁有 ${a} 朵小花，布鲁伊又发现 ${b} 朵，`, q: '一共有多少朵小花？', tag: 'everyday' }),
-  (a,b) => ({ text: `野餐垫上有 ${a} 个苹果，妈妈又放了 ${b} 个，`, q: '野餐垫上一共有多少个苹果？', tag: 'everyday' }),
-  (a,b) => ({ text: `公园长椅旁先来了 ${a} 个朋友，又来了 ${b} 个，`, q: '长椅旁一共有多少个朋友？', tag: 'everyday' }),
-  (a,b) => ({ text: `草地上先有 ${a} 个气球，又系上 ${b} 个，`, q: '草地上一共有多少个气球？', tag: 'everyday' }),
-  (a,b) => ({ text: `睡前天空灯亮了 ${a} 颗星星，又亮了 ${b} 颗，`, q: '一共亮了多少颗星星？', tag: 'adventure' }),
-  (a,b) => ({ text: `床边有 ${a} 个星星贴纸，布鲁伊又贴上 ${b} 个，`, q: '床边一共有多少个星星贴纸？', tag: 'adventure' }),
-  (a,b) => ({ text: `梦境毯子上有 ${a} 颗小月亮，宾果又找到 ${b} 颗，`, q: '一共有多少颗小月亮？', tag: 'adventure' }),
-  (a,b) => ({ text: `枕头堡里有 ${a} 个软枕头，爸爸又递来 ${b} 个，`, q: '枕头堡里一共有多少个软枕头？', tag: 'adventure' }),
-  (a,b) => ({ text: `床头书架有 ${a} 张星空卡片，又放上 ${b} 张，`, q: '书架上一共有多少张星空卡片？', tag: 'adventure' }),
-  (a,b) => ({ text: `小夜灯旁有 ${a} 个梦泡泡，又冒出 ${b} 个，`, q: '一共有多少个梦泡泡？', tag: 'adventure' }),
+  (a,b) => ({ text: `工地有 ${a} 个路障，布鲁伊又摆上 ${b} 个，`, q: '工地现在一共有多少个路障？' }),
+  (a,b) => ({ text: `赛道边有 ${a} 个轮胎，宾果又搬来 ${b} 个，`, q: '赛道边现在一共有多少个轮胎？' }),
+  (a,b) => ({ text: `火箭基地点亮 ${a} 颗燃料星，又点亮 ${b} 颗，`, q: '火箭基地一共点亮多少颗燃料星？' }),
+  (a,b) => ({ text: `恐龙谷发现 ${a} 块化石，又挖出 ${b} 块，`, q: '恐龙谷现在一共有多少块化石？' }),
+  (a,b) => ({ text: `机器人有 ${a} 节电池，布鲁伊又装上 ${b} 节，`, q: '机器人现在一共有多少节电池？' }),
+  (a,b) => ({ text: `赛车车库有 ${a} 面小旗，宾果又插上 ${b} 面，`, q: '赛车车库一共有多少面小旗？' }),
+  (a,b) => ({ text: `小挖机运来 ${a} 块石头，又运来 ${b} 块，`, q: '小挖机一共运来多少块石头？' }),
+  (a,b) => ({ text: `工程车装了 ${a} 块积木砖，又装进 ${b} 块，`, q: '工程车现在一共有多少块积木砖？' }),
+  (a,b) => ({ text: `机器人画了 ${a} 张任务卡，又画了 ${b} 张，`, q: '机器人一共画了多少张任务卡？' }),
+  (a,b) => ({ text: `太空站有 ${a} 个信号灯，又亮起 ${b} 个，`, q: '太空站现在一共有多少个信号灯？' }),
+  (a,b) => ({ text: `工地路线上有 ${a} 块工程砖，吊车又吊来 ${b} 块，`, q: '工地路线上一共有多少块工程砖？', tag: 'police' }),
+  (a,b) => ({ text: `布鲁伊修好 ${a} 段路，宾果又修好 ${b} 段，`, q: '一共修好多少段路？', tag: 'police' }),
+  (a,b) => ({ text: `推土机推出 ${a} 个土堆，挖机又推出 ${b} 个，`, q: '现在一共有多少个土堆？', tag: 'police' }),
+  (a,b) => ({ text: `赛道上有 ${a} 辆小赛车，宾果又开来 ${b} 辆，`, q: '赛道上一共有多少辆小赛车？', tag: 'ambulance' }),
+  (a,b) => ({ text: `起点有 ${a} 盏绿灯，布鲁伊又点亮 ${b} 盏，`, q: '现在一共有多少盏绿灯？', tag: 'ambulance' }),
+  (a,b) => ({ text: `机器人仓库有 ${a} 个齿轮，爸爸又放上 ${b} 个，`, q: '仓库里一共有多少个齿轮？', tag: 'fire' }),
+  (a,b) => ({ text: `能量站有 ${a} 节电池，妈妈又充好 ${b} 节，`, q: '能量站一共有多少节电池？', tag: 'fire' }),
+  (a,b) => ({ text: `机器人柜台有 ${a} 个工具箱，宾果又拿来 ${b} 个，`, q: '柜台上一共有多少个工具箱？', tag: 'fire' }),
+  (a,b) => ({ text: `布鲁伊先装好 ${a} 个零件，又装好 ${b} 个，`, q: '一共装好多少个零件？', tag: 'fire' }),
+  (a,b) => ({ text: `充电台有 ${a} 个能量块，妈妈又加了 ${b} 个，`, q: '充电台一共有多少个能量块？', tag: 'fire' }),
+  (a,b) => ({ text: `机器人队先来了 ${a} 个小帮手，又来了 ${b} 个，`, q: '机器人队一共有多少个小帮手？', tag: 'fire' }),
+  (a,b) => ({ text: `恐龙草地上有 ${a} 个脚印，又发现 ${b} 个，`, q: '草地上一共有多少个恐龙脚印？', tag: 'everyday' }),
+  (a,b) => ({ text: `化石坑里有 ${a} 把小铲子，宾果又拿来 ${b} 把，`, q: '化石坑里一共有多少把小铲子？', tag: 'everyday' }),
+  (a,b) => ({ text: `探险路上有 ${a} 块骨头化石，布鲁伊又发现 ${b} 块，`, q: '一共有多少块骨头化石？', tag: 'everyday' }),
+  (a,b) => ({ text: `恐龙基地有 ${a} 个补给包，妈妈又放了 ${b} 个，`, q: '恐龙基地一共有多少个补给包？', tag: 'everyday' }),
+  (a,b) => ({ text: `探险队先来了 ${a} 个队员，又来了 ${b} 个，`, q: '探险队一共有多少个队员？', tag: 'everyday' }),
+  (a,b) => ({ text: `草坡上先有 ${a} 块化石牌，又插上 ${b} 块，`, q: '草坡上一共有多少块化石牌？', tag: 'everyday' }),
+  (a,b) => ({ text: `火箭基地亮了 ${a} 颗燃料星，又亮了 ${b} 颗，`, q: '一共亮了多少颗燃料星？', tag: 'adventure' }),
+  (a,b) => ({ text: `发射台有 ${a} 个火箭徽章，布鲁伊又贴上 ${b} 个，`, q: '发射台一共有多少个火箭徽章？', tag: 'adventure' }),
+  (a,b) => ({ text: `太空轨道有 ${a} 颗小行星，宾果又发现 ${b} 颗，`, q: '一共有多少颗小行星？', tag: 'adventure' }),
+  (a,b) => ({ text: `火箭仓里有 ${a} 个燃料包，爸爸又递来 ${b} 个，`, q: '火箭仓里一共有多少个燃料包？', tag: 'adventure' }),
+  (a,b) => ({ text: `卫星台有 ${a} 张星空卡片，又放上 ${b} 张，`, q: '卫星台上一共有多少张星空卡片？', tag: 'adventure' }),
+  (a,b) => ({ text: `发射灯旁有 ${a} 个信号点，又亮出 ${b} 个，`, q: '一共有多少个信号点？', tag: 'adventure' }),
 ];
 const STORIES_SUB = [
-  (a,b) => ({ text: `布鲁伊有 ${a} 颗星星，送给宾果 ${b} 颗，`, q: '还剩多少颗？' }),
-  (a,b) => ({ text: `树上有 ${a} 个果子，掉了 ${b} 个，`, q: '树上还剩多少个？' }),
-  (a,b) => ({ text: `布鲁伊有 ${a} 块糖，吃掉了 ${b} 块，`, q: '还剩多少块？' }),
-  (a,b) => ({ text: `池塘里有 ${a} 只青蛙，跳走了 ${b} 只，`, q: '池塘里还剩多少只？' }),
-  (a,b) => ({ text: `布鲁伊有 ${a} 朵花，送给妈妈 ${b} 朵，`, q: '还剩多少朵？' }),
-  (a,b) => ({ text: `盘子里有 ${a} 个草莓，小猫吃了 ${b} 个，`, q: '盘子里还剩多少个？' }),
-  (a,b) => ({ text: `布鲁伊有 ${a} 支蜡笔，借给宾果 ${b} 支，`, q: '还剩多少支？' }),
-  (a,b) => ({ text: `天上有 ${a} 个气球，飞走了 ${b} 个，`, q: '还剩多少个？' }),
-  (a,b) => ({ text: `书架上有 ${a} 本书，布鲁伊拿走了 ${b} 本，`, q: '书架上还剩多少本？' }),
-  (a,b) => ({ text: `小鸭子有 ${a} 条小鱼，吃掉了 ${b} 条，`, q: '还剩多少条？' }),
-  (a,b) => ({ text: `客厅地毯上有 ${a} 块积木，布鲁伊收进盒子 ${b} 块，`, q: '地毯上还剩多少块积木？', tag: 'police' }),
-  (a,b) => ({ text: `布鲁伊有 ${a} 张贴纸，送给宾果 ${b} 张，`, q: '布鲁伊还剩多少张贴纸？', tag: 'police' }),
-  (a,b) => ({ text: `沙发上有 ${a} 个抱枕，妈妈拿走 ${b} 个，`, q: '沙发上还剩多少个抱枕？', tag: 'police' }),
-  (a,b) => ({ text: `后院有 ${a} 个泡泡，啪地破了 ${b} 个，`, q: '后院还剩多少个泡泡？', tag: 'ambulance' }),
-  (a,b) => ({ text: `草地上有 ${a} 个粉笔星星，被脚步擦掉 ${b} 个，`, q: '草地上还剩多少个粉笔星星？', tag: 'ambulance' }),
-  (a,b) => ({ text: `盘子里有 ${a} 块饼干，宾果吃掉 ${b} 块，`, q: '盘子里还剩多少块饼干？', tag: 'fire' }),
-  (a,b) => ({ text: `桌上有 ${a} 根胡萝卜条，布鲁伊拿走 ${b} 根，`, q: '桌上还剩多少根胡萝卜条？', tag: 'fire' }),
-  (a,b) => ({ text: `厨房柜台有 ${a} 个小碗，妈妈收走 ${b} 个，`, q: '柜台上还剩多少个小碗？', tag: 'fire' }),
-  (a,b) => ({ text: `布鲁伊摆了 ${a} 把勺子，爸爸拿走 ${b} 把，`, q: '桌上还剩多少把勺子？', tag: 'fire' }),
-  (a,b) => ({ text: `餐盘里有 ${a} 个小松饼，被吃掉 ${b} 个，`, q: '餐盘里还剩多少个小松饼？', tag: 'fire' }),
-  (a,b) => ({ text: `厨房桌边有 ${a} 个小帮手，休息去了 ${b} 个，`, q: '桌边还剩多少个小帮手？', tag: 'fire' }),
-  (a,b) => ({ text: `公园草地上有 ${a} 片叶子，风吹走 ${b} 片，`, q: '草地上还剩多少片叶子？', tag: 'everyday' }),
-  (a,b) => ({ text: `沙坑里有 ${a} 个小铲子，收回袋子 ${b} 个，`, q: '沙坑里还剩多少个小铲子？', tag: 'everyday' }),
-  (a,b) => ({ text: `秋千旁有 ${a} 朵小花，布鲁伊摘走 ${b} 朵，`, q: '秋千旁还剩多少朵小花？', tag: 'everyday' }),
-  (a,b) => ({ text: `野餐垫上有 ${a} 个苹果，大家吃掉 ${b} 个，`, q: '野餐垫上还剩多少个苹果？', tag: 'everyday' }),
-  (a,b) => ({ text: `长椅旁有 ${a} 个朋友，先回家 ${b} 个，`, q: '长椅旁还剩多少个朋友？', tag: 'everyday' }),
-  (a,b) => ({ text: `草地上有 ${a} 个气球，飞走 ${b} 个，`, q: '草地上还剩多少个气球？', tag: 'everyday' }),
-  (a,b) => ({ text: `睡前天空灯亮着 ${a} 颗星星，关掉 ${b} 颗，`, q: '还亮着多少颗星星？', tag: 'adventure' }),
-  (a,b) => ({ text: `床边有 ${a} 个星星贴纸，宾果揭下 ${b} 个，`, q: '床边还剩多少个星星贴纸？', tag: 'adventure' }),
-  (a,b) => ({ text: `梦境毯子上有 ${a} 颗小月亮，藏起来 ${b} 颗，`, q: '毯子上还剩多少颗小月亮？', tag: 'adventure' }),
-  (a,b) => ({ text: `枕头堡里有 ${a} 个软枕头，爸爸拿走 ${b} 个，`, q: '枕头堡里还剩多少个软枕头？', tag: 'adventure' }),
-  (a,b) => ({ text: `床头书架有 ${a} 张星空卡片，布鲁伊拿走 ${b} 张，`, q: '书架上还剩多少张星空卡片？', tag: 'adventure' }),
-  (a,b) => ({ text: `小夜灯旁有 ${a} 个梦泡泡，飘走 ${b} 个，`, q: '还剩多少个梦泡泡？', tag: 'adventure' }),
+  (a,b) => ({ text: `火箭基地有 ${a} 颗燃料星，用掉 ${b} 颗，`, q: '火箭基地还剩多少颗燃料星？' }),
+  (a,b) => ({ text: `工地有 ${a} 个路障，移走 ${b} 个，`, q: '工地还剩多少个路障？' }),
+  (a,b) => ({ text: `机器人有 ${a} 个能量块，用掉了 ${b} 个，`, q: '机器人还剩多少个能量块？' }),
+  (a,b) => ({ text: `恐龙谷有 ${a} 块化石，运走了 ${b} 块，`, q: '恐龙谷还剩多少块化石？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 面赛车旗，交给宾果 ${b} 面，`, q: '布鲁伊还剩多少面赛车旗？' }),
+  (a,b) => ({ text: `赛道上有 ${a} 个轮胎，换走 ${b} 个，`, q: '赛道上还剩多少个轮胎？' }),
+  (a,b) => ({ text: `布鲁伊有 ${a} 个机器人零件，借给宾果 ${b} 个，`, q: '布鲁伊还剩多少个零件？' }),
+  (a,b) => ({ text: `太空站有 ${a} 个信号灯，关闭了 ${b} 个，`, q: '还剩多少个信号灯？' }),
+  (a,b) => ({ text: `工程车上有 ${a} 块砖，布鲁伊卸下 ${b} 块，`, q: '工程车上还剩多少块砖？' }),
+  (a,b) => ({ text: `小赛车有 ${a} 格燃料，用掉了 ${b} 格，`, q: '还剩多少格燃料？' }),
+  (a,b) => ({ text: `工地路线上有 ${a} 块工程砖，推土机运走 ${b} 块，`, q: '工地路线上还剩多少块工程砖？', tag: 'police' }),
+  (a,b) => ({ text: `布鲁伊修好 ${a} 段路，又检查完 ${b} 段，`, q: '还需要检查多少段路？', tag: 'police' }),
+  (a,b) => ({ text: `工地上有 ${a} 个土堆，挖机清走 ${b} 个，`, q: '工地上还剩多少个土堆？', tag: 'police' }),
+  (a,b) => ({ text: `赛道上有 ${a} 辆小赛车，进站 ${b} 辆，`, q: '赛道上还剩多少辆小赛车？', tag: 'ambulance' }),
+  (a,b) => ({ text: `起点有 ${a} 盏绿灯，关闭 ${b} 盏，`, q: '起点还剩多少盏绿灯？', tag: 'ambulance' }),
+  (a,b) => ({ text: `机器人仓库有 ${a} 个齿轮，装走 ${b} 个，`, q: '仓库里还剩多少个齿轮？', tag: 'fire' }),
+  (a,b) => ({ text: `能量站有 ${a} 节电池，机器人用掉 ${b} 节，`, q: '能量站还剩多少节电池？', tag: 'fire' }),
+  (a,b) => ({ text: `机器人柜台有 ${a} 个工具箱，妈妈收走 ${b} 个，`, q: '柜台上还剩多少个工具箱？', tag: 'fire' }),
+  (a,b) => ({ text: `布鲁伊装了 ${a} 个零件，爸爸拿走 ${b} 个，`, q: '桌上还剩多少个零件？', tag: 'fire' }),
+  (a,b) => ({ text: `充电台有 ${a} 个能量块，用掉 ${b} 个，`, q: '充电台还剩多少个能量块？', tag: 'fire' }),
+  (a,b) => ({ text: `机器人队有 ${a} 个小帮手，休息去了 ${b} 个，`, q: '机器人队还剩多少个小帮手？', tag: 'fire' }),
+  (a,b) => ({ text: `恐龙草地上有 ${a} 个脚印，被沙子盖住 ${b} 个，`, q: '草地上还剩多少个恐龙脚印？', tag: 'everyday' }),
+  (a,b) => ({ text: `化石坑里有 ${a} 把小铲子，收回袋子 ${b} 把，`, q: '化石坑里还剩多少把小铲子？', tag: 'everyday' }),
+  (a,b) => ({ text: `探险路上有 ${a} 块骨头化石，布鲁伊带走 ${b} 块，`, q: '探险路上还剩多少块骨头化石？', tag: 'everyday' }),
+  (a,b) => ({ text: `恐龙基地有 ${a} 个补给包，大家用掉 ${b} 个，`, q: '恐龙基地还剩多少个补给包？', tag: 'everyday' }),
+  (a,b) => ({ text: `探险队有 ${a} 个队员，先回营地 ${b} 个，`, q: '探险队还剩多少个队员？', tag: 'everyday' }),
+  (a,b) => ({ text: `草坡上有 ${a} 块化石牌，收走 ${b} 块，`, q: '草坡上还剩多少块化石牌？', tag: 'everyday' }),
+  (a,b) => ({ text: `火箭基地亮着 ${a} 颗燃料星，关闭 ${b} 颗，`, q: '还亮着多少颗燃料星？', tag: 'adventure' }),
+  (a,b) => ({ text: `发射台有 ${a} 个火箭徽章，宾果揭下 ${b} 个，`, q: '发射台还剩多少个火箭徽章？', tag: 'adventure' }),
+  (a,b) => ({ text: `太空轨道有 ${a} 颗小行星，躲开 ${b} 颗，`, q: '轨道上还剩多少颗小行星？', tag: 'adventure' }),
+  (a,b) => ({ text: `火箭仓里有 ${a} 个燃料包，爸爸拿走 ${b} 个，`, q: '火箭仓里还剩多少个燃料包？', tag: 'adventure' }),
+  (a,b) => ({ text: `卫星台有 ${a} 张星空卡片，布鲁伊拿走 ${b} 张，`, q: '卫星台上还剩多少张星空卡片？', tag: 'adventure' }),
+  (a,b) => ({ text: `发射灯旁有 ${a} 个信号点，关掉 ${b} 个，`, q: '还剩多少个信号点？', tag: 'adventure' }),
 ];
 function pickStory(pool, preferTag) {
   if (preferTag && Math.random() < 0.6) {
@@ -3085,7 +3434,7 @@ function renderAdventureHud() {
   scene.dataset.routeStyle = theme.routeStyle || 'space-orbit';
   const map = $('adventure-map');
   if (map) map.textContent = theme.mapEmoji;
-  if (window.Cartoon && currentPlayer) vehicle.innerHTML = Cartoon.characterMarkup(currentPlayer);
+  if (window.Cartoon && currentPlayer) vehicle.innerHTML = comboAvatar(currentPlayer);
   else vehicle.textContent = e.vehicle;
   boss.textContent = theme.bossEmoji;
   $('adventure-title').textContent = cartoonScene ? cartoonScene.title : theme.name;
@@ -3117,8 +3466,60 @@ function renderAdventureHud() {
   powerFill.style.width = power + '%';
 }
 
-function generateQuestion() {
-  const type = QuestionMix.chooseQuestionType();
+let dialogueHideTimer = null;
+function escapeUiText(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]);
+}
+function dialogueTheme(sceneOrFamily) {
+  return window.Adventure ? Adventure.getTheme(sceneOrFamily || (adventureRun && adventureRun.family) || 'livingRoom') : { id: 'livingRoom', bossName: '大反派', bossEmoji: '🧱' };
+}
+function dialogueNames(theme) {
+  return {
+    lele: PLAYERS.lele.name || '布鲁伊',
+    haohao: PLAYERS.haohao.name || '宾果',
+    boss: theme && theme.bossName ? theme.bossName : '大反派'
+  };
+}
+function dialogueSpeakerMeta(speaker, theme) {
+  if (speaker === 'lele') return { label: PLAYERS.lele.name || '布鲁伊', portrait: '🐶' };
+  if (speaker === 'haohao') return { label: PLAYERS.haohao.name || '宾果', portrait: '🧡' };
+  return { label: theme && theme.bossName ? theme.bossName : 'Boss', portrait: theme && theme.bossEmoji ? theme.bossEmoji : '⚡' };
+}
+function dialogueSpeechLines(lines, theme) {
+  if (!window.Dialogue) return [];
+  return Dialogue.speechLines(lines, dialogueNames(theme));
+}
+function clearAdventureDialogue() {
+  clearTimeout(dialogueHideTimer);
+  const layer = $('dialogue-layer');
+  if (layer) layer.innerHTML = '';
+}
+function showAdventureDialogue(sceneOrFamily, moment, options = {}) {
+  if (!window.Dialogue) return [];
+  const theme = dialogueTheme(sceneOrFamily);
+  const lines = Dialogue.getLines(theme.id, moment, options);
+  const layer = $('dialogue-layer');
+  if (!layer || !lines.length) return lines;
+  clearTimeout(dialogueHideTimer);
+  layer.innerHTML = lines.map((line, i) => {
+    const meta = dialogueSpeakerMeta(line.speaker, theme);
+    return `<div class="dialogue-bubble ${escapeUiText(line.speaker)}" style="animation-delay:${i * 120}ms">
+      <span class="dialogue-portrait" aria-hidden="true">${escapeUiText(meta.portrait)}</span>
+      <span class="dialogue-copy">
+        <span class="dialogue-speaker">${escapeUiText(meta.label)}</span>
+        <span class="dialogue-text">${escapeUiText(line.text)}</span>
+      </span>
+    </div>`;
+  }).join('');
+  const duration = Math.max(1800, Math.floor(Number(options.duration) || 4200));
+  dialogueHideTimer = setTimeout(() => {
+    if (layer) layer.innerHTML = '';
+  }, duration);
+  return lines;
+}
+
+function generateQuestion(typeOverride) {
+  const type = typeOverride || QuestionMix.chooseQuestionType();
   if (window.StoryTemplates && typeof StoryTemplates.generateQuestion === 'function') {
     for (let i = 0; i < 8; i++) {
       const q = StoryTemplates.generateQuestion({ type, family: currentFamily() || 'livingRoom' });
@@ -3199,7 +3600,7 @@ function generateMissingQuestion() {
   if (mode === 0) {
     const a = randInt(3, 9), b = randInt(3, 9), total = a + b;
     return attachEquation(
-      { a, b, op:'+', answer:a, story:`布鲁伊先有一些星星，又找到 ${b} 颗，合起来是 ${total} 颗，`, question:'布鲁伊一开始有多少颗？', tag: currentFamily() || 'general', type:'missing' },
+      { a, b, op:'+', answer:a, story:`火箭基地先有一些燃料星，又点亮 ${b} 颗，合起来是 ${total} 颗，`, question:'火箭基地一开始有多少颗燃料星？', tag: currentFamily() || 'general', type:'missing' },
       ['?', '+', b, '=', total],
       `几加 ${b} 等于 ${total}？`
     );
@@ -3207,7 +3608,7 @@ function generateMissingQuestion() {
   if (mode === 1) {
     const a = randInt(3, 9), b = randInt(3, 9), total = a + b;
     return attachEquation(
-      { a, b, op:'+', answer:b, story:`布鲁伊先有 ${a} 颗星星，又找到一些，合起来是 ${total} 颗，`, question:'后来又找到多少颗？', tag: currentFamily() || 'general', type:'missing' },
+      { a, b, op:'+', answer:b, story:`工程车先运来 ${a} 块工程砖，吊车又吊来一些，合起来是 ${total} 块，`, question:'吊车后来又吊来多少块工程砖？', tag: currentFamily() || 'general', type:'missing' },
       [a, '+', '?', '=', total],
       `${a} 加几等于 ${total}？`
     );
@@ -3215,14 +3616,14 @@ function generateMissingQuestion() {
   if (mode === 2) {
     const a = randInt(11, 20), b = randInt(2, 9), left = a - b;
     return attachEquation(
-      { a, b, op:'-', answer:a, story:`玩具篮里原来有一些积木，收进盒子 ${b} 块后还剩 ${left} 块，`, question:'玩具篮里原来有多少块积木？', tag: currentFamily() || 'general', type:'missing' },
+      { a, b, op:'-', answer:a, story:`机器人能量站原来有一些能量电池，用掉 ${b} 节后还剩 ${left} 节，`, question:'能量站原来有多少节能量电池？', tag: currentFamily() || 'general', type:'missing' },
       ['?', '-', b, '=', left],
       `几减 ${b} 等于 ${left}？`
     );
   }
   const a = randInt(11, 20), answer = randInt(2, 9), left = a - answer;
   return attachEquation(
-    { a, b: answer, op:'-', answer, story:`布鲁伊有 ${a} 颗星星，送出去一些后还剩 ${left} 颗，`, question:'布鲁伊送出去了多少颗？', tag: currentFamily() || 'general', type:'missing' },
+    { a, b: answer, op:'-', answer, story:`火箭基地有 ${a} 颗燃料星，发射前用掉一些后还剩 ${left} 颗，`, question:'火箭发射前用掉多少颗燃料星？', tag: currentFamily() || 'general', type:'missing' },
     [a, '-', '?', '=', left],
     `${a} 减几等于 ${left}？`
   );
@@ -3233,13 +3634,13 @@ function generateCompareQuestion() {
   const askMore = Math.random() < 0.75;
   if (askMore) {
     return attachEquation(
-      { a: high, b: low, op:'-', answer: high - low, story:`布鲁伊有 ${high} 颗星星，宾果有 ${low} 颗，`, question:'布鲁伊比宾果多多少颗？', tag: currentFamily() || 'general', type:'compare' },
+      { a: high, b: low, op:'-', answer: high - low, story:`布鲁伊发现 ${high} 颗恐龙脚印，宾果发现 ${low} 颗，`, question:'布鲁伊比宾果多多少颗恐龙脚印？', tag: currentFamily() || 'general', type:'compare' },
       [high, '-', low, '='],
       `${high} 减 ${low} 等于多少？`
     );
   }
   return attachEquation(
-    { a: high, b: low, op:'-', answer: high - low, story:`宾果捡了 ${low} 颗小石子，布鲁伊捡了 ${high} 颗小石子，`, question:'布鲁伊比宾果多多少颗小石子？', tag: currentFamily() || 'general', type:'compare' },
+    { a: high, b: low, op:'-', answer: high - low, story:`宾果找到 ${low} 块化石碎片，布鲁伊找到 ${high} 块化石碎片，`, question:'布鲁伊比宾果多多少块化石碎片？', tag: currentFamily() || 'general', type:'compare' },
     [high, '-', low, '='],
     `${high} 减 ${low} 等于多少？`
   );
@@ -3250,22 +3651,25 @@ function generateTwoStepQuestion() {
     const b = randInt(2, Math.min(8, 20 - a));
     const c = randInt(1, Math.min(9, a + b - 1));
     return attachEquation(
-      { a, b, c, op:'+-', answer:a + b - c, story:`布鲁伊先收集 ${a} 颗星星，又收集 ${b} 颗，后来送给宾果 ${c} 颗，`, question:'现在还剩多少颗？', tag: currentFamily() || 'general', type:'twoStep' },
+      { a, b, c, op:'+-', answer:a + b - c, story:`赛道边先有 ${a} 面赛车小旗，又插上 ${b} 面，后来收走 ${c} 面，`, question:'赛道边现在还剩多少面赛车小旗？', tag: currentFamily() || 'general', type:'twoStep' },
       [a, '+', b, '-', c, '='],
       `${a} 加 ${b} 再减 ${c} 等于多少？`
     );
   }
   const a = randInt(10, 20);
   const b = randInt(1, Math.min(9, a - 1));
-  const c = randInt(1, Math.min(9, 30 - (a - b)));
+  const c = randInt(1, Math.min(9, 20 - (a - b)));
   return attachEquation(
-    { a, b, c, op:'-+', answer:a - b + c, story:`床边有 ${a} 张星星贴纸，布鲁伊贴到本子上 ${b} 张，宾果又拿来 ${c} 张，`, question:'床边现在有多少张星星贴纸？', tag: currentFamily() || 'general', type:'twoStep' },
+    { a, b, c, op:'-+', answer:a - b + c, story:`机器人能量站有 ${a} 节能量电池，用掉 ${b} 节，布鲁伊又装上 ${c} 节，`, question:'机器人能量站现在有多少节能量电池？', tag: currentFamily() || 'general', type:'twoStep' },
     [a, '-', b, '+', c, '='],
     `${a} 减 ${b} 再加 ${c} 等于多少？`
   );
 }
 function generateQuestions(n=10) {
-  return Array.from({length:n}, generateQuestion);
+  const types = QuestionMix && typeof QuestionMix.buildRoundTypes === 'function'
+    ? QuestionMix.buildRoundTypes(n)
+    : Array.from({length:n}, () => QuestionMix.chooseQuestionType());
+  return types.map(type => generateQuestion(type));
 }
 
 // ── 烟花 ──
@@ -3379,16 +3783,16 @@ function startFireworks(duration = 2200) {
 
 // ── 庆祝动画 ──
 const CELEBRATE_TEXTS = ['太棒了！🎉','好厉害！🌟','答对啦！🎊','超级棒！✨','小天才！🏆','真厉害！🐶'];
-const CELEBRATE_POLICE    = ['🧱 积木啪嗒啪嗒！','🛋️ 沙发城堡完成啦！','🧺 玩具收好啦！'];
-const CELEBRATE_AMBULANCE = ['🎈 气球嘭嘭飞起来！','🪁 风筝飞高啦！','🌿 后院亮起来啦！'];
-const CELEBRATE_FIRE      = ['🍪 饼干叮叮出炉啦！','🥣 面糊搅好啦！','🍽️ 小盘子转起来啦！'];
-const CELEBRATE_EVERYDAY  = ['🛝 滑梯亮起来啦！','🌳 树叶跳舞啦！','🛴 小车滑过去啦！'];
-const CELEBRATE_ADVENTURE = ['⭐ 星星亮起来啦！','🌙 月亮说晚安啦！','📘 故事书打开啦！'];
+const CELEBRATE_POLICE    = ['🚜 推土机开路啦！','🏗️ 吊车升起来啦！','🧱 大砖墙被修好啦！'];
+const CELEBRATE_AMBULANCE = ['🏎️ 赛车加速啦！','🏁 冲过终点线啦！','🚦 绿灯出发啦！'];
+const CELEBRATE_FIRE      = ['🤖 机器人启动啦！','🔋 能量充满啦！','⚙️ 齿轮转起来啦！'];
+const CELEBRATE_EVERYDAY  = ['🦖 恐龙脚印出现啦！','🦴 化石挖出来啦！','⛏️ 探险队前进啦！'];
+const CELEBRATE_ADVENTURE = ['🚀 火箭点火啦！','🛰️ 卫星连上啦！','☄️ 闪过陨石啦！'];
 const CELEBRATE_BY_FAMILY = {
   police: CELEBRATE_POLICE, ambulance: CELEBRATE_AMBULANCE,
   fire: CELEBRATE_FIRE, everyday: CELEBRATE_EVERYDAY, adventure: CELEBRATE_ADVENTURE
 };
-const RUSH_TEXT = { fire: '🍪 饼干做好啦！', everyday: '🛝 公园小路通过啦！', adventure: '⭐ 星星亮起来啦！' };
+const RUSH_TEXT = { fire: '🤖 机器人启动啦！', everyday: '🦖 恐龙路线通过啦！', adventure: '🚀 火箭发射啦！' };
 const SFX_BY_FAMILY = { fire: playFireBell, everyday: playEverydayHorn, adventure: playAdventureWhoosh };
 
 function showCelebrate(cb) {
@@ -3981,9 +4385,10 @@ function speakQuestionWithAdventure(q, slideIn, leadLines = [], afterCurrentSpee
     adventureRun = Adventure.markBossShown(adventureRun);
     renderAdventureHud();
     const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🐶' };
+    const bossDialogue = showAdventureDialogue(theme.id, 'boss', { step: currentIdx, streak: correctStreak, duration: 5200 });
     showBossEntrance(theme, e.vehicle, e.dino, () => {
       if (epoch !== speechEpoch) return;
-      queue([].concat(leadLines, theme.bossLine, readText), 0.86);
+      queue([].concat(leadLines, dialogueSpeechLines(bossDialogue, theme), theme.bossLine, readText), 0.86);
     });
     return;
   }
@@ -4341,7 +4746,7 @@ function showVehicleRush(vehicleEmoji, type, combo, onDone, opts) {
   const C1 = type === 'police' ? [244,67,54] : [244,67,54];
   const C2 = type === 'police' ? [21,101,192] : [255,255,255];
   const GOLD = [255,235,59];
-  const rushText = opts.text || (type === 'police' ? '🧱 客厅整理好啦！' : '🎈 气球安全啦！');
+  const rushText = opts.text || (type === 'police' ? '🚜 工地开路啦！' : '🏎️ 冲过终点啦！');
   const glow = type === 'police' ? 'rgba(21,101,192,0.9)' : 'rgba(244,67,54,0.9)';
 
   const DUR = 3800;
@@ -4857,7 +5262,7 @@ function submitAnswer() {
     setTimeout(() => {
       const theme = Adventure.getTheme(adventureRun.family);
       const e = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: theme.targetEmoji, dino: '🐶' };
-      const actor = window.Cartoon && currentPlayer ? Cartoon.characterMarkup(currentPlayer) : e.vehicle;
+      const actor = window.Cartoon && currentPlayer ? comboAvatar(currentPlayer) : e.vehicle;
       const goNext = (leadSpeechLines = [], afterCurrentSpeech = false) => {
         adventureRun = Adventure.finishStep(adventureRun, currentIdx);
         renderAdventureHud();
@@ -4868,11 +5273,14 @@ function submitAnswer() {
       };
 
       if (currentIdx >= questions.length - 1) {
-        speakQueue([theme.victoryLine], 0.9);
+        const victoryDialogue = showAdventureDialogue(theme.id, 'victory', { step: currentIdx, streak: correctStreak, duration: 5600 });
+        speakQueue(dialogueSpeechLines(victoryDialogue, theme).concat(theme.victoryLine), 0.9);
         showBossFinisher(theme, actor, e.dino, correctStreak, goNext);
       } else {
         const line = theme.stepLines[Math.min(currentIdx, theme.stepLines.length - 1)];
-        showAdventureStep(theme, actor, e.dino, currentIdx, correctStreak, () => goNext([line], false));
+        const correctDialogue = showAdventureDialogue(theme.id, 'correct', { step: currentIdx, streak: correctStreak, duration: 4500 });
+        const leadLines = dialogueSpeechLines(correctDialogue, theme).concat(line);
+        showAdventureStep(theme, actor, e.dino, currentIdx, correctStreak, () => goNext(leadLines, false));
       }
     }, 220);
 
@@ -4880,6 +5288,9 @@ function submitAnswer() {
     wrongCount++;
     correctStreak = 0;
     playWrong();
+    const wrongTheme = dialogueTheme(adventureRun && adventureRun.family);
+    const wrongDialogue = showAdventureDialogue(wrongTheme.id, 'wrong', { step: wrongCount, streak: 0, duration: 4200 });
+    const wrongSpeech = dialogueSpeechLines(wrongDialogue, wrongTheme);
 
     $('red-flash').animate([
       { background: 'rgba(244,67,54,0)' },
@@ -4914,16 +5325,16 @@ function submitAnswer() {
     fb.classList.remove('hidden');
     if (wrongCount === 1) {
       fb.textContent = `${pName} 哎呀，再想想！加油！`;
-      speak('哎呀，再想想，加油！');
+      speakQueue(wrongSpeech.concat('哎呀，再想想，加油！'), 0.86);
     } else if (wrongCount === 2) {
       const hintRange = answerHintRange(q);
       fb.textContent = `${pName} 提示：答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`;
       playCartoonHint();
-      speak(`提示一下，答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`);
+      speakQueue(wrongSpeech.concat(`提示一下，答案在 ${hintRange.min} 到 ${hintRange.max} 之间哦！`), 0.86);
     } else {
       fb.textContent = `${pName} 正确答案是 ${q.answer}，再试一次！`;
       playCartoonHint();
-      speak(`正确答案是 ${q.answer}，再试一次，你可以的！`);
+      speakQueue(wrongSpeech.concat(`正确答案是 ${q.answer}，再试一次，你可以的！`), 0.86);
     }
   }
 }
@@ -5192,16 +5603,16 @@ const ALL_MEDALS = [
   { id: 'streak3',      icon: '🔥', label: '三连满分',    check: st => st.streak >= 3 },
   { id: 'streak5',      icon: '🔥', label: '五连满分',    check: st => st.streak >= 5 },
   { id: 'perfect5',     icon: '🏆', label: '满分5次',     check: st => st.perfectGames >= 5 },
-  { id: 'police_10',    icon: '🧱', label: '积木队长',    check: st => st.totalTagScores && st.totalTagScores.police >= 10 },
-  { id: 'police_30',    icon: '🛋️', label: '城堡高手',    check: st => st.totalTagScores && st.totalTagScores.police >= 30 },
-  { id: 'ambulance_10', icon: '🎈', label: '气球先锋',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 10 },
-  { id: 'ambulance_30', icon: '🪁', label: '风筝高手',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 30 },
+  { id: 'police_10',    icon: '🚜', label: '工程队长',    check: st => st.totalTagScores && st.totalTagScores.police >= 10 },
+  { id: 'police_30',    icon: '🏗️', label: '吊车高手',    check: st => st.totalTagScores && st.totalTagScores.police >= 30 },
+  { id: 'ambulance_10', icon: '🏎️', label: '赛车先锋',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 10 },
+  { id: 'ambulance_30', icon: '🏁', label: '冲线高手',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 30 },
   { id: 'fifty_games',  icon: '🏅', label: '五十次挑战',  check: st => st.games >= 50 },
   { id: 'stars_200',    icon: '💫', label: '200颗星星',   check: st => st.totalStars >= 200 },
   { id: 'perfect_10',   icon: '👑', label: '满分十次',    check: st => st.perfectGames >= 10 },
   { id: 'streak7',      icon: '☄️', label: '七连满分',    check: st => st.streak >= 7 },
-  { id: 'police_50',    icon: '🧺', label: '客厅传奇',    check: st => st.totalTagScores && st.totalTagScores.police >= 50 },
-  { id: 'ambulance_50', icon: '🌿', label: '后院传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
+  { id: 'police_50',    icon: '🚧', label: '工地传奇',    check: st => st.totalTagScores && st.totalTagScores.police >= 50 },
+  { id: 'ambulance_50', icon: '🚦', label: '赛道传奇',    check: st => st.totalTagScores && st.totalTagScores.ambulance >= 50 },
   { id: 'first_unlock', icon: '🔓', label: '第一次解锁',  check: st => st.ownedTotal > 2 },
   { id: 'collector_5',  icon: '🧸', label: '小小收藏家',  check: st => st.ownedVehicleCount >= 5 },
   { id: 'garage_master',icon: '🏰', label: '游戏柜大师',    check: st => st.ownedVehicleCount >= 11 },
@@ -5209,12 +5620,12 @@ const ALL_MEDALS = [
   { id: 'dragon_rider', icon: '🌟', label: '星星披风王',  check: st => st.ownsDragon === true },
   { id: 'coin_saver_50',icon: '🪙', label: '小财主',      check: st => st.lifetimeCoins >= 50 },
   { id: 'coin_saver_150', icon: '💰', label: '大富翁',     check: st => st.lifetimeCoins >= 150 },
-  { id: 'fire_10',      icon: '🍪', label: '饼干小帮手',  check: st => st.totalTagScores && st.totalTagScores.fire >= 10 },
-  { id: 'fire_30',      icon: '🥣', label: '面糊高手',    check: st => st.totalTagScores && st.totalTagScores.fire >= 30 },
-  { id: 'everyday_10',  icon: '🛝', label: '公园小达人',  check: st => st.totalTagScores && st.totalTagScores.everyday >= 10 },
-  { id: 'everyday_30',  icon: '🌳', label: '小路高手',    check: st => st.totalTagScores && st.totalTagScores.everyday >= 30 },
-  { id: 'adventure_10', icon: '⭐', label: '星星探险家',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 10 },
-  { id: 'adventure_30', icon: '🌙', label: '睡前英雄',    check: st => st.totalTagScores && st.totalTagScores.adventure >= 30 },
+  { id: 'fire_10',      icon: '🤖', label: '机器人小帮手', check: st => st.totalTagScores && st.totalTagScores.fire >= 10 },
+  { id: 'fire_30',      icon: '⚙️', label: '齿轮高手',    check: st => st.totalTagScores && st.totalTagScores.fire >= 30 },
+  { id: 'everyday_10',  icon: '🦖', label: '恐龙小达人',  check: st => st.totalTagScores && st.totalTagScores.everyday >= 10 },
+  { id: 'everyday_30',  icon: '🦴', label: '化石高手',    check: st => st.totalTagScores && st.totalTagScores.everyday >= 30 },
+  { id: 'adventure_10', icon: '🚀', label: '火箭探险家',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 10 },
+  { id: 'adventure_30', icon: '☄️', label: '陨石闪避手',  check: st => st.totalTagScores && st.totalTagScores.adventure >= 30 },
 ];
 
 function topTrophiesForPlayer(playerId) {
@@ -5439,12 +5850,13 @@ function startGame() {
   const introE = currentPlayer ? equippedEmojis(currentPlayer) : { vehicle: introTheme.targetEmoji, dino: '🐶' };
   const introSpeechEpoch = speechEpoch;
   setTimeout(() => {
+    const introDialogue = showAdventureDialogue(introTheme.id, 'intro', { step: 0, streak: 0, duration: 5600 });
     showAdventureIntro(introTheme, introE.vehicle, introE.dino, () => {
       if (introSpeechEpoch !== speechEpoch) return;
       const firstQuestion = questions[currentIdx] ? buildReadText(questions[currentIdx]) : '';
       const departureLine = adventureDepartureLine;
       adventureDepartureLine = '';
-      const introLines = (departureLine ? [departureLine] : []).concat(introTheme.introLines, firstQuestion ? [firstQuestion] : []);
+      const introLines = (departureLine ? [departureLine] : []).concat(dialogueSpeechLines(introDialogue, introTheme), introTheme.introLines, firstQuestion ? [firstQuestion] : []);
       speakQueue(introLines, 0.86);
     });
   }, 80);

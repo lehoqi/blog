@@ -44,6 +44,14 @@
     return QUESTION_TYPE_WEIGHTS[QUESTION_TYPE_WEIGHTS.length - 1].type;
   }
 
+  function buildRoundTypes(total, rand) {
+    const count = Math.max(0, Math.floor(Number(total) || 0));
+    const coreProgression = ['basic', 'carryBorrow', 'missing', 'compare', 'twoStep'];
+    const types = coreProgression.slice(0, Math.min(count, coreProgression.length));
+    while (types.length < count) types.push(chooseQuestionType(rand));
+    return types;
+  }
+
   function buildRoundTypeStats(questions, correctnessByIndex) {
     const stats = emptyTypeStats();
     if (!Array.isArray(questions)) return stats;
@@ -84,6 +92,7 @@
     QUESTION_TYPE_WEIGHTS,
     QUESTION_TYPE_LABELS,
     chooseQuestionType,
+    buildRoundTypes,
     buildRoundTypeStats,
     aggregateTypeStats,
     hasMixedPerfectRound

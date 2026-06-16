@@ -28,73 +28,73 @@
   const SCENES = {
     livingRoom: {
       id: 'livingRoom',
-      title: '客厅积木游戏',
+      title: '工程车积木工地',
       className: 'cartoon-scene-living-room',
-      mapEmoji: '🧸',
-      bossEmoji: '🧺',
-      bossName: '乱糟糟玩具篮',
-      props: ['🧱', '🧸', '🛋️', '🧺'],
-      powerLabel: '游戏能量',
-      introLines: ['欢迎来到客厅积木游戏！认真听题，一起搭高高。'],
-      stepLines: ['积木搭高啦！', '玩具跳起来啦！', '沙发城堡快完成啦！', '准备收好玩具篮！'],
-      bossLine: '乱糟糟玩具篮出现了！答对这一题，把它整理好！',
-      victoryLine: '客厅整理好啦，游戏成功！'
+      mapEmoji: '🚧',
+      bossEmoji: '🧱',
+      bossName: '堵路大砖墙',
+      props: ['🚧', '🏗️', '🚜', '🧱'],
+      powerLabel: '工程能量',
+      introLines: ['工程车积木工地开工！认真听题，把路线修出来。'],
+      stepLines: ['推土机出发啦！', '吊车把积木吊高啦！', '小挖机轰隆隆前进！', '准备撞开堵路大砖墙！'],
+      bossLine: '堵路大砖墙挡住工地！答对这一题，让工程队开路！',
+      victoryLine: '工地路线修好啦，工程任务成功！'
     },
     backyard: {
       id: 'backyard',
-      title: '后院气球游戏',
+      title: '后院赛车赛道',
       className: 'cartoon-scene-backyard',
-      mapEmoji: '🎈',
-      bossEmoji: '🌬️',
-      bossName: '调皮大风',
-      props: ['🎈', '🧺', '🌿', '🪁'],
-      powerLabel: '气球能量',
-      introLines: ['后院游戏开始！听清楚气球有几个。'],
-      stepLines: ['气球升起来啦！', '草地亮起来啦！', '风筝飞起来啦！', '准备挡住调皮大风！'],
-      bossLine: '调皮大风来了！答对这一题，气球就安全啦！',
-      victoryLine: '气球都安全啦，后院游戏成功！'
+      mapEmoji: '🏎️',
+      bossEmoji: '🛞',
+      bossName: '乱滚轮胎',
+      props: ['🏎️', '🏁', '🚦', '🛞'],
+      powerLabel: '赛车能量',
+      introLines: ['后院赛车赛道点火！听清题目，准备冲过弯道。'],
+      stepLines: ['赛车加速啦！', '红绿灯变绿啦！', '冲过小弯道！', '准备超过乱滚轮胎！'],
+      bossLine: '乱滚轮胎冲到赛道上！答对这一题，赛车就能超过它！',
+      victoryLine: '赛车冲线啦，赛道任务成功！'
     },
     park: {
       id: 'park',
-      title: '公园小路游戏',
+      title: '恐龙化石探险',
       className: 'cartoon-scene-park',
-      mapEmoji: '🛝',
+      mapEmoji: '🦖',
       bossEmoji: '🕳️',
-      bossName: '小泥坑',
-      props: ['🛝', '🌳', '🛴', '🪨'],
-      powerLabel: '公园能量',
-      introLines: ['公园小路出发！一起数清楚。'],
-      stepLines: ['滑梯亮起来啦！', '树叶跳舞啦！', '小车滑过去啦！', '准备跨过小泥坑！'],
-      bossLine: '小泥坑挡住路了！答对这一题，就能跨过去！',
-      victoryLine: '顺利穿过公园小路！'
+      bossName: '大泥坑陷阱',
+      props: ['🦖', '🦴', '⛏️', '🛴'],
+      powerLabel: '探险能量',
+      introLines: ['恐龙化石探险出发！一起数清楚，找到化石路线。'],
+      stepLines: ['发现恐龙脚印啦！', '挖出化石碎片啦！', '滑板车冲过草坡！', '准备跳过大泥坑陷阱！'],
+      bossLine: '大泥坑陷阱挡住化石！答对这一题，就能安全跳过去！',
+      victoryLine: '恐龙化石找到啦，探险任务成功！'
     },
     kitchen: {
       id: 'kitchen',
-      title: '厨房饼干游戏',
+      title: '机器人能量站',
       className: 'cartoon-scene-kitchen',
-      mapEmoji: '🍪',
-      bossEmoji: '🥣',
-      bossName: '大面糊碗',
-      props: ['🍪', '🥛', '🍽️', '🥣'],
-      powerLabel: '饼干能量',
-      introLines: ['厨房饼干游戏开始！听听盘子里有多少。'],
-      stepLines: ['饼干香起来啦！', '杯子排好队啦！', '盘子转起来啦！', '准备搅好大面糊！'],
-      bossLine: '大面糊碗来了！答对这一题，把饼干做好！',
-      victoryLine: '饼干烤好啦，厨房游戏成功！'
+      mapEmoji: '🤖',
+      bossEmoji: '⚙️',
+      bossName: '卡住的大齿轮',
+      props: ['🤖', '⚙️', '🔋', '🧰'],
+      powerLabel: '机器人能量',
+      introLines: ['机器人能量站启动！听题补能量，让机器人动起来。'],
+      stepLines: ['电池充好啦！', '机器人手臂转起来啦！', '能量块装箱啦！', '准备修好卡住的大齿轮！'],
+      bossLine: '大齿轮卡住啦！答对这一题，机器人就能继续工作！',
+      victoryLine: '机器人能量站修好啦，任务成功！'
     },
     bedroom: {
       id: 'bedroom',
-      title: '睡前星星游戏',
+      title: '太空火箭基地',
       className: 'cartoon-scene-bedroom',
-      mapEmoji: '⭐',
-      bossEmoji: '🌙',
-      bossName: '困困月亮',
-      props: ['⭐', '🛏️', '💡', '📘'],
-      powerLabel: '星星能量',
-      introLines: ['睡前星星游戏开始！慢慢听，认真算。'],
-      stepLines: ['星星贴好啦！', '小灯亮起来啦！', '故事书打开啦！', '准备和困困月亮说晚安！'],
-      bossLine: '困困月亮来了！答对这一题，就能说晚安！',
-      victoryLine: '星星都亮啦，晚安游戏成功！'
+      mapEmoji: '🚀',
+      bossEmoji: '☄️',
+      bossName: '飞来的陨石',
+      props: ['🚀', '🪐', '🛰️', '⭐'],
+      powerLabel: '火箭能量',
+      introLines: ['太空火箭基地倒计时！认真听题，准备发射。'],
+      stepLines: ['火箭加燃料啦！', '卫星信号亮起来啦！', '穿过星星轨道！', '准备躲开飞来的陨石！'],
+      bossLine: '飞来的陨石出现了！答对这一题，火箭就能安全闪避！',
+      victoryLine: '火箭发射成功，太空任务完成！'
     }
   };
 
@@ -114,10 +114,26 @@
     return CHARACTERS[id] || CHARACTERS.lele;
   }
 
-  function characterMarkup(id) {
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (ch) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+    });
+  }
+
+  function equipmentBadge(kind, item) {
+    if (!item || !item.emoji) return '';
+    return `<span class="cartoon-dog-${kind}" aria-hidden="true">${escapeHtml(item.emoji)}</span>`;
+  }
+
+  function characterMarkup(id, equipment) {
     const c = character(id);
+    const prop = equipment && equipment.vehicle;
+    const costume = equipment && (equipment.costume || equipment.dino);
+    const label = [c.name, prop && prop.name, costume && costume.name]
+      .filter(Boolean)
+      .join('，');
     return [
-      `<span class="cartoon-dog cartoon-dog-${c.id}" aria-label="${c.name}" role="img" style="--dog-main:${c.color};--dog-deep:${c.colorDeep};--dog-patch:${c.patch};--dog-accent:${c.accent};">`,
+      `<span class="cartoon-dog cartoon-dog-${c.id}" aria-label="${escapeHtml(label)}" role="img" style="--dog-main:${c.color};--dog-deep:${c.colorDeep};--dog-patch:${c.patch};--dog-accent:${c.accent};">`,
       '<span class="dog-art">',
       '<span class="dog-tail"></span>',
       '<span class="dog-body"></span>',
@@ -130,6 +146,8 @@
       '<span class="dog-muzzle"></span>',
       '<span class="dog-nose"></span>',
       '</span>',
+      equipmentBadge('costume', costume),
+      equipmentBadge('prop', prop),
       '</span>',
       '</span>'
     ].join('');

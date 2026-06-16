@@ -5,68 +5,108 @@
   else root.StoryTemplates = factory();
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   const SCENES = ['livingRoom', 'backyard', 'park', 'kitchen', 'bedroom'];
+  const FAMILY_SCENES = {
+    police: 'livingRoom',
+    ambulance: 'backyard',
+    fire: 'kitchen',
+    everyday: 'park',
+    adventure: 'bedroom',
+    livingRoom: 'livingRoom',
+    backyard: 'backyard',
+    park: 'park',
+    kitchen: 'kitchen',
+    bedroom: 'bedroom'
+  };
 
   const TEMPLATES = {
     addition: [
       {
         scene: 'livingRoom',
-        noun: '积木',
+        noun: '工程砖',
         unit: '块',
-        story: (a, b) => `布鲁伊先搭了 ${a} 块积木，宾果又递来 ${b} 块，`,
-        question: '现在一共有多少块积木？'
+        story: (a, b) => `工地上先有 ${a} 块工程砖，吊车又吊来 ${b} 块，`,
+        question: '工地现在一共有多少块工程砖？'
       },
       {
         scene: 'backyard',
-        noun: '气球',
-        unit: '个',
-        story: (a, b) => `后院挂着 ${a} 个气球，爸爸又吹好 ${b} 个，`,
-        question: '后院一共有多少个气球？'
+        noun: '赛车小旗',
+        unit: '面',
+        story: (a, b) => `赛车道边先插了 ${a} 面赛车小旗，宾果又插上 ${b} 面，`,
+        question: '赛道边现在一共有多少面赛车小旗？'
       },
       {
         scene: 'kitchen',
-        noun: '饼干',
+        noun: '能量电池',
+        unit: '节',
+        story: (a, b) => `机器人能量站有 ${a} 节能量电池，布鲁伊又装上 ${b} 节，`,
+        question: '机器人能量站现在有多少节能量电池？'
+      },
+      {
+        scene: 'park',
+        noun: '化石碎片',
         unit: '块',
-        story: (a, b) => `盘子里有 ${a} 块饼干，妈妈又放上 ${b} 块，`,
-        question: '盘子里现在有多少块饼干？'
+        story: (a, b) => `恐龙化石坑里有 ${a} 块化石碎片，宾果又挖出 ${b} 块，`,
+        question: '恐龙化石坑里一共有多少块化石碎片？'
+      },
+      {
+        scene: 'bedroom',
+        noun: '燃料星',
+        unit: '颗',
+        story: (a, b) => `火箭基地点亮 ${a} 颗燃料星，布鲁伊又点亮 ${b} 颗，`,
+        question: '火箭基地一共有多少颗燃料星？'
       }
     ],
     subtraction: [
       {
         scene: 'livingRoom',
-        noun: '积木',
+        noun: '工程砖',
         unit: '块',
-        story: (a, b) => `布鲁伊有 ${a} 块积木，收进玩具箱 ${b} 块，`,
-        question: '外面还剩多少块积木？'
+        story: (a, b) => `工地上有 ${a} 块工程砖，推土机运走 ${b} 块，`,
+        question: '工地还剩多少块工程砖？'
+      },
+      {
+        scene: 'backyard',
+        noun: '赛车小旗',
+        unit: '面',
+        story: (a, b) => `赛道边有 ${a} 面赛车小旗，比赛后收走 ${b} 面，`,
+        question: '赛道边还剩多少面赛车小旗？'
       },
       {
         scene: 'kitchen',
-        noun: '饼干',
-        unit: '块',
-        story: (a, b) => `盘子里有 ${a} 块饼干，宾果吃掉 ${b} 块，`,
-        question: '盘子里还剩多少块饼干？'
+        noun: '能量电池',
+        unit: '节',
+        story: (a, b) => `机器人能量站有 ${a} 节能量电池，机器人用掉 ${b} 节，`,
+        question: '能量站还剩多少节能量电池？'
+      },
+      {
+        scene: 'park',
+        noun: '恐龙脚印',
+        unit: '颗',
+        story: (a, b) => `恐龙草地上有 ${a} 颗恐龙脚印，被沙土盖住 ${b} 颗，`,
+        question: '恐龙草地上还剩多少颗恐龙脚印？'
       },
       {
         scene: 'bedroom',
-        noun: '星星贴纸',
-        unit: '张',
-        story: (a, b) => `床头有 ${a} 张星星贴纸，布鲁伊贴到本子上 ${b} 张，`,
-        question: '床头还剩多少张星星贴纸？'
+        noun: '燃料星',
+        unit: '颗',
+        story: (a, b) => `火箭基地亮着 ${a} 颗燃料星，发射前关闭 ${b} 颗，`,
+        question: '火箭基地还剩多少颗燃料星？'
       }
     ],
     compare: [
       {
         scene: 'park',
-        noun: '小石子',
+        noun: '恐龙脚印',
         unit: '颗',
-        story: (a, b) => `布鲁伊捡了 ${a} 颗小石子，宾果捡了 ${b} 颗小石子，`,
-        question: '布鲁伊比宾果多多少颗小石子？'
+        story: (a, b) => `布鲁伊发现 ${a} 颗恐龙脚印，宾果发现 ${b} 颗恐龙脚印，`,
+        question: '布鲁伊比宾果多多少颗恐龙脚印？'
       },
       {
         scene: 'bedroom',
-        noun: '星星贴纸',
-        unit: '张',
-        story: (a, b) => `布鲁伊有 ${a} 张星星贴纸，宾果有 ${b} 张星星贴纸，`,
-        question: '布鲁伊比宾果多多少张星星贴纸？'
+        noun: '火箭徽章',
+        unit: '枚',
+        story: (a, b) => `布鲁伊拿到 ${a} 枚火箭徽章，宾果拿到 ${b} 枚火箭徽章，`,
+        question: '布鲁伊比宾果多多少枚火箭徽章？'
       }
     ]
   };
@@ -74,15 +114,15 @@
   const MISSING_TEMPLATES = [
     {
       scene: 'livingRoom',
-      noun: '积木',
+      noun: '工程砖',
       unit: '块',
       mode: 'missingAddend',
       build: (a, b) => {
         const total = a + b;
         return {
           answer: b,
-          story: `布鲁伊先搭了 ${a} 块积木，宾果又递来一些，合起来是 ${total} 块，`,
-          question: '宾果递来多少块积木？',
+          story: `工程车先运来 ${a} 块工程砖，吊车又吊来一些，合起来是 ${total} 块，`,
+          question: '吊车又吊来多少块工程砖？',
           equationParts: [a, '+', '?', '=', total],
           readEquation: `${spokenNumber(a)} 加几等于 ${spokenNumber(total)}？`,
           intent: 'missing-addend'
@@ -91,15 +131,15 @@
     },
     {
       scene: 'kitchen',
-      noun: '饼干',
-      unit: '块',
+      noun: '能量电池',
+      unit: '节',
       mode: 'missingMinuend',
       build: (removed, left) => {
         const original = removed + left;
         return {
           answer: original,
-          story: `盘子里原来有一些饼干，宾果吃掉 ${removed} 块后，还剩 ${left} 块，`,
-          question: '盘子里原来有多少块饼干？',
+          story: `机器人能量站原来有一些能量电池，机器人用掉 ${removed} 节后，还剩 ${left} 节，`,
+          question: '能量站原来有多少节能量电池？',
           equationParts: ['?', '-', removed, '=', left],
           readEquation: `几减 ${spokenNumber(removed)} 等于 ${spokenNumber(left)}？`,
           intent: 'missing-minuend'
@@ -108,15 +148,15 @@
     },
     {
       scene: 'bedroom',
-      noun: '星星贴纸',
-      unit: '张',
+      noun: '燃料星',
+      unit: '颗',
       mode: 'missingSubtrahend',
       build: (original, removed) => {
         const left = original - removed;
         return {
           answer: removed,
-          story: `布鲁伊有 ${original} 张星星贴纸，贴到本子上一些后，还剩 ${left} 张，`,
-          question: '布鲁伊贴到本子上多少张星星贴纸？',
+          story: `火箭基地有 ${original} 颗燃料星，发射前用掉一些后，还剩 ${left} 颗，`,
+          question: '火箭发射前用掉多少颗燃料星？',
           equationParts: [original, '-', '?', '=', left],
           readEquation: `${spokenNumber(original)} 减几等于 ${spokenNumber(left)}？`,
           intent: 'missing-subtrahend'
@@ -128,13 +168,13 @@
   const TWO_STEP_TEMPLATES = [
     {
       scene: 'backyard',
-      noun: '气球',
-      unit: '个',
+      noun: '赛车小旗',
+      unit: '面',
       mode: 'twoStepAddSubtract',
       build: (a, b, c) => ({
         answer: a + b - c,
-        story: `后院先挂着 ${a} 个气球，爸爸又吹好 ${b} 个，后来飞走 ${c} 个，`,
-        question: '后院现在还剩多少个气球？',
+        story: `赛道边先有 ${a} 面赛车小旗，布鲁伊又插上 ${b} 面，后来收走 ${c} 面，`,
+        question: '赛道边现在还剩多少面赛车小旗？',
         equationParts: [a, '+', b, '-', c, '='],
         readEquation: `${spokenNumber(a)} 加 ${spokenNumber(b)} 再减 ${spokenNumber(c)} 等于多少？`,
         intent: 'two-step-result'
@@ -142,13 +182,13 @@
     },
     {
       scene: 'kitchen',
-      noun: '饼干',
-      unit: '块',
+      noun: '能量电池',
+      unit: '节',
       mode: 'twoStepSubtractAdd',
       build: (a, b, c) => ({
         answer: a - b + c,
-        story: `盘子里有 ${a} 块饼干，宾果吃掉 ${b} 块，妈妈又放上 ${c} 块，`,
-        question: '盘子里现在有多少块饼干？',
+        story: `机器人能量站有 ${a} 节能量电池，机器人用掉 ${b} 节，布鲁伊又装上 ${c} 节，`,
+        question: '机器人能量站现在有多少节能量电池？',
         equationParts: [a, '-', b, '+', c, '='],
         readEquation: `${spokenNumber(a)} 减 ${spokenNumber(b)} 再加 ${spokenNumber(c)} 等于多少？`,
         intent: 'two-step-result'
@@ -163,6 +203,29 @@
 
   function pick(list, index) {
     return list[Math.max(0, Math.min(list.length - 1, index || 0))];
+  }
+
+  function sceneForFamily(family) {
+    return FAMILY_SCENES[family] || null;
+  }
+
+  function tagForFamily(family, scene) {
+    if (family && FAMILY_SCENES[family] && SCENES.indexOf(family) === -1) return family;
+    return scene;
+  }
+
+  function templateIndexForScene(list, scene, rand) {
+    if (!scene) return randInt(0, list.length - 1, rand);
+    const matches = [];
+    for (let i = 0; i < list.length; i += 1) {
+      if (list[i].scene === scene) matches.push(i);
+    }
+    if (!matches.length) return randInt(0, list.length - 1, rand);
+    return matches[randInt(0, matches.length - 1, rand)];
+  }
+
+  function withFamilyTag(q, family) {
+    return { ...q, tag: tagForFamily(family, q.scene) };
   }
 
   function spokenNumber(n) {
@@ -241,6 +304,7 @@
     if (b < 1) b = 1;
     if (c < 1) c = 1;
     if (t.mode === 'twoStepAddSubtract' && c >= a + b) c = Math.max(1, a + b - 1);
+    if (t.mode === 'twoStepAddSubtract' && a + b - c > 20) c = a + b - 20;
     if (t.mode === 'twoStepSubtractAdd' && b >= a) b = Math.max(1, a - 1);
     const built = t.build(a, b, c);
     return {
@@ -293,34 +357,51 @@
     const opts = options || {};
     const rand = opts.rand || Math.random;
     const type = opts.type || 'basic';
+    const preferredScene = sceneForFamily(opts.family);
     if (type === 'compare') {
-      return makeQuestionFromTemplate('compare', {
+      return withFamilyTag(makeQuestionFromTemplate('compare', {
         a: randInt(9, 20, rand),
         b: randInt(1, 8, rand),
-        templateIndex: randInt(0, TEMPLATES.compare.length - 1, rand)
-      });
+        templateIndex: templateIndexForScene(TEMPLATES.compare, preferredScene, rand)
+      }), opts.family);
     }
     if (type === 'missing') {
-      return makeMissingQuestion({
+      return withFamilyTag(makeMissingQuestion({
         a: randInt(3, 9, rand),
         b: randInt(3, 9, rand),
-        templateIndex: randInt(0, MISSING_TEMPLATES.length - 1, rand)
-      });
+        templateIndex: templateIndexForScene(MISSING_TEMPLATES, preferredScene, rand)
+      }), opts.family);
     }
     if (type === 'twoStep') {
-      return makeTwoStepQuestion({
+      return withFamilyTag(makeTwoStepQuestion({
         a: randInt(6, 14, rand),
         b: randInt(1, 8, rand),
         c: randInt(1, 7, rand),
-        templateIndex: randInt(0, TWO_STEP_TEMPLATES.length - 1, rand)
-      });
+        templateIndex: templateIndexForScene(TWO_STEP_TEMPLATES, preferredScene, rand)
+      }), opts.family);
     }
     const mode = rand() < 0.55 ? 'addition' : 'subtraction';
-    return makeQuestionFromTemplate(mode, {
-      a: type === 'carryBorrow' ? randInt(6, 18, rand) : randInt(2, 10, rand),
-      b: type === 'carryBorrow' ? randInt(2, 9, rand) : randInt(1, 9, rand),
-      templateIndex: randInt(0, TEMPLATES[mode].length - 1, rand)
-    });
+    if (type === 'carryBorrow') {
+      if (mode === 'addition') {
+        const a = randInt(6, 9, rand);
+        return withFamilyTag(makeQuestionFromTemplate('addition', {
+          a,
+          b: randInt(11 - a, 9, rand),
+          templateIndex: templateIndexForScene(TEMPLATES.addition, preferredScene, rand)
+        }), opts.family);
+      }
+      const a = randInt(11, 18, rand);
+      return withFamilyTag(makeQuestionFromTemplate('subtraction', {
+        a,
+        b: randInt((a % 10) + 1, 9, rand),
+        templateIndex: templateIndexForScene(TEMPLATES.subtraction, preferredScene, rand)
+      }), opts.family);
+    }
+    return withFamilyTag(makeQuestionFromTemplate(mode, {
+      a: randInt(2, 10, rand),
+      b: randInt(1, 9, rand),
+      templateIndex: templateIndexForScene(TEMPLATES[mode], preferredScene, rand)
+    }), opts.family);
   }
 
   return {
