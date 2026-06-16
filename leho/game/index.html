@@ -2826,6 +2826,7 @@ var _hmt = _hmt || [];
 <script src="cartoon.js?v=20260616-action2"></script>
 <script src="adventure.js?v=20260616-action2"></script>
 <script src="dialogue.js?v=20260616-dialogue1"></script>
+<script src="speech-plan.js?v=20260616-speech1"></script>
 <script>
 const $ = id => document.getElementById(id);
 function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -3065,7 +3066,18 @@ function stopSpeech() {
 
 // 串行语音队列：onend 推进 + 超时兜底，避免连续 speak() 互相掐断（spec A1）
 function _speechItems(lines, rate) {
-  return (lines || []).filter(Boolean).map(txt => ({ text: String(txt), rate }));
+  if (window.SpeechPlan && typeof SpeechPlan.normalizeItems === 'function') {
+    return SpeechPlan.normalizeItems(lines, rate);
+  }
+  return (lines || []).reduce((items, item) => {
+    if (!item) return items;
+    if (typeof item === 'object' && Number.isFinite(Number(item.pauseMs))) {
+      items.push({ type: 'pause', pauseMs: Math.max(0, Math.floor(Number(item.pauseMs))) });
+      return items;
+    }
+    items.push({ text: String(item), rate });
+    return items;
+  }, []);
 }
 
 function _drainSpeechQueue(seq) {
@@ -3079,6 +3091,12 @@ function _drainSpeechQueue(seq) {
     return;
   }
   _spkActive = true;
+  if (item.type === 'pause' || Number.isFinite(Number(item.pauseMs))) {
+    speakTimer = setTimeout(() => {
+      if (seq === _spkSeq) _drainSpeechQueue(seq);
+    }, Math.max(0, Math.floor(Number(item.pauseMs) || 0)));
+    return;
+  }
   const u = new SpeechSynthesisUtterance(item.text);
   u.lang = 'zh-CN'; u.rate = item.rate; u.pitch = 1.1;
   let advanced = false;
@@ -3950,6 +3968,16 @@ function buildReadText(q) {
   if (q.readEquation) return `${base}${q.readEquation}`;
   return `${base}${q.a} ${opWord(q.op)} ${q.b} 等于多少？`;
 }
+function questionSpeechLines(readText) {
+  if (window.SpeechPlan && typeof SpeechPlan.question === 'function') return SpeechPlan.question(readText);
+  const text = String(readText || '').trim();
+  return text ? ['请听题。', { type: 'pause', pauseMs: 750 }, text] : [];
+}
+function appendQuestionSpeech(prefixLines, readText) {
+  if (window.SpeechPlan && typeof SpeechPlan.appendQuestion === 'function') return SpeechPlan.appendQuestion(prefixLines, readText);
+  const prefix = Array.isArray(prefixLines) ? prefixLines.filter(Boolean) : [];
+  return prefix.concat(questionSpeechLines(readText));
+}
 function equationPartHtml(part) {
   if (part === '+' || part === '-') return `<span class="op">${part}</span>`;
   if (part === '=') return '<span class="eq">=</span>';
@@ -4388,15 +4416,16 @@ function speakQuestionWithAdventure(q, slideIn, leadLines = [], afterCurrentSpee
     const bossDialogue = showAdventureDialogue(theme.id, 'boss', { step: currentIdx, streak: correctStreak, duration: 5200 });
     showBossEntrance(theme, e.vehicle, e.dino, () => {
       if (epoch !== speechEpoch) return;
-      queue([].concat(leadLines, dialogueSpeechLines(bossDialogue, theme), theme.bossLine, readText), 0.86);
+      const prefix = [].concat(leadLines, dialogueSpeechLines(bossDialogue, theme), theme.bossLine);
+      queue(appendQuestionSpeech(prefix, readText), 0.86);
     });
     return;
   }
   if (leadLines.length) {
-    scheduleSpeech(() => queue([].concat(leadLines, readText), 0.86), slideIn ? 500 : 300, epoch);
+    scheduleSpeech(() => queue(appendQuestionSpeech(leadLines, readText), 0.86), slideIn ? 500 : 300, epoch);
     return;
   }
-  scheduleSpeech(() => speak(readText, 0.8), slideIn ? 500 : 300, epoch);
+  scheduleSpeech(() => queue(questionSpeechLines(readText), 0.82), slideIn ? 500 : 300, epoch);
 }
 
 function renderQuestion(slideIn = true, speakNow = true, leadSpeechLines = [], afterCurrentSpeech = false) {
@@ -4447,7 +4476,7 @@ function renderQuestion(slideIn = true, speakNow = true, leadSpeechLines = [], a
 
 function rereadCurrentQuestion() {
   if (!questions.length || currentIdx < 0 || currentIdx >= questions.length) return;
-  speak(buildReadText(questions[currentIdx]), 0.8);
+  speakQueue(questionSpeechLines(buildReadText(questions[currentIdx])), 0.82);
 }
 
 // ── 玩家指示器 ──
@@ -5856,7 +5885,8 @@ function startGame() {
       const firstQuestion = questions[currentIdx] ? buildReadText(questions[currentIdx]) : '';
       const departureLine = adventureDepartureLine;
       adventureDepartureLine = '';
-      const introLines = (departureLine ? [departureLine] : []).concat(dialogueSpeechLines(introDialogue, introTheme), introTheme.introLines, firstQuestion ? [firstQuestion] : []);
+      const introPrefix = (departureLine ? [departureLine] : []).concat(dialogueSpeechLines(introDialogue, introTheme), introTheme.introLines);
+      const introLines = appendQuestionSpeech(introPrefix, firstQuestion);
       speakQueue(introLines, 0.86);
     });
   }, 80);
